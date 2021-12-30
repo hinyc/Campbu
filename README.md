@@ -1,5 +1,7 @@
 # Campbu
 
+<img width="500" alt="campbu-logo" src="https://user-images.githubusercontent.com/85062881/147755706-835d10d4-f3be-4f3e-be41-b949d931fc74.png">
+
 ## About
 - 사용자 위치 주변에 있는 대여 가능한 캠핑 물품을 확인할 수 있습니다.
 - 대여 가능한 캠핑 물품을 예약할 수 있습니다.
