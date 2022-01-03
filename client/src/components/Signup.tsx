@@ -1,22 +1,24 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { color, rem, shadow, hover } from '../common';
 
 const backgroundStyle = css`
   margin: 50px;
   background-color: white;
-  width: 20.875rem;
-  height: 28.125rem;
-  border-radius: 0.9375rem;
-  box-shadow: 0rem 0.1rem 0.3rem 0.03rem #4c4c4c;
+  width: ${rem(334)};
+  /* height: 28.125rem; */
+  height: ${rem(450)};
+  border-radius: ${rem(15)};
+  box-shadow: ${shadow};
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 0.75rem;
+  font-size: ${rem(12)};
   position: relative;
 `;
 const wnr = css`
-  width: 12.8125rem;
-  border-radius: 0.9375rem;
+  width: ${rem(205)};
+  border-radius: ${rem(15)};
 `;
 const verticalAlign = css`
   display: flex;
@@ -24,13 +26,13 @@ const verticalAlign = css`
 `;
 
 const inputStyle = css`
-  height: 2.375rem;
-  border: 1px solid #dedede;
+  height: ${rem(38)};
+  border: 1px solid ${color.border};
   position: absolute;
-  padding-left: 0.75rem;
-  font-size: 0.75rem;
+  padding-left: ${rem(12)};
+  font-size: ${rem(12)};
   ::placeholder {
-    color: #c4c4c4;
+    color: ${color.placeholder};
   }
 `;
 
@@ -41,42 +43,41 @@ const contentAlign = css`
   position: absolute;
 `;
 const checkStyle = css`
-  top: 22.0625rem;
+  top: ${rem(353)};
   position: absolute;
   display: flex;
   justify-content: center;
 `;
 const buttonStyle = css`
   border: none;
-  height: 2.5rem;
-  position: absolute;
-  color: #ffffff;
-  background-color: #ed662c;
-  font-size: 0.75rem;
+  height: ${rem(40)};
+  color: ${color.white};
+  background-color: ${color.point};
+  font-size: ${rem(12)};
+  :hover {
+    box-shadow: ${hover};
+  }
 `;
 
 const see = css`
-  color: #ffffff;
-  font-size: 0.625rem;
-  width: 2.5625rem;
-  height: 1.3125rem;
-  line-height: 1.3125rem;
-  background-color: #ed662c;
-  border-radius: 0.9375rem;
+  font-size: ${rem(10)};
+  width: ${rem(41)};
+  height: ${rem(21)};
+  line-height: ${rem(21)};
 `;
 
 const validButton = css`
-  color: #adadad;
+  color: ${color.valid};
   :hover {
-    color: #ed662c;
-    font-weight: bold;
+    color: ${color.point};
+    font-weight: 700;
   }
 `;
 const x = css`
-  font-size: 0.875rem;
-  color: #c4c4c4;
-  top: 0.875rem;
-  left: 18.6875rem;
+  font-size: ${rem(14)};
+  color: ${color.placeholder};
+  top: ${rem(14)};
+  left: ${rem(299)};
   position: absolute;
 `;
 
@@ -174,7 +175,7 @@ function Singup() {
           ]}
         >
           <span>이용약관</span>
-          <span css={see}>보기</span>
+          <button css={[wnr, buttonStyle, see]}>보기</button>
         </div>
         <div
           css={[
@@ -186,7 +187,7 @@ function Singup() {
           ]}
         >
           <span>이용약관</span>
-          <span css={see}>보기</span>
+          <button css={[wnr, buttonStyle, see]}>보기</button>
         </div>
         <div css={[wnr, checkStyle]}>
           <input
@@ -204,6 +205,7 @@ function Singup() {
             wnr,
             buttonStyle,
             css`
+              position: absolute;
               top: 23.75rem;
             `,
           ]}
