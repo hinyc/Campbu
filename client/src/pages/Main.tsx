@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { jsx, css } from '@emotion/react';
-import Product from './components/Product';
+import Product from '../components/Product';
 
 const divStyle = css`
   text-align: center;
