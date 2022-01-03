@@ -1,3 +1,7 @@
+import Footer from './components/Footer';
+// import Intro from './Intro';
+import Navbar from './components/Navbar';
+
 import { BrowserRouter as Router, Link, Routes, Route } from 'react-router-dom';
 import Lists from './pages/Lists';
 import Intro from './pages/Intro';
@@ -8,6 +12,7 @@ import MainDetail from './pages/MainDetail';
 function App() {
   return (
     <Router>
+      <Navbar />
       <Link to="/" style={{ marginRight: 10 }}>
         intro
       </Link>
@@ -27,6 +32,7 @@ function App() {
         <Route path="/mypage" element={<Mypage />} />
         <Route path="/lists/*" element={<Lists />} />
       </Routes>
+      <Footer />
     </Router>
     // <>
     //   <List />
