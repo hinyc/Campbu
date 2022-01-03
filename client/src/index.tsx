@@ -1,11 +1,13 @@
+import { Global } from '@emotion/react';
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-// cutcard때 폰트 설정이 없었음.
+import reset from './reset';
+
 ReactDOM.render(
   <React.StrictMode>
+    <Global styles={reset} />
     <App />
   </React.StrictMode>,
   document.getElementById('root'),
