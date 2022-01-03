@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import Product from '../components/Product';
+import WritingButton from '../components/WritingButton';
 
 const divStyle = css`
   text-align: center;
@@ -70,6 +71,7 @@ function Main() {
         <Product />
         <Product />
       </section>
+      <WritingButton />
     </div>
   );
 }
