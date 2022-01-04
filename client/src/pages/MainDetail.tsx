@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import LikeSymbol from '../components/LikeSymbol';
+import ReviewBox from '../components/ReviewBox';
 
 function DetailView() {
   const navigate = useNavigate();

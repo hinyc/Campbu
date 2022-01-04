@@ -4,15 +4,6 @@ import { color, rem, hover, relative, absolute } from '../common';
 
 const profileImg: string = `https://images.unsplash.com/photo-1497906539264-eb74442e37a9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80`;
 
-const reviews: { id: number; review: string; count: number }[] = [
-  { id: 1, review: '가격이 합리적이에요', count: 7 },
-  { id: 2, review: '물건을 깨끗하게 사용했어요', count: 7 },
-  { id: 3, review: '물건 질이 좋아요', count: 7 },
-  { id: 4, review: '답장이 빨라요', count: 7 },
-  { id: 7, review: '물건이 파손되어 있어요', count: 7 },
-  { id: 8, review: '답장이 느려요', count: 7 },
-];
-
 const imgStyle = css`
   width: ${rem(137)};
   height: ${rem(137)};
@@ -96,6 +87,15 @@ const buttonStyle = css`
 `;
 
 function Mypage() {
+  const reviews: { id: number; review: string; count: number }[] = [
+    { id: 1, review: '가격이 합리적이에요', count: 7 },
+    { id: 2, review: '물건을 깨끗하게 사용했어요', count: 7 },
+    { id: 3, review: '물건 질이 좋아요', count: 7 },
+    { id: 4, review: '답장이 빨라요', count: 7 },
+    { id: 7, review: '물건이 파손되어 있어요', count: 7 },
+    { id: 8, review: '답장이 느려요', count: 7 },
+  ];
+
   return (
     <div
       css={css`
