@@ -1,5 +1,9 @@
-export const LendList = () => {
-  return <div>LendList page!</div>;
+const LendList = () => {
+  return (
+    <>
+      <div>LendList page!</div>
+    </>
+  );
 };
 
 export default LendList;

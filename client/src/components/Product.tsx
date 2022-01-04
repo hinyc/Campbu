@@ -1,17 +1,23 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { rem, absolute } from '../common';
+import { useState } from 'react';
+import LikeSymbol from './LikeSymbol';
 
 const post = css`
-  width: 235px;
-  height: 340px;
+  width: ${rem(235)};
+  height: ${rem(340)};
   border: 1px solid black;
-  margin: 0 10px;
+  margin: 0 auto;
+  position: relative;
 `;
 
 const img = css`
-  width: 174px;
-  height: 174px;
+  width: ${rem(205)};
+  height: ${rem(205)};
+  object-fit: cover;
   border: 1px solid black;
+  margin: 15px;
 `;
 
 const span = css`
@@ -36,10 +42,27 @@ function Product() {
     <div css={post}>
       <a href="#">
         <img
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZUX7zo1yYFaBeOYIcOfcgwnULvpM7YqzXxA&usqp=CAU"
+          src="https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg"
           alt="product"
           css={img}
         />
+        <div
+          css={[
+            absolute,
+            css`
+              top: ${rem(23)};
+              right: ${rem(23)};
+            `,
+          ]}
+        >
+          <LikeSymbol
+            isFill={false}
+            fontSize={13}
+            count={17}
+            width={46}
+            height={24}
+          />
+        </div>
         <div>
           <span css={[span, address]}>용산구 이촌동</span>
           <span css={span}>3~4인용 텐트</span>

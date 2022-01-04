@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { jsx, css } from '@emotion/react';
+import { css } from '@emotion/react';
 import Logo from '../assets/Logo.svg';
+import { rem } from '../common';
 
 const footerStyle = css`
-  height: 208px;
+  height: ${rem(208)};
   background-color: #eeefcb;
 `;
 

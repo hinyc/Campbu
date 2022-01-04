@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { jsx, css } from '@emotion/react';
-import Singup from '../components/Signup';
+import { css } from '@emotion/react';
+import Signup from '../components/Signup';
+import { rem } from '../common';
 
 const divStyle = css`
   text-align: center;
@@ -13,8 +14,8 @@ const pStyle = css`
 
 const inputStyle = css`
   font-size: 1.125rem;
-  width: 636px;
-  height: 60px;
+  width: ${rem(636)};
+  height: ${rem(60)};
 `;
 
 function Intro() {
@@ -23,7 +24,7 @@ function Intro() {
       <p css={pStyle}>떠나고 싶지 않으세요?</p>
       <input css={inputStyle} placeholder="어디로 여행가세요?" />
       <button>검색</button>
-      <Singup />
+      <Signup />
     </div>
   );
 }

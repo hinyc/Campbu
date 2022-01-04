@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { color } from '../common';
 import LikeSymbol from '../components/LikeSymbol';
 import ReviewBox from '../components/ReviewBox';
 
@@ -9,7 +10,12 @@ function DetailView() {
       <div>
         <div>
           <div>3~4인용 텐트 빌려드려요</div>
-          <LikeSymbol />
+          <LikeSymbol
+            isFill={false}
+            count={14}
+            fontSize={15}
+            borderColor={color.border}
+          />
         </div>
         <div>
           <div>{`<`}</div>
