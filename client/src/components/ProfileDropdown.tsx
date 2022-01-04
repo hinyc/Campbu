@@ -29,20 +29,20 @@ function ProfileDropdown() {
     <div css={box}>
       <ul css={ulStyle}>
         <li>
-          <Link to="borrowlist">빌린 목록</Link>
+          <Link to="/lists/borrowlist">빌린 목록</Link>
         </li>
         <li>
-          <Link to="lendlist">빌려준 목록</Link>
+          <Link to="/lists/lendlist">빌려준 목록</Link>
         </li>
         <li>
-          <Link to="likelist">찜한 목록</Link>
+          <Link to="/lists/likelist">찜한 목록</Link>
         </li>
         <li>
-          <Link to="resistlist">내가 쓴 글</Link>
+          <Link to="/lists/resistlist">내가 쓴 글</Link>
         </li>
         <div css={lineStyle} />
         <li>
-          <Link to="/mypage">계정</Link>
+          <Link to="mypage">계정</Link>
         </li>
         <li>로그아웃</li>
       </ul>

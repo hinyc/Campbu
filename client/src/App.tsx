@@ -7,11 +7,7 @@ import Main from './pages/Main';
 import Mypage from './pages/Mypage';
 import MainDetail from './pages/MainDetail';
 import Writing from './pages/Writing';
-
-import BorrowList from './pages/Lists/BorrowList';
-import LendList from './pages/Lists/LendList';
-import ResistList from './pages/Lists/ResistList';
-import LikeList from './pages/Lists/LikeList';
+import Lists from './pages/Lists';
 
 function App() {
   return (
@@ -29,10 +25,7 @@ function App() {
         <Route path="/main/*" element={<MainDetail />} />
         <Route path="/mypage" element={<Mypage />} />
         <Route path="/writing" element={<Writing />} />
-        <Route path="borrowlist" element={<BorrowList />} />
-        <Route path="lendlist" element={<LendList />} />
-        <Route path="resistlist" element={<ResistList />} />
-        <Route path="likelist" element={<LikeList />} />
+        <Route path="/lists/*" element={<Lists />} />
       </Routes>
       <Footer />
     </Router>

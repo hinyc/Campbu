@@ -1,9 +1,6 @@
-import Lists from '../Lists';
-
 const LendList = () => {
   return (
     <>
-      <Lists />
       <div>LendList page!</div>
     </>
   );

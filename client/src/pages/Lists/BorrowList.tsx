@@ -1,10 +1,7 @@
-import Lists from '../Lists';
-
 const BorrowList = () => {
   return (
     <>
-      <Lists />
-      <div>BrrowList page!</div>
+      <div>BorrowList page!</div>
     </>
   );
 };
