@@ -1,3 +1,5 @@
+import { css } from '@emotion/react';
+
 const rootPixel: number = 16;
 
 export const color = {
@@ -13,3 +15,13 @@ export const color = {
 export const rem = (px: number): string => `${px / rootPixel}rem`;
 export const shadow = '0px 4px 10px rgba(0, 0, 0, 0.1)';
 export const hover = '0px 4px 10px rgba(0, 0, 0, 0.25)';
+
+export const relative = css`
+  position: relative;
+`;
+export const absolute = css`
+  position: absolute;
+`;
+export const confirm = css`
+  background-color: #ffeaff;
+`;
