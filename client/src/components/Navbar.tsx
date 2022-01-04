@@ -5,14 +5,17 @@ import Logo from '../assets/Logo.svg';
 import Menu from '../assets/Menu.svg';
 import Profile from '../assets/Profile.svg';
 import { rem } from '../common';
+import ProfileDropdown from './ProfileDropdown';
 
 const headerStyle = css`
+  height: ${rem(99)};
   background-color: blanchedalmond;
   display: flex;
   justify-content: space-between;
   max-width: ${rem(1280)};
   margin: 0 auto;
   align-items: center;
+  position: relative;
 `;
 
 const imgStyle = css`
@@ -39,10 +42,13 @@ function Navbar() {
             Login
           </button>
         ) : (
-          <button css={loginStyle} onClick={onClick}>
-            <img src={Menu} className="CampBu-logo" alt="logo" />
-            <img src={Profile} className="CampBu-logo" alt="logo" />
-          </button>
+          <>
+            <button css={loginStyle} onClick={onClick}>
+              <img src={Menu} className="CampBu-logo" alt="logo" />
+              <img src={Profile} className="CampBu-logo" alt="logo" />
+            </button>
+            <ProfileDropdown />
+          </>
         )}
       </header>
     </div>
