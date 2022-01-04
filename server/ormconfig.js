@@ -1,7 +1,4 @@
-const dotenv = require('dotenv');
-dotenv.config();
-
-module.exports = {
+export default {
   type: 'mysql',
   host: process.env.DATABASE_HOST,
   port: process.env.DATABASE_PORT,
