@@ -4,20 +4,24 @@ import { useState } from 'react';
 import Logo from '../assets/Logo.svg';
 import Menu from '../assets/Menu.svg';
 import Profile from '../assets/Profile.svg';
+import { rem } from '../common';
 
 const headerStyle = css`
   background-color: blanchedalmond;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  max-width: ${rem(1280)};
+  margin: 0 auto;
+  align-items: center;
 `;
 
 const imgStyle = css`
-  margin-right: auto;
-  margin-left: 12.75rem;
+  /* margin-right: auto; */
+  /* margin-left: 12.75rem; */
 `;
 
 const loginStyle = css`
-  margin-right: 12.75rem;
+  /* margin-right: 12.75rem; */
 `;
 
 function Navbar() {
@@ -27,19 +31,21 @@ function Navbar() {
   };
 
   return (
-    <header css={headerStyle}>
-      <img src={Logo} className="CampBu-logo" alt="logo" css={imgStyle} />
-      {click ? (
-        <button css={loginStyle} onClick={onClick}>
-          Login
-        </button>
-      ) : (
-        <button css={loginStyle} onClick={onClick}>
-          <img src={Menu} className="CampBu-logo" alt="logo" />
-          <img src={Profile} className="CampBu-logo" alt="logo" />
-        </button>
-      )}
-    </header>
+    <div>
+      <header css={headerStyle}>
+        <img src={Logo} className="CampBu-logo" alt="logo" css={imgStyle} />
+        {click ? (
+          <button css={loginStyle} onClick={onClick}>
+            Login
+          </button>
+        ) : (
+          <button css={loginStyle} onClick={onClick}>
+            <img src={Menu} className="CampBu-logo" alt="logo" />
+            <img src={Profile} className="CampBu-logo" alt="logo" />
+          </button>
+        )}
+      </header>
+    </div>
   );
 }
 
