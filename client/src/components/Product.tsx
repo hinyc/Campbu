@@ -1,16 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { rem } from '../common';
 
 const post = css`
-  width: 235px;
-  height: 340px;
+  width: ${rem(235)};
+  height: ${rem(340)};
   border: 1px solid black;
-  margin: 0 10px;
+  margin: 0 ${rem(10)};
 `;
 
 const img = css`
-  width: 174px;
-  height: 174px;
+  width: ${rem(174)};
+  height: ${rem(174)};
   border: 1px solid black;
 `;
 

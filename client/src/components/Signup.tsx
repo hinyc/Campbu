@@ -81,7 +81,7 @@ const x = css`
   position: absolute;
 `;
 
-function Singup() {
+function Signup() {
   return (
     <div className="Singup" css={backgroundStyle}>
       <div css={x}>&times;</div>
@@ -217,4 +217,4 @@ function Singup() {
   );
 }
 
-export default Singup;
+export default Signup;

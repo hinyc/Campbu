@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { jsx, css } from '@emotion/react';
-import React, { useState } from 'react';
+import { css } from '@emotion/react';
+import { useState } from 'react';
 import Logo from '../assets/Logo.svg';
 import Menu from '../assets/Menu.svg';
 import Profile from '../assets/Profile.svg';
