@@ -2,26 +2,26 @@
 import { css } from '@emotion/react';
 import Product from '../components/Product';
 import WritingButton from '../components/WritingButton';
+import { rem } from '../common';
 
 const divStyle = css`
   text-align: center;
   margin: 0 12.75rem;
-  width: 1280px;
+  width: ${rem(1280)};
 `;
 
 const ulStyle = css`
   display: flex;
   justify-content: center;
   list-style: none;
-  padding: 0;
 `;
 
 const categoryStyle = css`
   background-color: #eeefcb;
-  margin-left: 5px;
-  margin-right: 5px;
-  width: 97px;
-  height: 122px;
+  margin-left: ${rem(5)};
+  margin-right: ${rem(5)};
+  width: ${rem(97)};
+  height: ${rem(122)};
   font-size: 0.75rem;
   font-weight: 700;
   text-align: center;
@@ -29,14 +29,14 @@ const categoryStyle = css`
 
 const inputStyle = css`
   font-size: 0.875rem;
-  width: 420px;
-  height: 43px;
+  width: ${rem(420)};
+  height: ${rem(43)};
 `;
 
 const section = css`
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20%, auto));
+  row-gap: ${rem(26)};
 `;
 
 function Main() {

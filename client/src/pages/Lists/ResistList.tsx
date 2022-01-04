@@ -1,5 +1,9 @@
-export const ResistList = () => {
-  return <div>ResistList page!</div>;
+const ResistList = () => {
+  return (
+    <>
+      <div>ResistList page!</div>
+    </>
+  );
 };
 
 export default ResistList;
