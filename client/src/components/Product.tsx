@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { rem, absolute } from '../common';
-import { useState } from 'react';
 import LikeSymbol from './LikeSymbol';
 
 const post = css`

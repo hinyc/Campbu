@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, confirm, rem } from '../common';
+import { color, rem } from '../common';
 import FillHeart from '../assets/FillHeart.svg';
 import EmptyHeart from '../assets/EmptyHeart.svg';
 import { useState } from 'react';
