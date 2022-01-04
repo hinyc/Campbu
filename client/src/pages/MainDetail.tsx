@@ -1,11 +1,33 @@
 import { useNavigate } from 'react-router-dom';
+import LikeSymbol from '../components/LikeSymbol';
 
 function DetailView() {
   const navigate = useNavigate();
   return (
-    <>
-      <div>상품상세페이지</div>
-      <div>50000원</div>
+    <div>
+      <div>
+        <div>
+          <div>3~4인용 텐트 빌려드려요</div>
+          <LikeSymbol />
+        </div>
+        <div>
+          <div>{`<`}</div>
+          <div></div>
+          <div>{`>`}</div>
+        </div>
+      </div>
+      <div>
+        <div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <div></div>
+      </div>
+
       <button
         onClick={() => {
           navigate(-1);
@@ -13,7 +35,7 @@ function DetailView() {
       >
         목록보기
       </button>
-    </>
+    </div>
   );
 }
 

@@ -1,14 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import {
-  color,
-  rem,
-  shadow,
-  hover,
-  relative,
-  absolute,
-  confirm,
-} from '../common';
+import { color, rem, hover, relative, absolute } from '../common';
 
 const profileImg: string = `https://images.unsplash.com/photo-1497906539264-eb74442e37a9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80`;
 
