@@ -14,7 +14,6 @@ const ulStyle = css`
   display: flex;
   justify-content: center;
   list-style: none;
-  padding: 0;
 `;
 
 const categoryStyle = css`
@@ -35,9 +34,9 @@ const inputStyle = css`
 `;
 
 const section = css`
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20%, auto));
+  row-gap: ${rem(26)};
 `;
 
 function Main() {
