@@ -1,5 +1,9 @@
-export const BorrowList = () => {
-  return <div>BrrowList page!</div>;
+const BorrowList = () => {
+  return (
+    <>
+      <div>BorrowList page!</div>
+    </>
+  );
 };
 
 export default BorrowList;

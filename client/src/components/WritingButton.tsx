@@ -2,15 +2,16 @@
 import { css } from '@emotion/react';
 import Pencil from '../assets/Pencil.svg';
 import { useNavigate } from 'react-router-dom';
+import { rem } from '../common';
 
 const buttonStyle = css`
-  width: 63px;
-  height: 63px;
+  width: ${rem(63)};
+  height: ${rem(63)};
   position: fixed;
   bottom: 1rem;
   right: 12.75rem;
   border: 1px solid black;
-  border-radius: 50px;
+  border-radius: ${rem(50)};
 `;
 
 function WritingButton() {
