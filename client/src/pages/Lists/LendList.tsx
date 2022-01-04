@@ -1,5 +1,12 @@
-export const LendList = () => {
-  return <div>LendList page!</div>;
+import Lists from '../Lists';
+
+const LendList = () => {
+  return (
+    <>
+      <Lists />
+      <div>LendList page!</div>
+    </>
+  );
 };
 
 export default LendList;

@@ -1,5 +1,12 @@
-export const LikeList = () => {
-  return <div>LikeList page!</div>;
+import Lists from '../Lists';
+
+const LikeList = () => {
+  return (
+    <>
+      <Lists />
+      <div>LikeList page!</div>
+    </>
+  );
 };
 
 export default LikeList;
