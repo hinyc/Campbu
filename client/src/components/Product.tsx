@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { jsx, css } from '@emotion/react';
+import { css } from '@emotion/react';
 
 const post = css`
-  width: 205px;
-  height: 297px;
+  width: 235px;
+  height: 340px;
   border: 1px solid black;
-  margin: 0 5px;
+  margin: 0 10px;
 `;
 
 const img = css`
