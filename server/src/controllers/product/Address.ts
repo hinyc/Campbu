@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getManager } from 'typeorm';
+import { getManager, getRepository } from 'typeorm';
 import axios from 'axios';
 import { posts } from '../../entity/posts';
 
@@ -22,7 +22,9 @@ export = async (req: Request, res: Response) => {
   } else {
     const entityManager = getManager();
     const distance = 2;
-    const nearbyProduct = await entityManager.query(`
+    const nearbyProduct = await entityManager
+      .query(
+        `
     SELECT id, (
       6371 * acos (
       cos ( radians(${Number(coordinates.y)}) )
@@ -34,8 +36,19 @@ export = async (req: Request, res: Response) => {
     ) AS distance
     FROM posts
     HAVING distance < ${distance}
-    ORDER BY distance`);
-    console.log(nearbyProduct);
-    res.send('address');
+    ORDER BY distance`,
+      )
+      .then((res: Response) => {
+        return JSON.stringify(res);
+      });
+    const nearbyProductId = [];
+    for (let i = 0; i < JSON.parse(nearbyProduct).length; i++) {
+      nearbyProductId.push(JSON.parse(nearbyProduct)[i].id);
+    }
+    const products = await getRepository(posts)
+      .createQueryBuilder('post')
+      .where('post.id IN (:...ids)', { ids: nearbyProductId })
+      .getMany();
+    res.status(200).json({ posts: products });
   }
 };
