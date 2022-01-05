@@ -1,7 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Link } from 'react-router-dom';
-import { rem, flex, shadow, hover, textDecorationNone, color } from '../common';
+import {
+  rem,
+  shadow,
+  hover,
+  textDecorationNone,
+  color,
+  flexBetween,
+} from '../common';
 import Here from '../assets/Here.svg';
 import { Button } from './Button';
 
@@ -64,7 +71,7 @@ function Reservation() {
             용산구 이촌동
           </span>
           <span css={span}>3~4인용 텐트 빌려드려요</span>
-          <div css={[flex, 'justify-content: space-between']}>
+          <div css={flexBetween}>
             <span>
               <div css={[span, moneyTitle]}>보증금</div>
               <div css={span}>20,000원</div>

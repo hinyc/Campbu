@@ -11,7 +11,6 @@ const container = css`
   margin: 0 auto;
   margin-top: ${rem(36)};
   margin-bottom: ${rem(16)};
-  text-align: center;
 `;
 
 const section = css`
