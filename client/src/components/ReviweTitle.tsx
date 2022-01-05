@@ -14,13 +14,11 @@ interface ReviewTitleStyle {
   text: string;
   fontSize?: number;
   width?: number;
-  margin?: string;
 }
 
 function ReviewTitle(props: ReviewTitleStyle) {
-  const { text, fontSize, width, margin } = props;
-  const marginValue: string[] | undefined = margin?.split(' ');
-  // const [top, right, bottom, left] = marginValue;
+  const { text, fontSize, width } = props;
+
   return (
     <div
       css={[
