@@ -5,21 +5,27 @@ import { color, rem, relative, absolute } from '../common';
 const gageStyle = css`
   border: 1px solid ${color.border};
   border-radius: ${rem(10)};
-  height: ${rem(12)};
 `;
 const gageFillStyle = css`
   border: none;
   background-color: ${color.point};
-  width: ${rem(100)};
 `;
-function Gage() {
+
+interface GageProps {
+  width?: number | undefined;
+  height?: number | undefined;
+  ratio: number;
+}
+
+function Gage(props: GageProps) {
+  const { width, height, ratio } = props;
   return (
     <div
       css={[
         relative,
         css`
-          width: ${rem(265)};
-          height: ${rem(12)};
+          width: ${width ? rem(width) : rem(265)};
+          height: ${height ? rem(height) : rem(12)};
         `,
       ]}
     >
@@ -29,7 +35,8 @@ function Gage() {
           absolute,
           css`
             bottom: 0;
-            width: ${rem(265)};
+            width: ${width ? rem(width) : rem(265)};
+            height: ${height ? rem(height) : rem(12)};
           `,
         ]}
       ></div>
@@ -40,7 +47,8 @@ function Gage() {
           absolute,
           css`
             bottom: 0;
-            width: ${rem(265 * 0.83)};
+            width: ${width ? rem(width * ratio) : rem(265 * ratio)};
+            height: ${height ? rem(height) : rem(12)};
           `,
         ]}
       ></div>

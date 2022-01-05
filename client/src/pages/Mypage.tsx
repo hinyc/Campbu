@@ -2,17 +2,10 @@
 import { css } from '@emotion/react';
 import Gage from '../components/Gage';
 import { color, rem, hover } from '../common';
+import ReviewBox from '../components/ReviewBox';
+import ReviewTitle from '../components/ReviweTitle';
 
 const profileImg: string = `https://images.unsplash.com/photo-1497906539264-eb74442e37a9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80`;
-
-const reviews: { id: number; review: string; count: number }[] = [
-  { id: 1, review: '합리적인 가격', count: 12 },
-  { id: 2, review: '정확한 시간 약속', count: 5 },
-  { id: 3, review: '물건의 좋은 질', count: 7 },
-  { id: 4, review: '빠른 답장', count: 4 },
-  { id: 7, review: '잦은 약속 변경', count: 5 },
-  { id: 8, review: '느린 답장', count: 5 },
-];
 
 const imgStyle = css`
   width: ${rem(114)};
@@ -29,26 +22,6 @@ const hello = css`
   font-weight: 700;
   margin-top: ${rem(24)};
   margin-bottom: ${rem(30)};
-`;
-const reviewDiv = css`
-  font-size: 1rem;
-  font-weight: 700;
-  width: ${rem(265)};
-  border-bottom: 1px solid ${color.valid};
-  margin: 1.2rem 0;
-`;
-
-const reviewStyle = css`
-  font-size: ${rem(14)};
-  text-align: center;
-  background-color: ${color.white};
-  height: ${rem(43)};
-  line-height: ${rem(46)};
-  color: ${color.mid};
-  border: 1px solid ${color.mid};
-  margin: ${rem(10)} 0;
-  display: flex;
-  justify-content: space-between;
 `;
 
 const wnr = css`
@@ -93,6 +66,15 @@ const buttonStyle = css`
 `;
 
 function Mypage() {
+  const reviews: { id: number; review: string; count: number }[] = [
+    { id: 1, review: '합리적인 가격', count: 7 },
+    { id: 2, review: '정확한 시간 약속', count: 7 },
+    { id: 3, review: '물건의 좋은 질', count: 7 },
+    { id: 4, review: '빠른 답장', count: 7 },
+    { id: 7, review: '잦은 약속 변경', count: 7 },
+    { id: 8, review: '느린 답장', count: 7 },
+  ];
+
   return (
     <div
       css={css`
@@ -114,7 +96,7 @@ function Mypage() {
       >
         <div css={imgStyle}></div>
         <div css={hello}>{`안녕하세요, ${`깐부`} 님`}</div>
-        <Gage />
+        <Gage ratio={0.83} />
         <div
           css={[
             wnr,
@@ -127,53 +109,25 @@ function Mypage() {
         >
           깐부지수 83%
         </div>
-        <div css={[reviewDiv]}>대여자에게 받은 좋은 리뷰</div>
+        <ReviewTitle text="대여자에게 받은 좋은 리뷰" />
         {reviews.map((review) => {
           return review.id < 7 ? (
-            <div key={review.id} css={[wnr, reviewStyle]}>
-              <div
-                css={css`
-                  margin-left: ${rem(20)};
-                `}
-              >
-                {review.review}
-              </div>
-              <div
-                css={css`
-                  margin-right: ${rem(20)};
-                `}
-              >{`+${review.count}`}</div>
-            </div>
+            <ReviewBox
+              content={review.review}
+              count={review.count}
+              isBad={false}
+            />
           ) : null;
         })}
-        <div css={[reviewDiv]}>대여자에게 받은 나쁜 리뷰</div>
+        <ReviewTitle text="대여자에게 받은 나쁜 리뷰" />
         {reviews.map((review) => {
-          return review.id >= 7 ? (
-            <div
-              key={review.id}
-              css={[
-                wnr,
-                reviewStyle,
-                css`
-                  color: ${color.deep};
-                  border-color: ${color.deep};
-                `,
-              ]}
-            >
-              <div
-                css={css`
-                  margin-left: ${rem(20)};
-                `}
-              >
-                {review.review}
-              </div>
-              <div
-                css={css`
-                  margin-right: ${rem(20)};
-                `}
-              >{`+${review.count}`}</div>
-            </div>
-          ) : null;
+          return review.id < 7 ? null : (
+            <ReviewBox
+              content={review.review}
+              count={review.count}
+              isBad={true}
+            />
+          );
         })}
       </div>
       <div

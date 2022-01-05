@@ -36,10 +36,10 @@ export class posts {
   content: string;
 
   @Column()
-  longitude: number;
+  longitude: string;
 
   @Column()
-  latitude: number;
+  latitude: string;
 
   @Column()
   address: string;
@@ -53,10 +53,10 @@ export class posts {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @OneToMany((type) => likes, (likes) => likes.posts)
+  @OneToMany((type) => likes, (likes) => likes.posts_id)
   likes: likes[];
 
-  @OneToMany((type) => reservation, (reservation) => reservation.posts)
+  @OneToMany((type) => reservation, (reservation) => reservation.posts_id)
   reservation: reservation[];
 
   @ManyToOne((type) => users)
@@ -64,5 +64,5 @@ export class posts {
     name: 'users_id',
     referencedColumnName: 'id',
   })
-  users: users;
+  users_id: users;
 }
