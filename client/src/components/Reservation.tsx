@@ -80,16 +80,13 @@ function Reservation() {
       </Link>
       <Button
         text="예약완료"
-        width="12.8125rem"
-        height="2.5rem"
+        width={`${rem(205)}`}
+        height={`${rem(40)}`}
         background="#ED662C"
         color="white"
         border="none"
-        size="0.875rem"
-        radius="0.3125rem"
-        margin="0.5rem 0 0 0.9375rem"
-        hoverOpacity="80%"
-        ActiveOpacity="95%"
+        size={`${rem(14)}`}
+        margin={`${rem(8)} 0 0 ${rem(15)}`}
       />
     </div>
   );
