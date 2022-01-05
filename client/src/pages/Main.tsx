@@ -6,7 +6,7 @@ import { rem } from '../common';
 
 const divStyle = css`
   text-align: center;
-  margin: 0 12.75rem;
+  margin: 0 auto;
   width: ${rem(1280)};
 `;
 
