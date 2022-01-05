@@ -10,7 +10,6 @@ export const color = {
   placeholder: '#c4c4c4',
   border: '#dedede',
   white: '#ffffff',
-  valid: '#adadad',
 };
 export const rem = (px: number): string => `${px / rootPixel}rem`;
 export const shadow = '0px 4px 10px rgba(0, 0, 0, 0.1)';
@@ -24,6 +23,12 @@ export const absolute = css`
 `;
 export const confirm = css`
   background-color: #ffeaff;
+`
+export const flex = css`
+  display: flex;
+`;
+export const textDecorationNone = css`
+  text-decoration: none;
 `;
 export const flexBetween = css`
   display: flex;
