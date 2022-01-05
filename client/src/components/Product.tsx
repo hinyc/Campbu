@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { rem } from '../common';
-import FillHeart from '../assets/FillHeart.svg';
-import EmptyHeart from '../assets/EmptyHeart.svg';
-import { useState } from 'react';
+import { rem, absolute } from '../common';
+import LikeSymbol from './LikeSymbol';
 
 const post = css`
   width: ${rem(235)};
@@ -19,12 +17,6 @@ const img = css`
   object-fit: cover;
   border: 1px solid black;
   margin: 15px;
-`;
-
-const heart = css`
-  position: absolute;
-  top: ${rem(23)};
-  right: ${rem(23)};
 `;
 
 const span = css`
@@ -45,17 +37,6 @@ const moneyDiv = css`
 `;
 
 function Product() {
-  const [fillHeart, setFillHeart] = useState<boolean>(false);
-  const [countHeart, setCountHeart] = useState<number>(14);
-  const onHeartClick = () => {
-    setFillHeart(!fillHeart);
-    if (fillHeart === true) {
-      setCountHeart(countHeart - 1);
-    } else {
-      setCountHeart(countHeart + 1);
-    }
-  };
-
   return (
     <div css={post}>
       <a href="#">
@@ -64,14 +45,23 @@ function Product() {
           alt="product"
           css={img}
         />
-        <button css={heart} onClick={onHeartClick}>
-          {fillHeart ? (
-            <img src={FillHeart} alt="fill heart" />
-          ) : (
-            <img src={EmptyHeart} alt="empty heart" />
-          )}
-          <span>{countHeart}</span>
-        </button>
+        <div
+          css={[
+            absolute,
+            css`
+              top: ${rem(23)};
+              right: ${rem(23)};
+            `,
+          ]}
+        >
+          <LikeSymbol
+            isFill={false}
+            fontSize={13}
+            count={17}
+            width={46}
+            height={24}
+          />
+        </div>
         <div>
           <span css={[span, address]}>용산구 이촌동</span>
           <span css={span}>3~4인용 텐트</span>

@@ -1,8 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Link } from 'react-router-dom';
 import Product from '../components/Product';
 import WritingButton from '../components/WritingButton';
 import { rem } from '../common';
+import { Link } from 'react-router-dom';
 
 const divStyle = css`
   text-align: center;
@@ -56,13 +58,16 @@ function Main() {
       <ul css={ulStyle}>
         {category.map((list) => (
           <li css={categoryStyle}>
-            <a href="#">{list}</a>
+            <Link to="#">{list}</Link>
           </li>
         ))}
       </ul>
       <input placeholder="지역을 검색해보세요!" css={inputStyle} />
       <button>검색</button>
       <section css={section}>
+        <Link to="1">
+          <Product />
+        </Link>
         <Product />
         <Product />
         <Product />

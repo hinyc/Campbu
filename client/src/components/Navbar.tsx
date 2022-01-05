@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Logo from '../assets/Logo.svg';
 import Menu from '../assets/Menu.svg';
 import Profile from '../assets/Profile.svg';
@@ -9,7 +10,6 @@ import ProfileDropdown from './ProfileDropdown';
 
 const headerStyle = css`
   height: ${rem(99)};
-  background-color: blanchedalmond;
   display: flex;
   justify-content: space-between;
   max-width: ${rem(1280)};
@@ -36,7 +36,9 @@ function Navbar() {
   return (
     <div>
       <header css={headerStyle}>
-        <img src={Logo} className="CampBu-logo" alt="logo" css={imgStyle} />
+        <Link to="/">
+          <img src={Logo} className="CampBu-logo" alt="logo" css={imgStyle} />
+        </Link>
         {click ? (
           <button css={loginStyle} onClick={onClick}>
             Login
