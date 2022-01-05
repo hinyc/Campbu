@@ -1,33 +1,35 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, rem } from '../../common';
+import { color, rem, flex } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Button } from '../../components/Button';
 import emptyWriting from '../../assets/pictures/emptyWriting.svg';
-
-const container = css`
-  width: ${rem(1280)};
-  margin: 0 auto;
-  margin-top: ${rem(36)};
-  margin-bottom: ${rem(16)};
-  text-align: center;
-`;
+import { Link } from 'react-router-dom';
+import { link, visit } from './tab';
+import { container, section, message } from './tab';
 
 const img = css`
   margin-top: ${rem(21)};
-`;
-
-const message = css`
-  font-size: ${rem(20)};
-  color: ${color.mid};
-  line-height: ${rem(28)};
-  margin: ${rem(20)} 0;
 `;
 
 const ResistList = () => {
   return (
     <>
       <ListTab />
+      <nav css={[container, flex]}>
+        <Link to="/lists/borrowlist" css={link}>
+          빌린 목록
+        </Link>
+        <Link to="/lists/lendlist" css={link}>
+          빌려준 목록
+        </Link>
+        <Link to="/lists/resistlist" css={[link, visit]}>
+          내가 쓴 글
+        </Link>
+        <Link to="/lists/likelist" css={link}>
+          찜한 목록
+        </Link>
+      </nav>
       <div css={container}>
         <img src={emptyWriting} alt="broken heart" css={img} />
         <p css={message}>
