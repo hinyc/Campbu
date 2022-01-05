@@ -32,12 +32,12 @@ export class reservation {
     name: 'users_id',
     referencedColumnName: 'id',
   })
-  users: users;
+  users_id: users;
 
   @ManyToOne((type) => posts)
   @JoinColumn({
     name: 'posts_id',
     referencedColumnName: 'id',
   })
-  posts: posts;
+  posts_id: posts;
 }

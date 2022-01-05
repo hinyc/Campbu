@@ -29,12 +29,12 @@ export class users_reviews {
     name: 'users_id',
     referencedColumnName: 'id',
   })
-  users: users;
+  users_id: users;
 
   @ManyToOne((type) => reviews)
   @JoinColumn({
     name: 'reviews_id',
     referencedColumnName: 'id',
   })
-  reviews: reviews;
+  reviews_id: reviews;
 }
