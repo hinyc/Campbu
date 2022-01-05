@@ -13,6 +13,10 @@ const container = css`
   text-align: center;
 `;
 
+const img = css`
+  margin-top: ${rem(21)};
+`;
+
 const message = css`
   font-size: ${rem(20)};
   color: ${color.mid};
@@ -25,13 +29,14 @@ const ResistList = () => {
     <>
       <ListTab />
       <div css={container}>
-        <img src={emptyWriting} alt="broken heart" />
+        <img src={emptyWriting} alt="broken heart" css={img} />
         <p css={message}>
-          찜한 목록이 없어요! <br />
-          마음에 드는 캠핑용품을 찜하고 캠핑을 떠나보세요!
+          내가 쓴 글이 없어요!
+          <br />
+          캠핑 용품이 있다면 대여 게시글을 올려보세요!
         </p>
         <Button
-          text="캠핑 용품 보러 가기"
+          text="글 쓰러 가기"
           width={`${rem(180)}`}
           height={`${rem(43)}`}
           background="white"
