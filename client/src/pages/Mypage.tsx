@@ -144,7 +144,7 @@ function Mypage() {
             <span>프로필 사진</span>
             <span
               css={css`
-                color: ${color.valid};
+                color: ${color.border};
               `}
             >
               업로드
@@ -159,7 +159,7 @@ function Mypage() {
             <span>닉네임</span>
             <span
               css={css`
-                color: ${color.valid};
+                color: ${color.border};
               `}
             >
               중복 검사
