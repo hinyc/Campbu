@@ -25,3 +25,12 @@ export const absolute = css`
 export const confirm = css`
   background-color: #ffeaff;
 `;
+export const flexBetween = css`
+  display: flex;
+  justify-content: space-between;
+`;
+export const flexVertical = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
