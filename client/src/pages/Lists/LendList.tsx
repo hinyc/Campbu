@@ -1,10 +1,10 @@
-import Reservation from '../../components/Reservation';
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { color, rem } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Button } from '../../components/Button';
 import emptyLend from '../../assets/pictures/emptyLend.svg';
+import Reservation from '../../components/Reservation';
 
 const container = css`
   width: ${rem(1280)};

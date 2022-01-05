@@ -67,7 +67,7 @@ const see = css`
 `;
 
 const validButton = css`
-  color: ${color.valid};
+  color: ${color.border};
   :hover {
     color: ${color.point};
     font-weight: 700;

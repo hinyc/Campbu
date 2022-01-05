@@ -4,7 +4,6 @@ import { color, rem } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Button } from '../../components/Button';
 import emptyWriting from '../../assets/pictures/emptyWriting.svg';
-import Loading from '../../assets/Loading.svg';
 
 const container = css`
   width: ${rem(1280)};
@@ -21,23 +20,11 @@ const message = css`
   margin: ${rem(20)} 0;
 `;
 
-const ani = css`
-  animation: rotate_image 6s linear infinite;
-  transform-origin: 50% 50%;
-  @keyframes rotate_image {
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-`;
-
 const ResistList = () => {
   return (
     <>
       <ListTab />
       <div css={container}>
-        <img src={Loading} css={ani} />
-
         <img src={emptyWriting} alt="broken heart" />
         <p css={message}>
           찜한 목록이 없어요! <br />

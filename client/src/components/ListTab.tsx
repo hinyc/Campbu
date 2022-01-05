@@ -1,8 +1,4 @@
-import { Link, Route, Routes } from 'react-router-dom';
-import BorrowList from '../pages/Lists/BorrowList';
-import LendList from '../pages/Lists/LendList';
-import ResistList from '../pages/Lists/ResistList';
-import LikeList from '../pages/Lists/LikeList';
+import { Link } from 'react-router-dom';
 import BackButton from '../components/BackButton';
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';

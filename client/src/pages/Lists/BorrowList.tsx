@@ -32,7 +32,7 @@ const BorrowList = () => {
     <>
       <ListTab />
       <div css={container}>
-        <img src={emptyBorrow} alt="camping" />
+        {/* <img src={emptyBorrow} alt="camping" />
         <p css={message}>
           빌린 목록이 없어요! <br />
           캠핑용품을 대여해서 즐거운 캠핑을 떠나보세요!
@@ -45,13 +45,13 @@ const BorrowList = () => {
           color={`${color.mid}`}
           border={`1px solid ${color.mid}`}
           size={`${rem(14)}`}
-        />
-        {/* <section css={section}>
+        /> */}
+        <section css={section}>
           <Reservation />
           <Reservation />
           <Reservation />
           <Reservation />
-        </section> */}
+        </section>
       </div>
     </>
   );
