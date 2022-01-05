@@ -7,9 +7,9 @@ import { rem } from '../common';
 const buttonStyle = css`
   width: ${rem(63)};
   height: ${rem(63)};
-  position: fixed;
+  position: sticky;
   bottom: 1rem;
-  right: 12.75rem;
+  float: right;
   border: 1px solid black;
   border-radius: ${rem(50)};
 `;

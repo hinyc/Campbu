@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import Signup from '../components/Signup';
 import { rem } from '../common';
+import { Link } from 'react-router-dom';
 
 const divStyle = css`
   text-align: center;
@@ -23,7 +24,9 @@ function Intro() {
     <div css={divStyle}>
       <p css={pStyle}>떠나고 싶지 않으세요?</p>
       <input css={inputStyle} placeholder="어디로 여행가세요?" />
-      <button>검색</button>
+      <button>
+        <Link to="/main">검색</Link>
+      </button>
       <Signup />
     </div>
   );
