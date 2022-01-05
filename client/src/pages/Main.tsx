@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import Product from '../components/Product';
 import WritingButton from '../components/WritingButton';
 import { rem } from '../common';
-import { Link } from 'react-router-dom';
 
 const divStyle = css`
   text-align: center;
