@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import Product from '../components/Product';
 import WritingButton from '../components/WritingButton';
 import { rem } from '../common';
+import { Link } from 'react-router-dom';
 
 const divStyle = css`
   text-align: center;
@@ -56,7 +57,7 @@ function Main() {
       <ul css={ulStyle}>
         {category.map((list) => (
           <li css={categoryStyle}>
-            <a href="#">{list}</a>
+            <Link to="#">{list}</Link>
           </li>
         ))}
       </ul>
