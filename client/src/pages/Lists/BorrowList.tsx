@@ -1,5 +1,5 @@
-import Reservation from '../../components/Reservation';
 /** @jsxImportSource @emotion/react */
+import Reservation from '../../components/Reservation';
 import { css } from '@emotion/react';
 import { color, rem } from '../../common';
 import ListTab from '../../components/ListTab';
@@ -46,12 +46,12 @@ const BorrowList = () => {
           border={`1px solid ${color.mid}`}
           size={`${rem(14)}`}
         />
-        {/* <section css={section}>
+        <section css={section}>
           <Reservation />
           <Reservation />
           <Reservation />
           <Reservation />
-        </section> */}
+        </section>
       </div>
     </>
   );

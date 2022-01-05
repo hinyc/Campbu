@@ -46,12 +46,12 @@ const LendList = () => {
           border={`1px solid ${color.mid}`}
           size={`${rem(14)}`}
         />
-        {/* <section css={section}>
+        <section css={section}>
           <Reservation />
           <Reservation />
           <Reservation />
           <Reservation />
-        </section> */}
+        </section>
       </div>
     </>
   );

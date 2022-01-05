@@ -6,7 +6,7 @@ const reviewDiv = css`
   font-size: 1rem;
   font-weight: 700;
   width: ${rem(265)};
-  border-bottom: 1px solid ${color.valid};
+  border-bottom: 1px solid ${color.border};
   margin: 1.2rem 0;
 `;
 

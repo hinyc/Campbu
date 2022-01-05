@@ -2,16 +2,7 @@
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
 import Input from '../components/Input';
-import {
-  color,
-  rem,
-  relative,
-  absolute,
-  confirm,
-  flexVertical,
-  flexBetween,
-} from '../common';
-import { check } from 'prettier';
+import { color, confirm, flexVertical, flexBetween } from '../common';
 
 const textareaStyle = css`
   width: 29.9375rem;
