@@ -1,21 +1,20 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { rem } from '../common';
 
-interface ButtonProps {
+interface Props {
+  text?: string;
   width: string;
   height: string;
   background: string;
   color: string;
   border: string;
   size: string;
-  radius: string;
-  margin: string;
-  hoverOpacity: string;
-  ActiveOpacity: string;
+  margin?: string;
 }
 
-const button = (props: ButtonProps) =>
+const button = (props: Props) =>
   css`
     width: ${props.width};
     height: ${props.height};
@@ -23,34 +22,20 @@ const button = (props: ButtonProps) =>
     color: ${props.color};
     border: ${props.border};
     font-size: ${props.size};
-    border-radius: ${props.radius};
+    border-radius: ${rem(5)};
     margin: ${props.margin};
     :hover {
-      opacity: ${props.hoverOpacity};
+      opacity: 80%;
       cursor: pointer;
     }
     :active {
-      opacity: ${props.ActiveOpacity};
+      opacity: 95%;
     }
   `;
 
 export const CommonButton = styled.button`
   ${button}
 `;
-
-interface Props {
-  text: string;
-  width: string;
-  height: string;
-  background: string;
-  color: string;
-  border: string;
-  size: string;
-  radius: string;
-  margin: string;
-  hoverOpacity: string;
-  ActiveOpacity: string;
-}
 
 export function Button({
   text,
@@ -60,10 +45,7 @@ export function Button({
   color,
   border,
   size,
-  radius,
   margin,
-  hoverOpacity,
-  ActiveOpacity,
 }: Props) {
   return (
     <CommonButton
@@ -73,10 +55,7 @@ export function Button({
       color={color}
       border={border}
       size={size}
-      radius={radius}
       margin={margin}
-      hoverOpacity={hoverOpacity}
-      ActiveOpacity={ActiveOpacity}
     >
       {text}
     </CommonButton>
