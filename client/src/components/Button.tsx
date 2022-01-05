@@ -12,6 +12,9 @@ interface Props {
   border: string;
   size: string;
   margin?: string;
+  opacity?: string;
+  hover?: string;
+  cursor?: string;
 }
 
 const button = (props: Props) =>
@@ -24,9 +27,10 @@ const button = (props: Props) =>
     font-size: ${props.size};
     border-radius: ${rem(5)};
     margin: ${props.margin};
+    opacity: ${props.opacity};
     :hover {
-      opacity: 80%;
-      cursor: pointer;
+      opacity: ${props.hover};
+      cursor: ${props.cursor};
     }
     :active {
       opacity: 95%;
@@ -46,6 +50,9 @@ export function Button({
   border,
   size,
   margin,
+  opacity,
+  hover,
+  cursor,
 }: Props) {
   return (
     <CommonButton
@@ -56,6 +63,9 @@ export function Button({
       border={border}
       size={size}
       margin={margin}
+      opacity={opacity}
+      hover={hover}
+      cursor={cursor}
     >
       {text}
     </CommonButton>

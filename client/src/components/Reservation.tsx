@@ -56,7 +56,17 @@ const moneyTitle = css`
   font-size: ${rem(14)};
 `;
 
-function Reservation() {
+interface Props {
+  text: string;
+  background: string;
+  color: string;
+  opacity?: string;
+  cursor: string;
+  hover?: string;
+}
+
+function Reservation(props: Props) {
+  const { text, background, color, opacity, cursor, hover } = props;
   return (
     <div css={post}>
       <Link to="#" css={textDecorationNone}>
@@ -86,14 +96,17 @@ function Reservation() {
         </div>
       </Link>
       <Button
-        text="예약완료"
+        text={text}
         width={`${rem(205)}`}
         height={`${rem(40)}`}
-        background="#ED662C"
-        color="white"
+        background={background}
+        color={color}
         border="none"
         size={`${rem(14)}`}
         margin={`${rem(8)} 0 0 ${rem(15)}`}
+        opacity={opacity}
+        cursor={cursor}
+        hover={hover}
       />
     </div>
   );
