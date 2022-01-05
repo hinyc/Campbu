@@ -1,8 +1,8 @@
 import { Link, Route, Routes } from 'react-router-dom';
-import BorrowList from './Lists/BorrowList';
-import LendList from './Lists/LendList';
-import ResistList from './Lists/ResistList';
-import LikeList from './Lists/LikeList';
+import BorrowList from '../pages/Lists/BorrowList';
+import LendList from '../pages/Lists/LendList';
+import ResistList from '../pages/Lists/ResistList';
+import LikeList from '../pages/Lists/LikeList';
 import BackButton from '../components/BackButton';
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
@@ -24,14 +24,14 @@ const link = css`
   font-size: ${rem(16)};
   padding: 0 0 ${rem(6)} 0;
 
-  &:hover {
+  :hover {
     color: ${color.deep};
     font-weight: 700;
     border-bottom: 2px solid ${color.deep};
   }
 `;
 
-function Lists() {
+function ListTab() {
   return (
     <>
       <header css={[container, `margin-top: ${rem(16)}`]}>
@@ -40,27 +40,21 @@ function Lists() {
         </Link>
       </header>
       <nav css={[container, flex]}>
-        <Link to="borrowlist" css={link}>
+        <Link to="/lists/borrowlist" css={link}>
           빌린 목록
         </Link>
-        <Link to="lendlist" css={link}>
+        <Link to="/lists/lendlist" css={link}>
           빌려준 목록
         </Link>
-        <Link to="resistlist" css={link}>
+        <Link to="/lists/resistlist" css={link}>
           내가 쓴 글
         </Link>
-        <Link to="likelist" css={link}>
+        <Link to="/lists/likelist" css={link}>
           찜한 목록
         </Link>
       </nav>
-      <Routes>
-        <Route path="borrowlist" element={<BorrowList />} />
-        <Route path="lendlist" element={<LendList />} />
-        <Route path="resistlist" element={<ResistList />} />
-        <Route path="likelist" element={<LikeList />} />
-      </Routes>
     </>
   );
 }
 
-export default Lists;
+export default ListTab;
