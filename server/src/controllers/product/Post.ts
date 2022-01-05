@@ -10,6 +10,9 @@ export default {
     res.status(200).json({ posts: post });
   },
   delete: async (req: Request, res: Response) => {
-    res.send('product delete ok?');
+    const id: string = req.params.postId;
+    const postRepository = getRepository(posts);
+    await postRepository.delete({ id: Number(id) });
+    res.status(200).json({ message: 'Product Post Successfully Deleted' });
   },
 };
