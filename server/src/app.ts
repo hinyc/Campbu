@@ -1,9 +1,9 @@
 import 'reflect-metadata';
-import { createConnection } from 'typeorm';
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import router from './routes/index';
+import { createConnection } from 'typeorm';
 
 const app = express();
 const port = 5050;
