@@ -22,6 +22,9 @@ export class reviews {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @OneToMany((type) => users_reviews, (users_reviews) => users_reviews.reviews)
+  @OneToMany(
+    (type) => users_reviews,
+    (users_reviews) => users_reviews.reviews_id,
+  )
   users_reviews: users_reviews[];
 }
