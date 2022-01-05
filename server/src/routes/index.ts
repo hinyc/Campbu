@@ -8,8 +8,8 @@ import ReservationRouter from './Reservation';
 
 router.use('/user', UserRouter);
 // router.use('/userinfo', UserinfoRouter);
-// router.use('/post', PostRouter);
-// router.use('/product', ProductRouter);
+router.use('/post', PostRouter);
+router.use('/product', ProductRouter);
 // router.use('/reservation', ReservationRouter);
 
 export = router;
