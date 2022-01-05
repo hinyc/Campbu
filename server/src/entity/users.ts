@@ -27,15 +27,15 @@ export class users {
   @Column()
   updated_at: Date;
 
-  @OneToMany((type) => likes, (likes) => likes.users)
+  @OneToMany((type) => likes, (likes) => likes.users_id)
   likes: likes[];
 
-  @OneToMany((type) => users_reviews, (users_reviews) => users_reviews.users)
+  @OneToMany((type) => users_reviews, (users_reviews) => users_reviews.users_id)
   users_reviews: users_reviews[];
 
-  @OneToMany((type) => posts, (posts) => posts.users)
+  @OneToMany((type) => posts, (posts) => posts.users_id)
   posts: posts[];
 
-  @OneToMany((type) => reservation, (reservation) => reservation.users)
+  @OneToMany((type) => reservation, (reservation) => reservation.users_id)
   reservation: reservation[];
 }

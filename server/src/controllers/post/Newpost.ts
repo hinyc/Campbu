@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import axios from 'axios';
+import dotenv from 'dotenv';
 import { getRepository } from 'typeorm';
 import { posts } from '../../entity/posts';
+dotenv.config();
 
 export = async (req: Request, res: Response) => {
   const {
@@ -14,19 +16,43 @@ export = async (req: Request, res: Response) => {
     address,
     img_urls,
   } = req.body;
-  console.log(address);
-  const test = await axios
-    .get(`https://dapi.kakao.com/v2/local/search/address.json`, {
-      headers: {
-        Authorization: 'KakaoAK 5e50f118d1e4bf8ddfe8f2f9f153bb70',
-      },
-      params: {
-        query: address,
-      },
-    })
-    .then((res) => {
-      return res.data.documents[0];
+  if (
+    category === undefined ||
+    deposit === undefined ||
+    rental_fee === undefined ||
+    unavailable_dates === undefined ||
+    title === undefined ||
+    content === undefined ||
+    address === undefined ||
+    img_urls === undefined
+  ) {
+    res.status(400).json({ message: 'Bad Request' });
+  } else {
+    const coordinates = await axios
+      .get(`https://dapi.kakao.com/v2/local/search/address.json`, {
+        headers: {
+          Authorization: `KakaoAK ${process.env.KAKAOREST_API}`,
+        },
+        params: {
+          query: address,
+        },
+      })
+      .then((res) => {
+        return res.data.documents[0];
+      });
+    const postRepository = getRepository(posts);
+    await postRepository.insert({
+      category,
+      deposit,
+      rental_fee,
+      unavailable_dates,
+      title,
+      content,
+      longitude: coordinates.x,
+      latitude: coordinates.y,
+      address,
+      img_urls,
     });
-  console.log(test);
-  res.send('newpost ok?');
+    res.status(200).json({ message: 'Post Successfully Created' });
+  }
 };
