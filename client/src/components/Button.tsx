@@ -15,6 +15,7 @@ interface Props {
   hover?: string;
   cursor?: string;
   onClick?: any;
+  weight?: number;
 }
 
 export const Button = (props: Props) => {
@@ -31,6 +32,7 @@ export const Button = (props: Props) => {
     hover,
     cursor,
     onClick,
+    weight,
   } = props;
   return (
     <button
@@ -44,6 +46,7 @@ export const Button = (props: Props) => {
         border-radius: ${rem(5)};
         margin: ${margin};
         opacity: ${opacity};
+        font-weight: ${weight};
         :hover {
           opacity: ${hover};
           cursor: ${cursor};

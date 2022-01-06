@@ -9,6 +9,7 @@ import { link, visit } from './tab';
 import Reservation from '../../components/Reservation';
 import { container, section, message } from './tab';
 import Complete from '../../components/Complete';
+import YesOrNo from '../../components/YesOrNo';
 
 function LendList() {
   return (
@@ -44,7 +45,13 @@ function LendList() {
           border={`1px solid ${color.mid}`}
           size={`${rem(14)}`}
         /> */}
-        <Complete text="반납이 확인되었습니다" />
+        {/* <Complete text="반납이 확인되었습니다" /> */}
+        <YesOrNo
+          text="취소"
+          title="예약 취소"
+          text1="예약을 취소하시겠습니까?"
+          text2="대여자가 예약을 수락하기 전까지 취소할 수 있습니다."
+        />
         <section css={section}>
           <Reservation
             text="예약 수락"
