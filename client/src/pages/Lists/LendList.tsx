@@ -1,38 +1,34 @@
-import Reservation from '../../components/Reservation';
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, rem } from '../../common';
+import { color, rem, flex } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Button } from '../../components/Button';
 import emptyLend from '../../assets/pictures/emptyLend.svg';
-
-const container = css`
-  width: ${rem(1280)};
-  margin: 0 auto;
-  margin-top: ${rem(36)};
-  margin-bottom: ${rem(16)};
-  text-align: center;
-`;
-
-const section = css`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(20%, auto));
-  row-gap: ${rem(26)};
-`;
-
-const message = css`
-  font-size: ${rem(20)};
-  color: ${color.mid};
-  line-height: ${rem(28)};
-  margin: ${rem(20)} 0;
-`;
+import { Link } from 'react-router-dom';
+import { link, visit } from './tab';
+import Reservation from '../../components/Reservation';
+import { container, section, message } from './tab';
 
 const LendList = () => {
   return (
     <>
       <ListTab />
+      <nav css={[container, flex]}>
+        <Link to="/lists/borrowlist" css={link}>
+          빌린 목록
+        </Link>
+        <Link to="/lists/lendlist" css={[link, visit]}>
+          빌려준 목록
+        </Link>
+        <Link to="/lists/resistlist" css={link}>
+          내가 쓴 글
+        </Link>
+        <Link to="/lists/likelist" css={link}>
+          찜한 목록
+        </Link>
+      </nav>
       <div css={container}>
-        <img src={emptyLend} alt="camping" />
+        {/* <img src={emptyLend} alt="camping" />
         <p css={message}>
           빌려준 목록이 없어요! <br />
           캠핑 용품이 있다면 대여 게시글을 올려보세요!
@@ -45,12 +41,35 @@ const LendList = () => {
           color={`${color.mid}`}
           border={`1px solid ${color.mid}`}
           size={`${rem(14)}`}
-        />
+        /> */}
         <section css={section}>
-          <Reservation />
-          <Reservation />
-          <Reservation />
-          <Reservation />
+          <Reservation
+            text="예약 수락"
+            background={`${color.point}`}
+            color="white"
+            cursor="pointer"
+            hover="80%"
+          />
+          <Reservation
+            text="반납 확인"
+            background={`${color.point}`}
+            color="white"
+            cursor="pointer"
+            hover="80%"
+          />
+          <Reservation
+            text="반납 대기 중"
+            background={`${color.point}`}
+            opacity="50%"
+            color="white"
+            cursor="not-allowed"
+          />
+          <Reservation
+            text="회수완료"
+            background={`${color.mid}`}
+            color="white"
+            cursor="default"
+          />
         </section>
       </div>
     </>
