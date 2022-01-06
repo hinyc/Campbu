@@ -13,15 +13,16 @@ const like = css`
   height: ${rem(42)};
   border: 1px solid ${color.white};
   border-radius: ${rem(22)};
-  display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 `;
 
 const heart = css`
   border: none;
   background-color: rgba(0, 0, 0, 0);
   margin-right: ${rem(5)};
+  cursor: pointer;
 `;
 interface LikeProps {
   isFill: boolean;
@@ -30,10 +31,12 @@ interface LikeProps {
   height?: number | undefined;
   fontSize?: number | undefined;
   borderColor?: string | undefined;
+  display?: string | undefined;
 }
 
 function LikeSymbol(props: LikeProps) {
-  const { isFill, count, width, height, fontSize, borderColor } = props;
+  const { isFill, count, width, height, fontSize, borderColor, display } =
+    props;
   const [fillHeart, setFillHeart] = useState<boolean>(isFill);
   const [countHeart, setCountHeart] = useState<number>(count);
   const onHeartClick = () => {
@@ -53,10 +56,12 @@ function LikeSymbol(props: LikeProps) {
           height: ${height ? rem(height) : null};
           font-size: ${fontSize ? rem(fontSize) : null};
           border-color: ${borderColor ? borderColor : null};
+          display: ${display ? display : 'flex'};
         `,
       ]}
+      onClick={onHeartClick}
     >
-      <button css={heart} onClick={onHeartClick}>
+      <button css={heart}>
         {fillHeart ? (
           <img
             width={fontSize ? fontSize * 0.9 : 14}

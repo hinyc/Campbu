@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { useNavigate } from 'react-router-dom';
 import { color, flexBetween, flexVertical, rem } from '../common';
 import LikeSymbol from '../components/LikeSymbol';
 import ReviewBox from '../components/ReviewBox';
 import ReviewTitle from '../components/ReviweTitle';
 import { css } from '@emotion/react';
 import Gage from '../components/Gage';
+import BackButton from '../components/BackButton';
+import { Button } from '../components/Button';
 const width = css`
   width: ${rem(752)};
 `;
@@ -62,13 +63,21 @@ const reviews: { id: number; review: string; count: number }[] = [
 ];
 
 function DetailView() {
-  const navigate = useNavigate();
   const productImgUrl: string =
     'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg';
 
   return (
     <div css={flexVertical}>
       <div css={flexVertical}>
+        <div
+          css={css`
+            width: ${rem(830)};
+            text-align: left;
+            margin-bottom: ${rem(32)};
+          `}
+        >
+          <BackButton />
+        </div>
         <div
           css={[
             flexBetween,
@@ -124,9 +133,10 @@ function DetailView() {
           </div>
           <ReviewTitle text={'대여자에게 받은 좋은 리뷰'} width={371} />
           <div css={reviewAlign}>
-            {reviews.map((review) => {
+            {reviews.map((review, idx) => {
               return review.id < 7 ? (
                 <ReviewBox
+                  key={idx}
                   content={review.review}
                   count={review.count}
                   isBad={false}
@@ -137,9 +147,10 @@ function DetailView() {
           </div>
           <ReviewTitle text={'대여자에게 받은 나쁜 리뷰'} width={371} />
           <div css={reviewAlign}>
-            {reviews.map((review) => {
+            {reviews.map((review, idx) => {
               return review.id < 7 ? null : (
                 <ReviewBox
+                  key={idx}
                   content={review.review}
                   count={review.count}
                   isBad={true}
@@ -251,24 +262,26 @@ function DetailView() {
                 css`
                   border-top: 1px solid black;
                   padding: ${rem(15)} 0;
+                  font-weight: 700;
                 `,
               ]}
             >
               <span>총 합계 </span>
               <span>금액</span>
             </div>
-            <button>요금확인</button>
+            <Button
+              text="요금확인"
+              width={rem(221)}
+              height={rem(36)}
+              background={color.point}
+              color={color.white}
+              border="none"
+              size={rem(14)}
+              margin={`${rem(10)} 0`}
+            />
           </div>
         </div>
       </div>
-
-      <button
-        onClick={() => {
-          navigate(-1);
-        }}
-      >
-        목록보기
-      </button>
     </div>
   );
 }

@@ -3,12 +3,14 @@ import { css } from '@emotion/react';
 import { Link } from 'react-router-dom';
 import Product from '../components/Product';
 import WritingButton from '../components/WritingButton';
-import { rem } from '../common';
+import { rem, textDecorationNone } from '../common';
 
-const divStyle = css`
-  text-align: center;
-  margin: 0 auto;
+const container = css`
   width: ${rem(1280)};
+  margin: 0 auto;
+  margin-top: ${rem(36)};
+  margin-bottom: ${rem(16)};
+  text-align: center;
 `;
 
 const ulStyle = css`
@@ -38,6 +40,7 @@ const section = css`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(20%, auto));
   row-gap: ${rem(26)};
+  text-align: left;
 `;
 
 function Main() {
@@ -53,7 +56,7 @@ function Main() {
   ];
 
   return (
-    <div css={divStyle}>
+    <div css={container}>
       <ul css={ulStyle}>
         {category.map((list) => (
           <li css={categoryStyle}>
@@ -64,16 +67,16 @@ function Main() {
       <input placeholder="지역을 검색해보세요!" css={inputStyle} />
       <button>검색</button>
       <section css={section}>
-        <Link to="1">
-          <Product />
+        <Link to="1" css={textDecorationNone}>
+          <Product isFill={false} />
         </Link>
-        <Product />
-        <Product />
-        <Product />
-        <Product />
-        <Product />
-        <Product />
-        <Product />
+        <Product isFill={false} />
+        <Product isFill={false} />
+        <Product isFill={false} />
+        <Product isFill={false} />
+        <Product isFill={false} />
+        <Product isFill={false} />
+        <Product isFill={false} />
       </section>
       <WritingButton />
     </div>
