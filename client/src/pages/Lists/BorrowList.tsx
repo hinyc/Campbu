@@ -5,7 +5,6 @@ import { color, rem, flex } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Link } from 'react-router-dom';
 import { link, visit } from './tab';
-import Reservation from '../../components/Reservation';
 import { Button } from '../../components/Button';
 import emptyBorrow from '../../assets/pictures/emptyBorrow.svg';
 import { container, section, message } from './tab';
