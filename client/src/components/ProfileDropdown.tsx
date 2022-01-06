@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Link } from 'react-router-dom';
-import { color, rem, shadow, textDecorationNone } from '../common';
+import { rem, shadow, textDecorationNone } from '../common';
 
 const box = css`
   width: ${rem(205)};
@@ -24,10 +24,15 @@ const ulStyle = css`
 
 const li = css`
   color: black;
-  margin: ${rem(22)} 0 0 ${rem(19)};
-  :visited {
-    color: black;
+  padding: ${rem(11)} 0 ${rem(11)} ${rem(19)};
+  :hover {
+    background-color: #f0f0f0;
   }
+`;
+
+const line = css`
+  border: 1px solid #f0f0f0;
+  margin: ${rem(5)} 0;
 `;
 
 function ProfileDropdown() {
@@ -49,12 +54,12 @@ function ProfileDropdown() {
             찜한 목록
           </Link>
         </li>
-        <li css={[li, `margin-bottom: ${rem(22)}`]}>
+        <li css={li}>
           <Link to="/lists/resistlist" css={textDecorationNone}>
             내가 쓴 글
           </Link>
         </li>
-        <div style={{ border: '1px solid #f0f0f0' }} />
+        <div css={line} />
         <li css={li}>
           <Link to="mypage" css={textDecorationNone}>
             계정

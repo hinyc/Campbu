@@ -29,6 +29,9 @@ export const flex = css`
 `;
 export const textDecorationNone = css`
   text-decoration: none;
+  :visited {
+    color: black;
+  }
 `;
 export const flexBetween = css`
   display: flex;
