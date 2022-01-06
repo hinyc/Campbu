@@ -70,6 +70,12 @@ function ReviewBox(props: ReviewContent) {
           border-color: ${isBad ? color.deep : null};
           margin: ${margin ? margin : null};
           background-color: ${click ? (isBad ? color.deep : color.mid) : null};
+          :hover {
+            cursor: ${onClick ? 'pointer' : null};
+          }
+          :active {
+            opacity: ${onClick ? '80%' : null};
+          }
         `,
       ]}
     >

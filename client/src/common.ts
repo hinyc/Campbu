@@ -42,7 +42,7 @@ export const flexVertical = css`
 
 export const reviews: { id: number; review: string }[] = [
   { id: 1, review: '가까운 거래장소' },
-  { id: 2, review: '상세하 물품 설명' },
+  { id: 2, review: '상세한 물품 설명' },
   { id: 3, review: '합리적인 대여비' },
   { id: 4, review: '질 좋은 물건' },
   { id: 5, review: '정확한 시간 약속' },
