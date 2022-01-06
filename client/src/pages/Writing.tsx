@@ -11,7 +11,7 @@ import {
 } from '../common';
 import { Button } from '../components/Button';
 import BackButton from '../components/BackButton';
-// import Calendar from '../components/Calendar';
+import Calendar from '../components/Calendar';
 
 const textareaStyle = css`
   width: 29.9375rem;
@@ -219,14 +219,16 @@ export const Writing = () => {
               <UploadImg />
             </div>
           </div>
-          <div css={confirm}>
+          <div>
             <div
               css={css`
                 margin-top: ${rem(32)};
               `}
             >
               대여 불가능한 날짜 선택하기
-              <div>{/* <Calendar /> */}</div>
+              <div>
+                <Calendar />
+              </div>
             </div>
           </div>
         </div>
