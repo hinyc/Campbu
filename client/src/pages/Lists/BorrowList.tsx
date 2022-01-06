@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import Reservation from '../../components/Reservation';
 import { css } from '@emotion/react';
 import { color, rem, flex } from '../../common';
 import ListTab from '../../components/ListTab';

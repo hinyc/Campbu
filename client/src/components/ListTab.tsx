@@ -1,6 +1,6 @@
+/** @jsxImportSource @emotion/react */
 import { Link } from 'react-router-dom';
 import BackButton from '../components/BackButton';
-/** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { rem } from '../common';
 
