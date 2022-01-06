@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { link, visit } from './tab';
 import Reservation from '../../components/Reservation';
 import { container, section, message } from './tab';
+import Complete from '../../components/Complete';
 
 function LendList() {
   return (
@@ -43,6 +44,7 @@ function LendList() {
           border={`1px solid ${color.mid}`}
           size={`${rem(14)}`}
         /> */}
+        <Complete text="반납이 확인되었습니다" />
         <section css={section}>
           <Reservation
             text="예약 수락"

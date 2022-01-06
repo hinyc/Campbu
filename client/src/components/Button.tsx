@@ -14,6 +14,7 @@ interface Props {
   opacity?: string;
   hover?: string;
   cursor?: string;
+  onClick?: any;
 }
 
 export const Button = (props: Props) => {
@@ -29,6 +30,7 @@ export const Button = (props: Props) => {
     opacity,
     hover,
     cursor,
+    onClick,
   } = props;
   return (
     <button
@@ -50,6 +52,7 @@ export const Button = (props: Props) => {
           opacity: 95%;
         }
       `}
+      onClick={onClick}
     >
       {text}
     </button>

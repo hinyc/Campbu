@@ -8,6 +8,7 @@ import { link, visit } from './tab';
 import { Button } from '../../components/Button';
 import emptyBorrow from '../../assets/pictures/emptyBorrow.svg';
 import { container, section, message } from './tab';
+import Complete from '../../components/Complete';
 
 function BorrowList() {
   return (
@@ -45,6 +46,7 @@ function BorrowList() {
           cursor={'pointer'}
           hover="80%"
         /> */}
+        <Complete text="예약이 취소되었습니다" />
         <section css={section}>
           <Reservation
             text="예약 취소"
