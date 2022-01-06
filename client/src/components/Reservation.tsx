@@ -1,7 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Link } from 'react-router-dom';
-import { rem, flex, shadow, hover, textDecorationNone, color } from '../common';
+import {
+  rem,
+  shadow,
+  hover,
+  textDecorationNone,
+  color,
+  flexBetween,
+} from '../common';
 import Here from '../assets/Here.svg';
 import { Button } from './Button';
 
@@ -49,7 +56,17 @@ const moneyTitle = css`
   font-size: ${rem(14)};
 `;
 
-function Reservation() {
+interface Props {
+  text: string;
+  background: string;
+  color: string;
+  opacity?: string;
+  cursor: string;
+  hover?: string;
+}
+
+function Reservation(props: Props) {
+  const { text, background, color, opacity, cursor, hover } = props;
   return (
     <div css={post}>
       <Link to="#" css={textDecorationNone}>
@@ -64,7 +81,7 @@ function Reservation() {
             용산구 이촌동
           </span>
           <span css={span}>3~4인용 텐트 빌려드려요</span>
-          <div css={[flex, 'justify-content: space-between']}>
+          <div css={flexBetween}>
             <span>
               <div css={[span, moneyTitle]}>보증금</div>
               <div css={span}>20,000원</div>
@@ -79,14 +96,17 @@ function Reservation() {
         </div>
       </Link>
       <Button
-        text="예약완료"
+        text={text}
         width={`${rem(205)}`}
         height={`${rem(40)}`}
-        background="#ED662C"
-        color="white"
+        background={background}
+        color={color}
         border="none"
         size={`${rem(14)}`}
         margin={`${rem(8)} 0 0 ${rem(15)}`}
+        opacity={opacity}
+        cursor={cursor}
+        hover={hover}
       />
     </div>
   );

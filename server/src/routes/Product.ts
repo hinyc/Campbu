@@ -1,9 +1,10 @@
 import express from 'express';
 const router = express.Router();
-const address = require('../controllers/product/Address');
+import address from '../controllers/product/Address';
+import post from '../controllers/product/Post';
 
 router.get('/address/:addressId', address);
-// router.get('/post/:postId');
-// router.delete('/post/:postId');
+router.get('/post/:postId', post.get);
+router.delete('/post/:postId', post.delete);
 
 export = router;
