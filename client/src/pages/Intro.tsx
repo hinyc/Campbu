@@ -4,6 +4,7 @@ import Signup from '../components/Signup';
 import { flex, rem } from '../common';
 import { Link } from 'react-router-dom';
 import ReviewModal from '../components/ReviewModal';
+import LoginModal from '../components/LoginModal';
 
 const divStyle = css`
   text-align: center;
@@ -30,6 +31,7 @@ function Intro() {
       </button>
       <div css={flex}>
         <Signup />
+        <LoginModal />
         <ReviewModal />
       </div>
     </div>
