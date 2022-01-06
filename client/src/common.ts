@@ -23,7 +23,7 @@ export const absolute = css`
 `;
 export const confirm = css`
   background-color: #ffeaff;
-`
+`;
 export const flex = css`
   display: flex;
 `;
