@@ -1,10 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import Signup from '../components/Signup';
-import { color, hover, rem } from '../common';
+import { color, hover, rem, flex } from '../common';
 import { Link } from 'react-router-dom';
 import background from '../assets/pictures/background.png';
 import Search from '../assets/Search.svg';
+import ReviewModal from '../components/ReviewModal';
+import LoginModal from '../components/LoginModal';
 
 const img = css`
   width: 100%;
@@ -61,7 +63,11 @@ function Intro() {
       <button>
         <Link to="/main">검색</Link>
       </button>
-      {/* <Signup /> */}
+      <div css={flex}>
+        <Signup />
+        <LoginModal />
+        <ReviewModal />
+      </div>
     </div>
   );
 }

@@ -15,9 +15,9 @@ interface Props {
   hover?: string;
   cursor?: string;
   onClick?: any;
-  weight?: number;
   children?: React.ReactNode;
   shadow?: string;
+  fontWeight?: number;
 }
 
 export const Button = (props: Props) => {
@@ -34,9 +34,9 @@ export const Button = (props: Props) => {
     hover,
     cursor,
     onClick,
-    weight,
     children,
     shadow,
+    fontWeight,
   } = props;
   return (
     <button
@@ -47,10 +47,10 @@ export const Button = (props: Props) => {
         color: ${color};
         border: ${border};
         font-size: ${size};
+        font-weight: ${fontWeight ? fontWeight : null};
         border-radius: ${rem(5)};
         margin: ${margin};
         opacity: ${opacity};
-        font-weight: ${weight};
         :hover {
           opacity: ${hover};
           cursor: ${cursor};
