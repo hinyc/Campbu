@@ -45,7 +45,6 @@ export const Button = (props: Props) => {
         border-radius: ${rem(5)};
         margin: ${margin};
         opacity: ${opacity};
-
         :hover {
           opacity: ${hover};
           cursor: ${cursor};
