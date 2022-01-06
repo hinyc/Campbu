@@ -1,6 +1,11 @@
-import jwt from 'jsonwebtoken';
-import { Request, Response } from 'express';
+import * as jwt from 'jsonwebtoken';
+import * as dotenv from 'dotenv';
+dotenv.config();
+
+const secret = <string>process.env.JWT_SECRET;
 
 export default {
-  generateAccessToken: async (data: unknown) => {},
+  generateToken: async (email: string): Promise<string> => {
+    return jwt.sign({ email }, secret, { expiresIn: '2d' });
+  },
 };
