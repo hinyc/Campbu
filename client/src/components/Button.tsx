@@ -17,28 +17,39 @@ interface Props {
 }
 
 export const Button = (props: Props) => {
-  const { text, width, height, background, color, border, size, margin, opacity, hover, cursor } =
-    props;
+  const {
+    text,
+    width,
+    height,
+    background,
+    color,
+    border,
+    size,
+    margin,
+    opacity,
+    hover,
+    cursor,
+  } = props;
   return (
     <button
       css={css`
-    width: ${width};
-    height: ${height};
-    background-color: ${background};
-    color: ${color};
-    border: ${border};
-    font-size: ${size};
-    border-radius: ${rem(5)};
-    margin: ${margin};
-    opacity: ${opacity};
-    :hover {
-      opacity: ${hover};
-      cursor: ${cursor};
-    }
-    :active {
-      opacity: 95%;
-    }
-  `;
+        width: ${width};
+        height: ${height};
+        background-color: ${background};
+        color: ${color};
+        border: ${border};
+        font-size: ${size};
+        border-radius: ${rem(5)};
+        margin: ${margin};
+        opacity: ${opacity};
+        :hover {
+          opacity: ${hover};
+          cursor: ${cursor};
+        }
+        :active {
+          opacity: 95%;
+        }
+      `}
     >
       {text}
     </button>
