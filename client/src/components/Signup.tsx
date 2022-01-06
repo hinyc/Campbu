@@ -77,7 +77,7 @@ const x = css`
   font-size: ${rem(14)};
   color: ${color.placeholder};
   top: ${rem(14)};
-  left: ${rem(299)};
+  right: ${rem(16)};
   position: absolute;
 `;
 
