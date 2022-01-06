@@ -68,15 +68,15 @@ function Main() {
       <button>검색</button>
       <section css={section}>
         <Link to="1" css={textDecorationNone}>
-          <Product />
+          <Product isFill={false} />
         </Link>
-        <Product />
-        <Product />
-        <Product />
-        <Product />
-        <Product />
-        <Product />
-        <Product />
+        <Product isFill={false} />
+        <Product isFill={false} />
+        <Product isFill={false} />
+        <Product isFill={false} />
+        <Product isFill={false} />
+        <Product isFill={false} />
+        <Product isFill={false} />
       </section>
       <WritingButton />
     </div>
