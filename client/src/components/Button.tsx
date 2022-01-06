@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { rem } from '../common';
 
@@ -12,52 +11,36 @@ interface Props {
   border: string;
   size: string;
   margin?: string;
+  opacity?: string;
+  hover?: string;
+  cursor?: string;
 }
 
-const button = (props: Props) =>
-  css`
-    width: ${props.width};
-    height: ${props.height};
-    background-color: ${props.background};
-    color: ${props.color};
-    border: ${props.border};
-    font-size: ${props.size};
+export const Button = (props: Props) => {
+  const { text, width, height, background, color, border, size, margin, opacity, hover, cursor } =
+    props;
+  return (
+    <button
+      css={css`
+    width: ${width};
+    height: ${height};
+    background-color: ${background};
+    color: ${color};
+    border: ${border};
+    font-size: ${size};
     border-radius: ${rem(5)};
-    margin: ${props.margin};
+    margin: ${margin};
+    opacity: ${opacity};
     :hover {
-      opacity: 80%;
-      cursor: pointer;
+      opacity: ${hover};
+      cursor: ${cursor};
     }
     :active {
       opacity: 95%;
     }
   `;
-
-export const CommonButton = styled.button`
-  ${button}
-`;
-
-export function Button({
-  text,
-  width,
-  height,
-  background,
-  color,
-  border,
-  size,
-  margin,
-}: Props) {
-  return (
-    <CommonButton
-      width={width}
-      height={height}
-      background={background}
-      color={color}
-      border={border}
-      size={size}
-      margin={margin}
     >
       {text}
-    </CommonButton>
+    </button>
   );
-}
+};
