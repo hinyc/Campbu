@@ -1,60 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import { Link } from 'react-router-dom';
-import {
-  rem,
-  shadow,
-  hover,
-  textDecorationNone,
-  color,
-  flexBetween,
-} from '../common';
+import { rem, textDecorationNone, flexBetween } from '../common';
 import Here from '../assets/Here.svg';
 import { Button } from './Button';
-
-const post = css`
-  width: ${rem(235)};
-  height: ${rem(445)};
-  margin: 0 auto;
-  border-radius: ${rem(15)};
-  box-shadow: ${shadow};
-  :hover {
-    box-shadow: ${hover};
-  }
-`;
-
-const img = css`
-  width: ${rem(205)};
-  height: ${rem(205)};
-  object-fit: cover;
-  border-radius: ${rem(10)};
-  margin: ${rem(15)} ${rem(15)} ${rem(4)} ${rem(15)};
-`;
-
-const textContainer = css`
-  margin-left: ${rem(15)};
-  margin-right: ${rem(15)};
-`;
-
-const span = css`
-  display: block;
-  font-size: ${rem(16)};
-  color: black;
-  margin-bottom: ${rem(6)};
-`;
-
-const address = css`
-  width: ${rem(96)};
-  padding: ${rem(3)} ${rem(7)};
-  font-size: ${rem(12)};
-  border: 1px solid ${color.mid};
-  border-radius: ${rem(50)};
-`;
-
-const moneyTitle = css`
-  color: ${color.mid};
-  font-size: ${rem(14)};
-`;
+import { post, img, textContainer, span, address, moneyTitle } from './post';
 
 interface Props {
   text: string;
@@ -103,7 +52,7 @@ function Reservation(props: Props) {
         color={color}
         border="none"
         size={`${rem(14)}`}
-        margin={`${rem(8)} 0 0 ${rem(15)}`}
+        margin={`${rem(8)} 0 ${rem(15)} ${rem(15)}`}
         opacity={opacity}
         cursor={cursor}
         hover={hover}

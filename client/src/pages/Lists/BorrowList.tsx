@@ -5,12 +5,11 @@ import { color, rem, flex } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Link } from 'react-router-dom';
 import { link, visit } from './tab';
-import Reservation from '../../components/Reservation';
 import { Button } from '../../components/Button';
 import emptyBorrow from '../../assets/pictures/emptyBorrow.svg';
 import { container, section, message } from './tab';
 
-const BorrowList = () => {
+function BorrowList() {
   return (
     <>
       <ListTab />
@@ -29,7 +28,8 @@ const BorrowList = () => {
         </Link>
       </nav>
       <div css={container}>
-        {/* <img src={emptyBorrow} alt="camping" />
+        {/* //? 리스트가 하나도 없을 때
+        <img src={emptyBorrow} alt="camping" />
         <p css={message}>
           빌린 목록이 없어요! <br />
           캠핑용품을 대여해서 즐거운 캠핑을 떠나보세요!
@@ -42,6 +42,8 @@ const BorrowList = () => {
           color={`${color.mid}`}
           border={`1px solid ${color.mid}`}
           size={`${rem(14)}`}
+          cursor={'pointer'}
+          hover="80%"
         /> */}
         <section css={section}>
           <Reservation
@@ -75,6 +77,6 @@ const BorrowList = () => {
       </div>
     </>
   );
-};
+}
 
 export default BorrowList;

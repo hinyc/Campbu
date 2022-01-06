@@ -9,7 +9,7 @@ import { link, visit } from './tab';
 import Reservation from '../../components/Reservation';
 import { container, section, message } from './tab';
 
-const LendList = () => {
+function LendList() {
   return (
     <>
       <ListTab />
@@ -28,7 +28,8 @@ const LendList = () => {
         </Link>
       </nav>
       <div css={container}>
-        {/* <img src={emptyLend} alt="camping" />
+        {/* //? 리스트가 하나도 없을 때
+        <img src={emptyLend} alt="camping" />
         <p css={message}>
           빌려준 목록이 없어요! <br />
           캠핑 용품이 있다면 대여 게시글을 올려보세요!
@@ -74,6 +75,6 @@ const LendList = () => {
       </div>
     </>
   );
-};
+}
 
 export default LendList;
