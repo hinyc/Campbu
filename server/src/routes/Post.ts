@@ -1,12 +1,10 @@
 import express from 'express';
 const router = express.Router();
-const newpost = require('./../controllers/post/Newpost');
+import newpost from '../controllers/post/Newpost';
+import post from '../controllers/post/Post';
 
-// router.get('/:postId', (req, res) => {
-//   console.log(req.params);
-//   res.status(200).json({ messege: 'ok?' });
-// });
+router.get('/:postId', post.get);
 router.post('/newpost', newpost);
-// router.patch('/:postId');
+router.patch('/:postId', post.patch);
 
 export = router;
