@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import Signup from '../components/Signup';
-import { rem } from '../common';
+import { flex, rem } from '../common';
 import { Link } from 'react-router-dom';
+import ReviewModal from '../components/ReviewModal';
 
 const divStyle = css`
   text-align: center;
@@ -27,7 +28,10 @@ function Intro() {
       <button>
         <Link to="/main">검색</Link>
       </button>
-      <Signup />
+      <div css={flex}>
+        <Signup />
+        <ReviewModal />
+      </div>
     </div>
   );
 }
