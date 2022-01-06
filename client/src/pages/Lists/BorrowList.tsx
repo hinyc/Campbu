@@ -8,8 +8,9 @@ import { link, visit } from './tab';
 import { Button } from '../../components/Button';
 import emptyBorrow from '../../assets/pictures/emptyBorrow.svg';
 import { container, section, message } from './tab';
+import Complete from '../../components/Complete';
 
-const BorrowList = () => {
+function BorrowList() {
   return (
     <>
       <ListTab />
@@ -28,7 +29,8 @@ const BorrowList = () => {
         </Link>
       </nav>
       <div css={container}>
-        {/* <img src={emptyBorrow} alt="camping" />
+        {/* //? 리스트가 하나도 없을 때
+        <img src={emptyBorrow} alt="camping" />
         <p css={message}>
           빌린 목록이 없어요! <br />
           캠핑용품을 대여해서 즐거운 캠핑을 떠나보세요!
@@ -41,7 +43,10 @@ const BorrowList = () => {
           color={`${color.mid}`}
           border={`1px solid ${color.mid}`}
           size={`${rem(14)}`}
+          cursor={'pointer'}
+          hover="80%"
         /> */}
+        <Complete text="예약이 취소되었습니다" />
         <section css={section}>
           <Reservation
             text="예약 취소"
@@ -74,6 +79,6 @@ const BorrowList = () => {
       </div>
     </>
   );
-};
+}
 
 export default BorrowList;

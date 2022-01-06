@@ -7,12 +7,13 @@ import emptyHeart from '../../assets/pictures/emptyHeart.svg';
 import { Link } from 'react-router-dom';
 import { link, visit } from './tab';
 import { container, section, message } from './tab';
+import Product from '../../components/Product';
 
 const img = css`
   margin-top: ${rem(51)};
 `;
 
-const LikeList = () => {
+function LikeList() {
   return (
     <>
       <ListTab />
@@ -31,6 +32,7 @@ const LikeList = () => {
         </Link>
       </nav>
       <div css={container}>
+        {/* //? 리스트가 하나도 없을 때
         <img src={emptyHeart} alt="broken heart" css={img} />
         <p css={message}>
           찜한 목록이 없어요! <br />
@@ -44,10 +46,17 @@ const LikeList = () => {
           color={`${color.mid}`}
           border={`1px solid ${color.mid}`}
           size={`${rem(14)}`}
-        />
+          cursor={'pointer'}
+          hover="80%"
+        /> */}
+        <section css={section}>
+          <Product isFill={true} />
+          <Product isFill={true} />
+          <Product isFill={true} />
+        </section>
       </div>
     </>
   );
-};
+}
 
 export default LikeList;

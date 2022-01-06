@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom';
 import Logo from '../assets/Logo.svg';
 import Menu from '../assets/Menu.svg';
 import Profile from '../assets/Profile.svg';
-import { rem } from '../common';
+import { color, hover, rem } from '../common';
+import { Button } from './Button';
 import ProfileDropdown from './ProfileDropdown';
 
 const headerStyle = css`
@@ -18,15 +19,6 @@ const headerStyle = css`
   position: relative;
 `;
 
-const imgStyle = css`
-  /* margin-right: auto; */
-  /* margin-left: 12.75rem; */
-`;
-
-const loginStyle = css`
-  /* margin-right: 12.75rem; */
-`;
-
 function Navbar() {
   const [click, setClick] = useState<boolean>(false);
   const onClick = () => {
@@ -34,26 +26,55 @@ function Navbar() {
   };
 
   return (
-    <div>
-      <header css={headerStyle}>
-        <Link to="/">
-          <img src={Logo} className="CampBu-logo" alt="logo" css={imgStyle} />
-        </Link>
-        {click ? (
-          <button css={loginStyle} onClick={onClick}>
-            Login
-          </button>
-        ) : (
-          <>
-            <button css={loginStyle} onClick={onClick}>
-              <img src={Menu} className="CampBu-logo" alt="logo" />
-              <img src={Profile} className="CampBu-logo" alt="logo" />
-            </button>
-            <ProfileDropdown />
-          </>
-        )}
-      </header>
-    </div>
+    <header css={headerStyle}>
+      <Link to="/">
+        <img src={Logo} className="CampBu-logo" alt="logo" />
+      </Link>
+      {click ? (
+        <Button
+          text="Login"
+          width={`${rem(83)}`}
+          height={`${rem(36)}`}
+          background={`${color.point}`}
+          color="white"
+          border="none"
+          size={`${rem(14)}`}
+          hover="80%"
+          cursor="pointer"
+          onClick={onClick}
+        />
+      ) : (
+        <>
+          <Button
+            width={`${rem(83)}`}
+            height={`${rem(36)}`}
+            background={`${color.point}`}
+            color="white"
+            border="none"
+            size={`${rem(13)}`}
+            cursor="pointer"
+            onClick={onClick}
+            shadow={`${hover}`}
+          >
+            <img
+              src={Menu}
+              className="CampBu-logo"
+              alt="logo"
+              style={{ margin: `0 ${rem(14)} ${rem(2)} 0` }}
+            />
+            {/* //! 프로필 사진이 들어가야 함 */}
+            <img
+              style={{ marginTop: rem(2) }}
+              src={Profile}
+              className="CampBu-logo"
+              alt="logo"
+            />
+          </Button>
+
+          <ProfileDropdown />
+        </>
+      )}
+    </header>
   );
 }
 

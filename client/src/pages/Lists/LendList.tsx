@@ -8,8 +8,10 @@ import { Link } from 'react-router-dom';
 import { link, visit } from './tab';
 import Reservation from '../../components/Reservation';
 import { container, section, message } from './tab';
+import Complete from '../../components/Complete';
+import YesOrNo from '../../components/YesOrNo';
 
-const LendList = () => {
+function LendList() {
   return (
     <>
       <ListTab />
@@ -28,7 +30,8 @@ const LendList = () => {
         </Link>
       </nav>
       <div css={container}>
-        {/* <img src={emptyLend} alt="camping" />
+        {/* //? 리스트가 하나도 없을 때
+        <img src={emptyLend} alt="camping" />
         <p css={message}>
           빌려준 목록이 없어요! <br />
           캠핑 용품이 있다면 대여 게시글을 올려보세요!
@@ -42,6 +45,13 @@ const LendList = () => {
           border={`1px solid ${color.mid}`}
           size={`${rem(14)}`}
         /> */}
+        {/* <Complete text="반납이 확인되었습니다" /> */}
+        <YesOrNo
+          text="취소"
+          title="예약 취소"
+          text1="예약을 취소하시겠습니까?"
+          text2="대여자가 예약을 수락하기 전까지 취소할 수 있습니다."
+        />
         <section css={section}>
           <Reservation
             text="예약 수락"
@@ -74,6 +84,6 @@ const LendList = () => {
       </div>
     </>
   );
-};
+}
 
 export default LendList;

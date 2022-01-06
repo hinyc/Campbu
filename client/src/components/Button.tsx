@@ -14,6 +14,9 @@ interface Props {
   opacity?: string;
   hover?: string;
   cursor?: string;
+  onClick?: any;
+  children?: React.ReactNode;
+  shadow?: string;
   fontWeight?: number;
 }
 
@@ -30,6 +33,9 @@ export const Button = (props: Props) => {
     opacity,
     hover,
     cursor,
+    onClick,
+    children,
+    shadow,
     fontWeight,
   } = props;
   return (
@@ -48,13 +54,16 @@ export const Button = (props: Props) => {
         :hover {
           opacity: ${hover};
           cursor: ${cursor};
+          box-shadow: ${shadow};
         }
         :active {
           opacity: 95%;
         }
       `}
+      onClick={onClick}
     >
       {text}
+      {children}
     </button>
   );
 };

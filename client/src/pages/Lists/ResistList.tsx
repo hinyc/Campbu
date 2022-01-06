@@ -7,12 +7,13 @@ import emptyWriting from '../../assets/pictures/emptyWriting.svg';
 import { Link } from 'react-router-dom';
 import { link, visit } from './tab';
 import { container, section, message } from './tab';
+import Product from '../../components/Product';
 
 const img = css`
   margin-top: ${rem(21)};
 `;
 
-const ResistList = () => {
+function ResistList() {
   return (
     <>
       <ListTab />
@@ -31,6 +32,7 @@ const ResistList = () => {
         </Link>
       </nav>
       <div css={container}>
+        {/* //? 리스트가 하나도 없을 때
         <img src={emptyWriting} alt="broken heart" css={img} />
         <p css={message}>
           내가 쓴 글이 없어요!
@@ -45,10 +47,18 @@ const ResistList = () => {
           color={`${color.mid}`}
           border={`1px solid ${color.mid}`}
           size={`${rem(14)}`}
-        />
+          cursor={'pointer'}
+          hover="80%"
+        /> */}
+        <section css={section}>
+          {/* //? display: none이므로 isFill은 아무 값이나 넣어도 됨 */}
+          <Product isFill={false} display="none" />
+          <Product isFill={false} display="none" />
+          <Product isFill={false} display="none" />
+        </section>
       </div>
     </>
   );
-};
+}
 
 export default ResistList;
