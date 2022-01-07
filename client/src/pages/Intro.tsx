@@ -8,6 +8,8 @@ import Search from '../assets/Search.svg';
 import ReviewModal from '../components/ReviewModal';
 import LoginModal from '../components/LoginModal';
 import SearchInput from '../components/SearchInput';
+import { showLoginModal, showSignupModal } from '../Atom';
+import { useRecoilValue } from 'recoil';
 
 const img = css`
   width: 100%;
@@ -62,11 +64,7 @@ function Intro() {
           </Link>
         </button>
       </span>
-      <div css={flex}>
-        <Signup />
-        <LoginModal />
-        <ReviewModal />
-      </div>
+      <div css={flex}>{/* <ReviewModal /> */}</div>
     </div>
   );
 }
