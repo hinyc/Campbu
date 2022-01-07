@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, rem, flex } from '../../common';
+import { color, rem, flex, textDecorationNone } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Button } from '../../components/Button';
 import emptyWriting from '../../assets/pictures/emptyWriting.svg';
@@ -8,12 +8,15 @@ import { Link } from 'react-router-dom';
 import { link, visit } from './tab';
 import { container, section, message } from './tab';
 import Product from '../../components/Product';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { posts, Posts } from '../../Atom';
 
 const img = css`
   margin-top: ${rem(21)};
 `;
 
 function ResistList() {
+  const resistLists = useRecoilValue<Posts[]>(posts);
   return (
     <>
       <ListTab />
@@ -51,10 +54,19 @@ function ResistList() {
           hover="80%"
         /> */}
         <section css={section}>
-          {/* //? display: none이므로 isFill은 아무 값이나 넣어도 됨 */}
-          <Product isFill={false} display="none" />
-          <Product isFill={false} display="none" />
-          <Product isFill={false} display="none" />
+          {resistLists.map((resistList) => (
+            <Link to={`${resistList.id}`} css={textDecorationNone}>
+              <Product
+                isFill={true}
+                display="none"
+                img_urls={resistList.img_urls}
+                address={resistList.address}
+                title={resistList.title}
+                deposit={resistList.deposit}
+                rental_fee={resistList.rental_fee}
+              />
+            </Link>
+          ))}
         </section>
       </div>
     </>

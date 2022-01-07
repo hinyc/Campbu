@@ -1,12 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
+
 import { color, hover, rem, flex, relative } from '../common';
 import { Link } from 'react-router-dom';
 import background from '../assets/pictures/background.png';
 import Search from '../assets/Search.svg';
 
+
 import SearchInput from '../components/SearchInput';
+
+const divStyle = css`
+  text-align: center;
+`;
 
 const img = css`
   width: 100%;
@@ -14,13 +20,6 @@ const img = css`
   position: absolute;
   top: 0;
   left: 0;
-  /* z-index: 1; */
-`;
-
-const divStyle = css`
-  text-align: center;
-  background-color: aquamarine;
-  /* z-index: 999; */
 `;
 
 const pStyle = css`
@@ -28,6 +27,8 @@ const pStyle = css`
   color: white;
   text-shadow: ${hover};
   padding-top: ${rem(155)};
+  z-index: 990;
+  cursor: default;
 `;
 
 const button = css`
@@ -41,8 +42,8 @@ const button = css`
 function Intro() {
   return (
     <div css={divStyle}>
-      {/* <img src={background} alt="뒷배경" css={img} /> */}
-      <p css={pStyle}>떠나고 싶지 않으세요?</p>
+      <img src={background} alt="뒷배경" css={img} />
+      <p css={[pStyle, relative]}>떠나고 싶지 않으세요?</p>
       <span css={relative}>
         <SearchInput
           text="어디로 여행가세요?"
@@ -61,7 +62,9 @@ function Intro() {
           </Link>
         </button>
       </span>
+
       <div css={flex}>{/* <ReviewModal /> */}</div>
+
     </div>
   );
 }
