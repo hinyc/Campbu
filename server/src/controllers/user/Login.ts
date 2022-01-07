@@ -3,9 +3,13 @@ import { getRepository } from 'typeorm';
 import { users } from '../../entity/users';
 import { generateToken } from '../jwt/GenerateToken';
 
+interface loginType {
+  email: string;
+  password: string;
+}
+
 export default async (req: Request, res: Response) => {
-  const email: string = req.body.email;
-  const password: string = req.body.password;
+  const { email, password }: loginType = req.body;
   const usersRepository = getRepository(users);
 
   if (!email || !password) {
