@@ -13,7 +13,7 @@ export default async (req: Request, res: Response) => {
   const postsRepository = getRepository(posts);
 
   if (!post_id) {
-    return res.status(400).json({ message: 'Like Successfully Added' });
+    return res.status(400).json({ message: 'Bad Request' });
   } else {
     const userInfo = await usersRepository.findOne({
       email: decoded.email,
@@ -28,7 +28,6 @@ export default async (req: Request, res: Response) => {
         users_id: userInfo,
         posts_id: postInfo,
       });
-
       return res.status(201).json({ message: 'Like Successfully Added' });
     }
   }
