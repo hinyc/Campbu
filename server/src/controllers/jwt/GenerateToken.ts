@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-export async function generateToken(email: string): Promise<string> {
+export async function generateToken(email: string) {
   return JWT.sign(
     {
       email: email,

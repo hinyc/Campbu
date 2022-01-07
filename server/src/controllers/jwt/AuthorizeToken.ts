@@ -4,12 +4,8 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-export async function authorizeToken(
-  req: Request,
-  res: Response,
-): Promise<any> {
+export async function authorizeToken(req: Request, res: Response) {
   const JWT: string = req.cookies.jwt;
-  console.log('JWT: ', JWT);
 
   const data = jwt.verify(
     JWT,
@@ -18,9 +14,9 @@ export async function authorizeToken(
       if (err) {
         return res.status(403).json({ message: 'Invalid Accesstoken' });
       } else {
-        console.log('decoded: ', decoded);
         return decoded;
       }
     },
   );
+  return data;
 }
