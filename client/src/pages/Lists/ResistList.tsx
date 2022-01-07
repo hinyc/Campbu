@@ -24,11 +24,11 @@ function ResistList() {
         <Link to="/lists/lendlist" css={link}>
           빌려준 목록
         </Link>
-        <Link to="/lists/resistlist" css={[link, visit]}>
-          내가 쓴 글
-        </Link>
         <Link to="/lists/likelist" css={link}>
           찜한 목록
+        </Link>
+        <Link to="/lists/resistlist" css={[link, visit]}>
+          내가 쓴 글
         </Link>
       </nav>
       <div css={container}>

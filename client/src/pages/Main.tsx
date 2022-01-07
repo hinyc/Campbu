@@ -3,7 +3,9 @@ import { css } from '@emotion/react';
 import { Link } from 'react-router-dom';
 import Product from '../components/Product';
 import WritingButton from '../components/WritingButton';
-import { rem, textDecorationNone } from '../common';
+import { rem, textDecorationNone, relative } from '../common';
+import SearchGreen from '../assets/SearchGreen.svg';
+import SearchInput from '../components/SearchInput';
 
 const container = css`
   width: ${rem(1280)};
@@ -30,10 +32,12 @@ const categoryStyle = css`
   text-align: center;
 `;
 
-const inputStyle = css`
-  font-size: 0.875rem;
-  width: ${rem(420)};
-  height: ${rem(43)};
+const button = css`
+  background-color: white;
+  border: none;
+  position: absolute;
+  right: ${rem(24)};
+  top: ${rem(-3)};
 `;
 
 const section = css`
@@ -64,8 +68,22 @@ function Main() {
           </li>
         ))}
       </ul>
-      <input placeholder="지역을 검색해보세요!" css={inputStyle} />
-      <button>검색</button>
+      <span css={relative}>
+        <SearchInput
+          text="지역을 검색해보세요!"
+          width={`${rem(450)}`}
+          height={`${rem(50)}`}
+          border="1px solid #afc89b"
+          size={`${rem(16)}`}
+          shadow={`0px 2px 10px rgba(0, 0, 0, 0.1)`}
+          placeholder={`#afc89b`}
+          padding={`${rem(18)}`}
+          margin={`${rem(26)} 0`}
+        />
+        <button css={button}>
+          <img src={SearchGreen} alt="search" />
+        </button>
+      </span>
       <section css={section}>
         <Link to="1" css={textDecorationNone}>
           <Product isFill={false} />

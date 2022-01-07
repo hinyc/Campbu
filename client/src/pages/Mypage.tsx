@@ -110,9 +110,10 @@ function Mypage() {
           깐부지수 83%
         </div>
         <ReviewTitle text="대여자에게 받은 좋은 리뷰" />
-        {reviews.map((review) => {
+        {reviews.map((review, idx) => {
           return review.id < 7 ? (
             <ReviewBox
+              key={idx}
               content={review.review}
               count={review.count}
               isBad={false}
@@ -120,9 +121,10 @@ function Mypage() {
           ) : null;
         })}
         <ReviewTitle text="대여자에게 받은 나쁜 리뷰" />
-        {reviews.map((review) => {
+        {reviews.map((review, idx) => {
           return review.id < 7 ? null : (
             <ReviewBox
+              key={idx}
               content={review.review}
               count={review.count}
               isBad={true}

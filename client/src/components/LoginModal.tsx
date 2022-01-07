@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, rem, shadow, absolute } from '../common';
+import { color, rem, shadow } from '../common';
 import { Button } from './Button';
 import Input from './Input';
 import naver from '../assets/naver.png';
