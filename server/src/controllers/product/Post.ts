@@ -7,6 +7,12 @@ export default {
     const id: string = req.params.postId;
     const postRepository = getRepository(posts);
     const post = await postRepository.findOne({ id: Number(id) });
+    const test = await postRepository
+      .createQueryBuilder()
+      .loadRelationCountAndMap('posts.reservationCount', 'posts.reservation')
+      .where('posts.id = :id', { id: Number(id) })
+      .getOne();
+    console.log(test);
     res.status(200).json({ posts: post });
   },
   delete: async (req: Request, res: Response) => {
