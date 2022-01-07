@@ -1,14 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-
 import { color, hover, rem, flex, relative } from '../common';
 import { Link } from 'react-router-dom';
 import background from '../assets/pictures/background.png';
 import Search from '../assets/Search.svg';
 
-
 import SearchInput from '../components/SearchInput';
+import { useState } from 'react';
 
 const divStyle = css`
   text-align: center;
@@ -40,6 +39,9 @@ const button = css`
 `;
 
 function Intro() {
+  const [searchValue, setSearchValue] = useState<string>('');
+  const onSearchClick = () => {};
+
   return (
     <div css={divStyle}>
       <img src={background} alt="뒷배경" css={img} />
@@ -56,7 +58,7 @@ function Intro() {
           padding={`${rem(24)}`}
           margin={`${rem(62)} 0 0 0`}
         />
-        <button css={button}>
+        <button css={button} onClick={onSearchClick} value={searchValue}>
           <Link to="/main">
             <img src={Search} alt="search" />
           </Link>
@@ -64,7 +66,6 @@ function Intro() {
       </span>
 
       <div css={flex}>{/* <ReviewModal /> */}</div>
-
     </div>
   );
 }
