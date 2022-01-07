@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Logo from '../assets/Logo.svg';
 import Menu from '../assets/Menu.svg';
 import Profile from '../assets/Profile.svg';
-import { color, hover, rem } from '../common';
+import { color, rem, shadow } from '../common';
 import { Button } from './Button';
 import ProfileDropdown from './ProfileDropdown';
 
@@ -17,6 +17,7 @@ const headerStyle = css`
   margin: 0 auto;
   align-items: center;
   position: relative;
+  z-index: 999;
 `;
 
 function Navbar() {
@@ -39,7 +40,7 @@ function Navbar() {
           color="white"
           border="none"
           size={`${rem(14)}`}
-          hover="80%"
+          hoverBackground="#F18556"
           cursor="pointer"
           onClick={onClick}
         />
@@ -54,7 +55,8 @@ function Navbar() {
             size={`${rem(13)}`}
             cursor="pointer"
             onClick={onClick}
-            shadow={`${hover}`}
+            shadow={`${shadow}`}
+            hoverBackground="#F18556"
           >
             <img
               src={Menu}

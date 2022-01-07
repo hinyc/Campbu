@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import Reservation from '../../components/Reservation';
 import { css } from '@emotion/react';
-import { color, rem, flex } from '../../common';
+import { color, rem, flex, textDecorationNone } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Link } from 'react-router-dom';
 import { link, visit } from './tab';
@@ -9,8 +9,11 @@ import { Button } from '../../components/Button';
 import emptyBorrow from '../../assets/pictures/emptyBorrow.svg';
 import { container, section, message } from './tab';
 import Complete from '../../components/Complete';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { posts, Posts } from '../../Atom';
 
 function BorrowList() {
+  const borrowLists = useRecoilValue<Posts[]>(posts);
   return (
     <>
       <ListTab />
@@ -48,19 +51,37 @@ function BorrowList() {
         /> */}
         <Complete text="예약이 취소되었습니다" />
         <section css={section}>
-          <Reservation
-            text="예약 취소"
-            background={`${color.point}`}
-            color="white"
-            cursor="pointer"
-            hover="80%"
-          />
-          <Reservation
+          {borrowLists.map((borrowList) => (
+            <Link to={`${borrowList.id}`} css={textDecorationNone}>
+              <Reservation
+                text="예약 취소"
+                background={`${color.point}`}
+                color="white"
+                cursor="pointer"
+                hover="80%"
+                postId={borrowList.id}
+                img_urls={borrowList.img_urls}
+                address={borrowList.address}
+                title={borrowList.title}
+                deposit={borrowList.deposit}
+                rental_fee={borrowList.rental_fee}
+                reservation_dates={borrowList.reservation_dates}
+              />
+            </Link>
+          ))}
+          {/* <Reservation
             text="반납하기"
             background={`${color.point}`}
             color="white"
             cursor="pointer"
             hover="80%"
+            postId={borrowList.id}
+            img_urls={borrowList.img_urls}
+            address={borrowList.address}
+            title={borrowList.title}
+            deposit={borrowList.deposit}
+            rental_fee={borrowList.rental_fee}
+            reservation_dates={['2022.01.01', '2022.01.02']}
           />
           <Reservation
             text="반납 확인 대기 중"
@@ -68,13 +89,27 @@ function BorrowList() {
             opacity="50%"
             color="white"
             cursor="not-allowed"
+            postId={borrowList.id}
+            img_urls={borrowList.img_urls}
+            address={borrowList.address}
+            title={borrowList.title}
+            deposit={borrowList.deposit}
+            rental_fee={borrowList.rental_fee}
+            reservation_dates={['2022.01.01', '2022.01.02']}
           />
           <Reservation
             text="반납완료"
             background={`${color.mid}`}
             color="white"
             cursor="default"
-          />
+            postId={borrowList.id}
+            img_urls={borrowList.img_urls}
+            address={borrowList.address}
+            title={borrowList.title}
+            deposit={borrowList.deposit}
+            rental_fee={borrowList.rental_fee}
+            reservation_dates={['2022.01.01', '2022.01.02']}
+          /> */}
         </section>
       </div>
     </>

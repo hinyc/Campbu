@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, rem, flex } from '../../common';
+import { color, rem, flex, textDecorationNone } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Button } from '../../components/Button';
 import emptyHeart from '../../assets/pictures/emptyHeart.svg';
@@ -8,12 +8,15 @@ import { Link } from 'react-router-dom';
 import { link, visit } from './tab';
 import { container, section, message } from './tab';
 import Product from '../../components/Product';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { posts, Posts } from '../../Atom';
 
 const img = css`
   margin-top: ${rem(51)};
 `;
 
 function LikeList() {
+  const likeLists = useRecoilValue<Posts[]>(posts);
   return (
     <>
       <ListTab />
@@ -50,9 +53,18 @@ function LikeList() {
           hover="80%"
         /> */}
         <section css={section}>
-          <Product isFill={true} />
-          <Product isFill={true} />
-          <Product isFill={true} />
+          {likeLists.map((likeList) => (
+            <Link to={`${likeList.id}`} css={textDecorationNone}>
+              <Product
+                isFill={true}
+                img_urls={likeList.img_urls}
+                address={likeList.address}
+                title={likeList.title}
+                deposit={likeList.deposit}
+                rental_fee={likeList.rental_fee}
+              />
+            </Link>
+          ))}
         </section>
       </div>
     </>
