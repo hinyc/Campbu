@@ -24,11 +24,22 @@ export default async (req: Request, res: Response) => {
     if (!userInfo) {
       return res.status(401).json({ message: 'Unauthorzied User' });
     } else {
-      likesRepository.insert({
+      const likesExist = await likesRepository.findOne({
         users_id: userInfo,
         posts_id: postInfo,
       });
-      return res.status(201).json({ message: 'Like Successfully Added' });
+      if (likesExist) {
+        await likesRepository.delete({
+          users_id: userInfo,
+          posts_id: postInfo,
+        });
+      } else {
+        likesRepository.insert({
+          users_id: userInfo,
+          posts_id: postInfo,
+        });
+      }
+      return res.status(201).json({ message: 'Like Successfully Updated' });
     }
   }
 };
