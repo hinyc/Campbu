@@ -10,7 +10,6 @@ const box = css`
   top: ${rem(83)};
   right: 0;
   background-color: white;
-  /* z-index: 999; */
   box-shadow: ${shadow};
 `;
 
@@ -18,7 +17,7 @@ const ulStyle = css`
   list-style: none;
   padding: 0;
   font-size: ${rem(16)};
-  margin: ${rem(18)} 0 ${rem(8)} 0;
+  margin: ${rem(14)} 0 ${rem(8)} 0;
 `;
 
 const li = css`
