@@ -1,9 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, hover, rem, relative } from '../common';
+
+
+import { color, hover, rem, flex, relative } from '../common';
 import { Link } from 'react-router-dom';
 import background from '../assets/pictures/background.png';
 import Search from '../assets/Search.svg';
+
+
 import SearchInput from '../components/SearchInput';
 
 const divStyle = css`
@@ -58,6 +62,9 @@ function Intro() {
           </Link>
         </button>
       </span>
+
+      <div css={flex}>{/* <ReviewModal /> */}</div>
+
     </div>
   );
 }

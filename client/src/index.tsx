@@ -5,6 +5,7 @@ import { RecoilRoot } from 'recoil';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import reset from './reset';
+
 ReactDOM.render(
   <React.StrictMode>
     <Global styles={reset} />

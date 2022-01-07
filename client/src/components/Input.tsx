@@ -18,6 +18,8 @@ interface InputProps {
   borderStyle?: string;
   borderRadius?: number;
   placeholder?: string;
+  onChange?: any;
+  value?: string;
 }
 export default function Input(props: InputProps) {
   const {
@@ -28,6 +30,8 @@ export default function Input(props: InputProps) {
     borderStyle,
     borderRadius,
     placeholder,
+    onChange,
+    value,
   } = props;
   return (
     <input
@@ -37,13 +41,15 @@ export default function Input(props: InputProps) {
           width: ${rem(width)};
           height: ${rem(height)};
           font-size: ${fontSize ? rem(fontSize) : `1rem`};
-          border-radius: ${borderRadius ? rem(borderRadius) : null};
+          border-radius: ${borderRadius ? rem(borderRadius) : rem(5)};
           border-style: ${borderStyle ? borderStyle : null};
           ::placeholder {
             color: ${color.placeholder};
           }
         `,
       ]}
+      onChange={onChange}
+      value={value}
       type={type ? type : 'text'}
       placeholder={placeholder ? placeholder : undefined}
     />
