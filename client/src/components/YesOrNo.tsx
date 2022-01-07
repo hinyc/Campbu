@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { rem, color, hover } from '../common';
 import { Button } from './Button';
 import { useState } from 'react';
+import Complete from './Complete';
 
 const box = css`
   position: fixed;
@@ -36,7 +37,12 @@ interface Props {
 
 function YesOrNo({ text1, text2, title, text }: Props) {
   const [show, setShow] = useState<boolean>(true);
-  const onClick = () => {
+  const [next, setNext] = useState<boolean>(false);
+  const onOkClick = () => {
+    setShow(!show);
+    setNext(true);
+  };
+  const onNoClick = () => {
     setShow(!show);
   };
   return (
@@ -57,7 +63,7 @@ function YesOrNo({ text1, text2, title, text }: Props) {
             margin={`${rem(16)} ${rem(6)} ${rem(20)} ${rem(24)}`}
             hover="80%"
             cursor="pointer"
-            onClick={onClick}
+            onClick={onNoClick}
           />
           <Button
             text={text}
@@ -70,10 +76,11 @@ function YesOrNo({ text1, text2, title, text }: Props) {
             margin={`${rem(16)} ${rem(24)} ${rem(20)} ${rem(6)}`}
             hover="80%"
             cursor="pointer"
-            onClick={onClick}
+            onClick={onOkClick}
           />
         </div>
       ) : null}
+      {next ? <Complete text="예약이 취소되었습니다" /> : null}
     </>
   );
 }
