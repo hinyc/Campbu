@@ -2,12 +2,16 @@
 import { css } from '@emotion/react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import Logo from '../assets/Logo.svg';
 import Menu from '../assets/Menu.svg';
 import Profile from '../assets/Profile.svg';
+import { showLoginModal, showSignupModal } from '../Atom';
 import { color, hover, rem } from '../common';
 import { Button } from './Button';
+import LoginModal from './LoginModal';
 import ProfileDropdown from './ProfileDropdown';
+import Signup from './Signup';
 
 const headerStyle = css`
   height: ${rem(99)};
@@ -21,12 +25,18 @@ const headerStyle = css`
 
 function Navbar() {
   const [click, setClick] = useState<boolean>(false);
+  const [showLogin, setShowLogin] = useRecoilState(showLoginModal);
+
+  const showSignup = useRecoilValue(showSignupModal);
+  console.log('showLogin', showLogin);
   const onClick = () => {
     setClick(!click);
   };
 
   return (
     <header css={headerStyle}>
+      {showSignup ? <Signup /> : null}
+      {showLogin ? <LoginModal /> : null}
       <Link to="/">
         <img src={Logo} className="CampBu-logo" alt="logo" />
       </Link>
@@ -41,7 +51,10 @@ function Navbar() {
           size={`${rem(14)}`}
           hover="80%"
           cursor="pointer"
-          onClick={onClick}
+          onClick={() => {
+            onClick();
+            setShowLogin(true);
+          }}
         />
       ) : (
         <>
