@@ -7,6 +7,8 @@ import { rem, textDecorationNone, relative } from '../common';
 import SearchGreen from '../assets/SearchGreen.svg';
 import SearchInput from '../components/SearchInput';
 import Category from '../components/Category';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { posts, Posts } from '../Atom';
 
 const container = css`
   width: ${rem(1280)};
@@ -32,6 +34,8 @@ const section = css`
 `;
 
 function Main() {
+  const products = useRecoilValue<Posts[]>(posts);
+
   return (
     <div css={container}>
       <Category />
@@ -52,16 +56,18 @@ function Main() {
         </button>
       </span>
       <section css={section}>
-        <Link to="1" css={textDecorationNone}>
-          <Product isFill={false} />
-        </Link>
-        <Product isFill={false} />
-        <Product isFill={false} />
-        <Product isFill={false} />
-        <Product isFill={false} />
-        <Product isFill={false} />
-        <Product isFill={false} />
-        <Product isFill={false} />
+        {products.map((product) => (
+          <Link to={`${product.id}`} css={textDecorationNone}>
+            <Product
+              isFill={false}
+              img_urls={product.img_urls}
+              address={product.address}
+              title={product.title}
+              deposit={product.deposit}
+              rental_fee={product.rental_fee}
+            />
+          </Link>
+        ))}
       </section>
       <WritingButton />
     </div>
