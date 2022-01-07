@@ -8,7 +8,7 @@ import SearchGreen from '../assets/SearchGreen.svg';
 import SearchInput from '../components/SearchInput';
 import Category from '../components/Category';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { posts, Posts } from '../Atom';
+import { Post, PostLikes, posts, Posts } from '../Atom';
 
 const container = css`
   width: ${rem(1280)};
@@ -34,7 +34,8 @@ const section = css`
 `;
 
 function Main() {
-  const products = useRecoilValue<Posts[]>(posts);
+  const products = useRecoilValue<Posts>(posts);
+  const onSearchClick = () => {};
 
   return (
     <div css={container}>
@@ -51,22 +52,22 @@ function Main() {
           padding={`${rem(18)}`}
           margin={`${rem(26)} 0`}
         />
-        <button css={button}>
+        <button css={button} onClick={onSearchClick}>
           <img src={SearchGreen} alt="search" />
         </button>
       </span>
       <section css={section}>
-        {products.map((product) => (
-          <Link to={`${product.id}`} css={textDecorationNone}>
-            <Product
-              isFill={false}
-              img_urls={product.img_urls}
-              address={product.address}
-              title={product.title}
-              deposit={product.deposit}
-              rental_fee={product.rental_fee}
-            />
-          </Link>
+        {products['posts'].map((product: Post) => (
+          <Product
+            count={17}
+            isFill={false}
+            postId={product.id}
+            img_urls={product.img_urls}
+            address={product.address}
+            title={product.title}
+            deposit={product.deposit}
+            rental_fee={product.rental_fee}
+          />
         ))}
       </section>
       <WritingButton />

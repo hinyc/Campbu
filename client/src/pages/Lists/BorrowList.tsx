@@ -10,10 +10,10 @@ import emptyBorrow from '../../assets/pictures/emptyBorrow.svg';
 import { container, section, message } from './tab';
 import Complete from '../../components/Complete';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { posts, Posts } from '../../Atom';
+import { posts, Posts, Post } from '../../Atom';
 
 function BorrowList() {
-  const borrowLists = useRecoilValue<Posts[]>(posts);
+  const borrowLists = useRecoilValue<Posts>(posts);
   return (
     <>
       <ListTab />
@@ -49,25 +49,22 @@ function BorrowList() {
           cursor={'pointer'}
           hover="80%"
         /> */}
-        <Complete text="예약이 취소되었습니다" />
         <section css={section}>
-          {borrowLists.map((borrowList) => (
-            <Link to={`${borrowList.id}`} css={textDecorationNone}>
-              <Reservation
-                text="예약 취소"
-                background={`${color.point}`}
-                color="white"
-                cursor="pointer"
-                hover="80%"
-                postId={borrowList.id}
-                img_urls={borrowList.img_urls}
-                address={borrowList.address}
-                title={borrowList.title}
-                deposit={borrowList.deposit}
-                rental_fee={borrowList.rental_fee}
-                reservation_dates={borrowList.reservation_dates}
-              />
-            </Link>
+          {borrowLists['posts'].map((borrowList: Post) => (
+            <Reservation
+              text="예약 취소"
+              background={`${color.point}`}
+              color="white"
+              cursor="pointer"
+              hover="80%"
+              postId={borrowList.id}
+              img_urls={borrowList.img_urls}
+              address={borrowList.address}
+              title={borrowList.title}
+              deposit={borrowList.deposit}
+              rental_fee={borrowList.rental_fee}
+              reservation_dates={borrowList.reservation_dates}
+            />
           ))}
           {/* <Reservation
             text="반납하기"

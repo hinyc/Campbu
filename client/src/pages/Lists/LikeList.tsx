@@ -9,14 +9,14 @@ import { link, visit } from './tab';
 import { container, section, message } from './tab';
 import Product from '../../components/Product';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { posts, Posts } from '../../Atom';
+import { posts, Posts, Post } from '../../Atom';
 
 const img = css`
   margin-top: ${rem(51)};
 `;
 
 function LikeList() {
-  const likeLists = useRecoilValue<Posts[]>(posts);
+  const likeLists = useRecoilValue<Posts>(posts);
   return (
     <>
       <ListTab />
@@ -53,17 +53,17 @@ function LikeList() {
           hover="80%"
         /> */}
         <section css={section}>
-          {likeLists.map((likeList) => (
-            <Link to={`${likeList.id}`} css={textDecorationNone}>
-              <Product
-                isFill={true}
-                img_urls={likeList.img_urls}
-                address={likeList.address}
-                title={likeList.title}
-                deposit={likeList.deposit}
-                rental_fee={likeList.rental_fee}
-              />
-            </Link>
+          {likeLists['posts'].map((likeList: Post) => (
+            <Product
+              count={15}
+              isFill={true}
+              postId={likeList.id}
+              img_urls={likeList.img_urls}
+              address={likeList.address}
+              title={likeList.title}
+              deposit={likeList.deposit}
+              rental_fee={likeList.rental_fee}
+            />
           ))}
         </section>
       </div>

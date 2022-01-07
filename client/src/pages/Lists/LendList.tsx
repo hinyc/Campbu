@@ -11,10 +11,10 @@ import { container, section, message } from './tab';
 import Complete from '../../components/Complete';
 import YesOrNo from '../../components/YesOrNo';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { posts, Posts } from '../../Atom';
+import { Post, posts, Posts } from '../../Atom';
 
 function LendList() {
-  const lendLists = useRecoilValue<Posts[]>(posts);
+  const lendLists = useRecoilValue<Posts>(posts);
   return (
     <>
       <ListTab />
@@ -56,23 +56,21 @@ function LendList() {
           text2="대여자가 예약을 수락하기 전까지 취소할 수 있습니다."
         />
         <section css={section}>
-          {lendLists.map((lendList) => (
-            <Link to={`${lendList.id}`} css={textDecorationNone}>
-              <Reservation
-                text="예약 취소"
-                background={`${color.point}`}
-                color="white"
-                cursor="pointer"
-                hover="80%"
-                postId={lendList.id}
-                img_urls={lendList.img_urls}
-                address={lendList.address}
-                title={lendList.title}
-                deposit={lendList.deposit}
-                rental_fee={lendList.rental_fee}
-                reservation_dates={lendList.reservation_dates}
-              />
-            </Link>
+          {lendLists['posts'].map((lendList: Post) => (
+            <Reservation
+              text="예약 취소"
+              background={`${color.point}`}
+              color="white"
+              cursor="pointer"
+              hover="80%"
+              postId={lendList.id}
+              img_urls={lendList.img_urls}
+              address={lendList.address}
+              title={lendList.title}
+              deposit={lendList.deposit}
+              rental_fee={lendList.rental_fee}
+              reservation_dates={lendList.reservation_dates}
+            />
             // <Reservation
             //   text="반납하기"
             //   background={`${color.point}`}
