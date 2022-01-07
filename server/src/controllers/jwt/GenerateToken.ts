@@ -1,11 +1,11 @@
 // import * as jwt from 'jsonwebtoken';
-const jwt = require('jsonwebtoken');
+const JWT = require('jsonwebtoken');
 import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-export async function generateToken(email: string): Promise<string> {
-  return jwt.sign(
+export async function generateToken(email: string) {
+  return JWT.sign(
     {
       email: email,
     },

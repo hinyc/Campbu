@@ -18,6 +18,7 @@ interface Props {
   children?: React.ReactNode;
   shadow?: string;
   fontWeight?: number;
+  hoverBackground?: string;
 }
 
 export const Button = (props: Props) => {
@@ -37,6 +38,7 @@ export const Button = (props: Props) => {
     children,
     shadow,
     fontWeight,
+    hoverBackground,
   } = props;
   return (
     <button
@@ -53,6 +55,7 @@ export const Button = (props: Props) => {
         opacity: ${opacity};
         :hover {
           opacity: ${hover};
+          background-color: ${hoverBackground};
           cursor: ${cursor};
           box-shadow: ${shadow};
         }

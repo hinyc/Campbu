@@ -16,10 +16,13 @@ export default {
     }
   },
   post: async (req: Request, res: Response) => {
-    const email: string = req.body.email;
-    const nickname: string = req.body.nickname;
-    const password: string = req.body.password;
-    const users_img: string = req.body.users_img;
+    interface signupType {
+      email: string;
+      nickname: string;
+      password: string;
+      users_img: string;
+    }
+    const { email, nickname, password, users_img }: signupType = req.body;
     const usersRepository = getRepository(users);
 
     if (!email || !nickname || !password || !users_img) {

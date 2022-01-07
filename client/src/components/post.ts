@@ -33,7 +33,7 @@ export const span = css`
   margin-bottom: ${rem(6)};
 `;
 
-export const address = css`
+export const addressStyle = css`
   display: inline-block;
   padding: ${rem(3)} ${rem(7)};
   font-size: ${rem(12)};
