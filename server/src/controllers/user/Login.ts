@@ -15,7 +15,7 @@ export default async (req: Request, res: Response) => {
   if (!email || !password) {
     return res.status(400).json({ message: 'Bad Request' });
   } else {
-    const userInfo = await usersRepository.findOneOrFail({
+    const userInfo = await usersRepository.findOne({
       email: email,
       password: password,
     });
