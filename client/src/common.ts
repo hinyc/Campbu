@@ -43,6 +43,18 @@ export const flexVertical = css`
   align-items: center;
 `;
 
+export const modalBackgroundStyle = css`
+  z-index: 999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: grid;
+  place-items: center;
+`;
+
 export const reviews: { id: number; review: string }[] = [
   { id: 1, review: '가까운 거래장소' },
   { id: 2, review: '상세한 물품 설명' },

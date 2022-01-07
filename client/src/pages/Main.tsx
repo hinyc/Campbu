@@ -6,29 +6,15 @@ import WritingButton from '../components/WritingButton';
 import { rem, textDecorationNone, relative } from '../common';
 import SearchGreen from '../assets/SearchGreen.svg';
 import SearchInput from '../components/SearchInput';
+import Category from '../components/Category';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { posts, Posts } from '../Atom';
 
 const container = css`
   width: ${rem(1280)};
   margin: 0 auto;
   margin-top: ${rem(36)};
   margin-bottom: ${rem(16)};
-  text-align: center;
-`;
-
-const ulStyle = css`
-  display: flex;
-  justify-content: center;
-  list-style: none;
-`;
-
-const categoryStyle = css`
-  background-color: #eeefcb;
-  margin-left: ${rem(5)};
-  margin-right: ${rem(5)};
-  width: ${rem(97)};
-  height: ${rem(122)};
-  font-size: 0.75rem;
-  font-weight: 700;
   text-align: center;
 `;
 
@@ -48,26 +34,11 @@ const section = css`
 `;
 
 function Main() {
-  const category: string[] = [
-    '전체',
-    '패키지',
-    '텐트/침낭',
-    '그릴/버너',
-    '의자/테이블',
-    '배낭/아이스박스',
-    '취식용품',
-    '기타',
-  ];
+  const products = useRecoilValue<Posts[]>(posts);
 
   return (
     <div css={container}>
-      <ul css={ulStyle}>
-        {category.map((list) => (
-          <li css={categoryStyle}>
-            <Link to="#">{list}</Link>
-          </li>
-        ))}
-      </ul>
+      <Category />
       <span css={relative}>
         <SearchInput
           text="지역을 검색해보세요!"
@@ -85,16 +56,18 @@ function Main() {
         </button>
       </span>
       <section css={section}>
-        <Link to="1" css={textDecorationNone}>
-          <Product isFill={false} />
-        </Link>
-        <Product isFill={false} />
-        <Product isFill={false} />
-        <Product isFill={false} />
-        <Product isFill={false} />
-        <Product isFill={false} />
-        <Product isFill={false} />
-        <Product isFill={false} />
+        {products.map((product) => (
+          <Link to={`${product.id}`} css={textDecorationNone}>
+            <Product
+              isFill={false}
+              img_urls={product.img_urls}
+              address={product.address}
+              title={product.title}
+              deposit={product.deposit}
+              rental_fee={product.rental_fee}
+            />
+          </Link>
+        ))}
       </section>
       <WritingButton />
     </div>
