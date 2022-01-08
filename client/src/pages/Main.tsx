@@ -82,7 +82,7 @@ function Main() {
       <section css={section}>
         {products['posts'].map((product: Post) => (
           <Product
-            count={17}
+            count={product.likes.count}
             isFill={false}
             postId={product.id}
             img_urls={product.img_urls}
