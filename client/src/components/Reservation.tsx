@@ -26,6 +26,7 @@ interface Props {
   deposit: number;
   rental_fee: number;
   reservation_dates: string[];
+  onButtonClick: any;
 }
 
 function Reservation(props: Props) {
@@ -43,6 +44,7 @@ function Reservation(props: Props) {
     deposit,
     rental_fee,
     reservation_dates,
+    onButtonClick,
   } = props;
   const length = reservation_dates.length;
   return (
@@ -83,6 +85,7 @@ function Reservation(props: Props) {
         opacity={opacity}
         cursor={cursor}
         hover={hover}
+        onClick={onButtonClick}
       />
     </div>
   );

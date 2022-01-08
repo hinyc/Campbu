@@ -8,7 +8,7 @@ import SearchGreen from '../assets/SearchGreen.svg';
 import SearchInput from '../components/SearchInput';
 import Category from '../components/Category';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { posts, Posts } from '../Atom';
+import { posts } from '../Atom';
 
 const container = css`
   width: ${rem(1280)};
@@ -33,8 +33,32 @@ const section = css`
   text-align: left;
 `;
 
+export interface Posts {
+  posts: Post[];
+}
+
+export interface Post {
+  id: number;
+  category: string;
+  deposit: number;
+  rental_fee: number;
+  unavailable_dates: string[];
+  title: string;
+  content: string;
+  longitude: number;
+  latitude: number;
+  address: string;
+  img_urls: string;
+  users_id: number;
+  reservation_dates: string[];
+  likes: {
+    count: number;
+  };
+}
+
 function Main() {
-  const products = useRecoilValue<Posts[]>(posts);
+  const products = useRecoilValue<Posts>(posts);
+  const onSearchClick = () => {};
 
   return (
     <div css={container}>
@@ -51,22 +75,22 @@ function Main() {
           padding={`${rem(18)}`}
           margin={`${rem(26)} 0`}
         />
-        <button css={button}>
+        <button css={button} onClick={onSearchClick}>
           <img src={SearchGreen} alt="search" />
         </button>
       </span>
       <section css={section}>
-        {products.map((product) => (
-          <Link to={`${product.id}`} css={textDecorationNone}>
-            <Product
-              isFill={false}
-              img_urls={product.img_urls}
-              address={product.address}
-              title={product.title}
-              deposit={product.deposit}
-              rental_fee={product.rental_fee}
-            />
-          </Link>
+        {products['posts'].map((product: Post) => (
+          <Product
+            count={product.likes.count}
+            isFill={false}
+            postId={product.id}
+            img_urls={product.img_urls}
+            address={product.address}
+            title={product.title}
+            deposit={product.deposit}
+            rental_fee={product.rental_fee}
+          />
         ))}
       </section>
       <WritingButton />
