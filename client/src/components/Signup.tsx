@@ -45,11 +45,7 @@ const checkStyle = css`
 
 const validButtonInactive = css`
   color: ${color.border};
-  pointer-events: none;
   font-weight: 700;
-  :hover {
-    color: ${color.point};
-  }
 `;
 const validButtonActive = css`
   color: ${color.point};
@@ -132,6 +128,9 @@ function Signup() {
   const [emailValid, setEmailValid] = useState(false);
   const [passwordValid, setPasswordValid] = useState(false);
 
+  const [nickDuplicateClick, setNickDuplicateClick] = useState(false);
+  const [emailDuplicateClick, setEmailDuplicateClick] = useState(false);
+
   const [nickDupliacte, setNickDupliacte] = useState(false);
   const [emailDupliacte, setEmailDupliacte] = useState(false);
 
@@ -144,6 +143,7 @@ function Signup() {
     if (nickDupliacte) {
       setNickDupliacte(false);
     }
+    setNickDuplicateClick(false);
   };
   const emailHandler = (e: any) => {
     const email = e.target.value;
@@ -154,6 +154,7 @@ function Signup() {
     if (emailDupliacte) {
       setEmailDupliacte(false);
     }
+    setEmailDuplicateClick(false);
   };
   const passwordHandler = (e: any) => {
     const password = e.target.value;
@@ -165,15 +166,38 @@ function Signup() {
   const confirmPasswordHandler = (e: any) => setConfirmPassword(e.target.value);
 
   const nicknameDuplicateCheckHandler = () => {
-    console.log('닉네임중복확인함수실행');
-    console.log('닉네임 사용가능');
-    setNickDupliacte(true);
+    setNickDuplicateClick(true);
+
+    const res = { status: 200 };
+    if (res.status === 200) {
+      console.log('닉네임 사용가능', setNickDupliacte(true));
+    } else {
+      console.log('닉네임 중복', setNickDupliacte(false));
+    }
   };
   const emailDuplicateCheckHandler = () => {
-    console.log('이메일중복확인함수실행');
-    console.log('이메일 사용가능');
-    setEmailDupliacte(true);
+    setEmailDuplicateClick(true);
+    if (emailValid) {
+      console.log(`이메일중복확인 요청 =>  ${host}/user/signup/${email}`);
+      const res = { status: 200 };
+      if (res.status === 200) {
+        console.log('이메일 사용가능', setEmailDupliacte(true));
+      } else {
+        setEmailDupliacte(false);
+        console.log('이메일 중복', setEmailDupliacte(false));
+      }
+
+      // axios.get(`${host}/user/signup/${email}`).then((res) => {
+      //   if (res.status === 200) {
+      //     console.log('이메일 사용가능', setEmailDupliacte(true));
+      //   } else {
+      //     setEmailDupliacte(false);
+      //     console.log('이메일 중복', setEmailDupliacte(false));
+      //   }
+      // });
+    }
   };
+
   const showTermsOfUseHandler = () => setShowTermsOfUse(!showTermsOfUse);
   const showTermsOfPPHandler = () => setShowTermsOfPP(!showTermsOfPP);
 
@@ -271,8 +295,12 @@ function Signup() {
                 margin-left: ${rem(5)};
               `}
             >
-              {nickname.length > 0 && nickDupliacte ? (
-                <div css={noticeOk}> * 사용가능한 닉네임입니다.</div>
+              {nickDuplicateClick ? (
+                nickDupliacte ? (
+                  <div css={noticeOk}> * 사용가능한 닉네임입니다.</div>
+                ) : (
+                  <div css={noticeNo}> * 중복된 닉네임입니다.</div>
+                )
               ) : null}
             </div>
             <span
@@ -298,12 +326,14 @@ function Signup() {
           <div css={[flexBetween, marginTop12, alignItemFlexEnd]}>
             <span>이메일</span>
             <div css={alignLeft}>
-              {email.length > 0 ? (
+              {emailDuplicateClick ? (
                 emailDupliacte ? (
                   <span css={noticeOk}>* 사용 가능한 이메일 입니다.</span>
-                ) : emailValid ? null : (
-                  <span css={noticeNo}>* 이메일 형식을 지켜주세요.</span>
+                ) : (
+                  <span css={noticeNo}>* 중복된 이메일 입니다.</span>
                 )
+              ) : emailValid ? null : email.length > 0 ? (
+                <span css={noticeNo}>* 이메일 형식을 지켜주세요.</span>
               ) : null}
             </div>
             <span
