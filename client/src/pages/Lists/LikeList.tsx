@@ -9,14 +9,23 @@ import { link, visit } from './tab';
 import { container, section, message } from './tab';
 import Product from '../../components/Product';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { posts, Posts, Post } from '../../Atom';
+import { likes, UserPost } from '../../Atom';
 
 const img = css`
   margin-top: ${rem(51)};
 `;
 
+interface Likes {
+  posts: UserPost[];
+  likes: {
+    id: number;
+    users_id: number;
+    posts_id: number;
+  }[];
+}
+
 function LikeList() {
-  const likeLists = useRecoilValue<Posts>(posts);
+  const likeLists = useRecoilValue<Likes>(likes);
   return (
     <>
       <ListTab />
@@ -53,9 +62,9 @@ function LikeList() {
           hover="80%"
         /> */}
         <section css={section}>
-          {likeLists['posts'].map((likeList: Post) => (
+          {likeLists['posts'].map((likeList: UserPost) => (
             <Product
-              count={15}
+              count={likeList.likes.count}
               isFill={true}
               postId={likeList.id}
               img_urls={likeList.img_urls}

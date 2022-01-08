@@ -10,10 +10,29 @@ import emptyBorrow from '../../assets/pictures/emptyBorrow.svg';
 import { container, section, message } from './tab';
 import Complete from '../../components/Complete';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { posts, Posts, Post } from '../../Atom';
+import { borrows, UserPost } from '../../Atom';
+import { useState } from 'react';
+import YesOrNo from '../../components/YesOrNo';
+
+interface Borrow {
+  reservation: List[];
+}
+
+interface List {
+  id: number;
+  users_id: number;
+  posts_id: number;
+  reservation_dates: string[];
+  reservation_status: number;
+  posts: UserPost;
+}
 
 function BorrowList() {
-  const borrowLists = useRecoilValue<Posts>(posts);
+  const [borrowLists, setBorrowLists] = useRecoilState<Borrow>(borrows);
+  const [buttonClick, setButtonClick] = useState<boolean>(false);
+  const onButtonClick = () => {
+    setButtonClick(true);
+  };
   return (
     <>
       <ListTab />
@@ -49,21 +68,32 @@ function BorrowList() {
           cursor={'pointer'}
           hover="80%"
         /> */}
+        {buttonClick ? (
+          <YesOrNo
+            //! reservation_status에 따라 버튼 text 바꾸기
+            text="취소"
+            title="예약 취소"
+            text1="예약을 취소하시겠습니까?"
+            text2="대여자가 예약을 수락하기 전까지 취소할 수 있습니다."
+          />
+        ) : null}
         <section css={section}>
-          {borrowLists['posts'].map((borrowList: Post) => (
+          {borrowLists['reservation'].map((borrowList: List) => (
             <Reservation
+              //! reservation_status에 따라 버튼 text 바꾸기
               text="예약 취소"
               background={`${color.point}`}
               color="white"
               cursor="pointer"
               hover="80%"
-              postId={borrowList.id}
-              img_urls={borrowList.img_urls}
-              address={borrowList.address}
-              title={borrowList.title}
-              deposit={borrowList.deposit}
-              rental_fee={borrowList.rental_fee}
+              postId={borrowList.posts.id}
+              img_urls={borrowList.posts.img_urls}
+              address={borrowList.posts.address}
+              title={borrowList.posts.title}
+              deposit={borrowList.posts.deposit}
+              rental_fee={borrowList.posts.rental_fee}
               reservation_dates={borrowList.reservation_dates}
+              onButtonClick={onButtonClick}
             />
           ))}
           {/* <Reservation

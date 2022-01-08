@@ -8,7 +8,7 @@ import SearchGreen from '../assets/SearchGreen.svg';
 import SearchInput from '../components/SearchInput';
 import Category from '../components/Category';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { Post, PostLikes, posts, Posts } from '../Atom';
+import { posts } from '../Atom';
 
 const container = css`
   width: ${rem(1280)};
@@ -32,6 +32,29 @@ const section = css`
   row-gap: ${rem(26)};
   text-align: left;
 `;
+
+export interface Posts {
+  posts: Post[];
+}
+
+export interface Post {
+  id: number;
+  category: string;
+  deposit: number;
+  rental_fee: number;
+  unavailable_dates: string[];
+  title: string;
+  content: string;
+  longitude: number;
+  latitude: number;
+  address: string;
+  img_urls: string;
+  users_id: number;
+  reservation_dates: string[];
+  likes: {
+    count: number;
+  };
+}
 
 function Main() {
   const products = useRecoilValue<Posts>(posts);

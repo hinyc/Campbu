@@ -9,14 +9,18 @@ import { link, visit } from './tab';
 import { container, section, message } from './tab';
 import Product from '../../components/Product';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { posts, Posts, Post } from '../../Atom';
+import { resists, UserPost } from '../../Atom';
 
 const img = css`
   margin-top: ${rem(21)};
 `;
 
+interface Resists {
+  posts: UserPost[];
+}
+
 function ResistList() {
-  const resistLists = useRecoilValue<Posts>(posts);
+  const resistLists = useRecoilValue<Resists>(resists);
   return (
     <>
       <ListTab />
@@ -54,9 +58,9 @@ function ResistList() {
           hover="80%"
         /> */}
         <section css={section}>
-          {resistLists['posts'].map((resistList: Post) => (
+          {resistLists['posts'].map((resistList: UserPost) => (
             <Product
-              count={0}
+              count={resistList.likes.count}
               isFill={true}
               display="none"
               postId={resistList.id}
