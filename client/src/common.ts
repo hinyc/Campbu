@@ -69,3 +69,5 @@ export const reviews: { id: number; review: string }[] = [
   { id: 11, review: '약속 시간에 지각' },
   { id: 12, review: '느린 답장' },
 ];
+
+export const host = 'http://localhost:5050';

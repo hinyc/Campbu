@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { setegid } from 'process';
+import axios from 'axios';
 import { useState } from 'react';
 import { constSelector, useRecoilState } from 'recoil';
 import { showSignupModal } from '../Atom';
@@ -8,18 +8,20 @@ import {
   color,
   rem,
   shadow,
-  hover,
   modalBackgroundStyle,
   flex,
   flexBetween,
+  flexVertical,
+  host,
 } from '../common';
 import { Button } from './Button';
 import Input from './Input';
+import { TermsOfPrivacyPolicy } from './TermsOfPrivacyPoicy';
+import TermsOfUse from './TermsOfUse';
 
-const backgroundStyle = css`
+export const backgroundStyle = css`
   background-color: white;
   width: ${rem(334)};
-  /* height: 28.125rem; */
   height: ${rem(450)};
   border-radius: ${rem(15)};
   box-shadow: ${shadow};
@@ -29,54 +31,16 @@ const backgroundStyle = css`
   font-size: ${rem(12)};
   position: relative;
 `;
-const wnr = css`
-  width: ${rem(205)};
-  border-radius: ${rem(5)};
-`;
+
 const verticalAlign = css`
   display: flex;
   flex-direction: column;
 `;
 
-const inputStyle = css`
-  height: ${rem(38)};
-  border: 1px solid ${color.border};
-  /* position: absolute; */
-  padding-left: ${rem(12)};
-  font-size: ${rem(12)};
-  ::placeholder {
-    color: ${color.placeholder};
-  }
-`;
-
-const contentAlign = css`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  /* position: absolute; */
-`;
 const checkStyle = css`
   top: ${rem(353)};
-  /* position: absolute; */
   display: flex;
   justify-content: center;
-`;
-const buttonStyle = css`
-  border: none;
-  height: ${rem(40)};
-  color: ${color.white};
-  background-color: ${color.point};
-  font-size: ${rem(12)};
-  :hover {
-    box-shadow: ${hover};
-  }
-`;
-
-const see = css`
-  font-size: ${rem(10)};
-  width: ${rem(41)};
-  height: ${rem(21)};
-  line-height: ${rem(21)};
 `;
 
 const validButtonInactive = css`
@@ -93,6 +57,10 @@ const validButtonActive = css`
   :hover {
     color: ${color.point};
     cursor: pointer;
+    opacity: 0.8;
+  }
+  :active {
+    opacity: 0.95;
   }
 `;
 const x = css`
@@ -138,6 +106,21 @@ const alignLeft = css`
   text-align: left;
   margin-left: ${rem(13.5)};
 `;
+const padding35 = css`
+  padding: ${rem(35)};
+`;
+
+const termsStyle = css`
+  border: 1px solid ${color.border};
+  border-radius: ${rem(5)};
+  padding: ${rem(10)};
+
+  font-size: ${rem(12)};
+  overflow-y: scroll;
+`;
+const backgroundNone = css`
+  background-color: rgba(0, 0, 0, 0);
+`;
 
 function Signup() {
   const [signupModal, setSignupModal] = useRecoilState(showSignupModal);
@@ -152,6 +135,10 @@ function Signup() {
   const [nickDupliacte, setNickDupliacte] = useState(false);
   const [emailDupliacte, setEmailDupliacte] = useState(false);
 
+  const [showTermsOfUse, setShowTermsOfUse] = useState(false);
+  const [showTermsOfPP, setShowTermsOfPP] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
+
   const nicknameHandler = (e: any) => {
     setNickname(e.target.value);
     if (nickDupliacte) {
@@ -164,6 +151,9 @@ function Signup() {
     const emailValidator =
       /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
     setEmailValid(emailValidator.test(email));
+    if (emailDupliacte) {
+      setEmailDupliacte(false);
+    }
   };
   const passwordHandler = (e: any) => {
     const password = e.target.value;
@@ -184,9 +174,91 @@ function Signup() {
     console.log('이메일 사용가능');
     setEmailDupliacte(true);
   };
+  const showTermsOfUseHandler = () => setShowTermsOfUse(!showTermsOfUse);
+  const showTermsOfPPHandler = () => setShowTermsOfPP(!showTermsOfPP);
+
+  const acceptTermsHandler = (e: any) => {
+    setAcceptTerms(e.target.checked);
+  };
+  const signupRequest = () => {
+    if (
+      nickDupliacte &&
+      emailDupliacte &&
+      passwordValid &&
+      password === confirmPassword &&
+      acceptTerms
+    ) {
+      console.log('회원가입 api 요청 gogo');
+
+      const signUpData: { email: string; nickname: string; password: string } =
+        {
+          email: email,
+          nickname: nickname,
+          password: password,
+        };
+
+      console.log('API', `${host}/users/signup`);
+      console.log('body', signUpData);
+      return axios
+        .post(`${process.env.REACT_APP_API_URL}/user/signup`, signUpData, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((res) => {
+          console.log('ok');
+        });
+    }
+
+    console.log('모든 정보를 입력하세요 api 요청 거절');
+  };
 
   return (
     <div css={modalBackgroundStyle}>
+      {showTermsOfUse ? (
+        <div css={[modalBackgroundStyle, backgroundNone]}>
+          <div css={[backgroundStyle, flexVertical, padding35]}>
+            <div css={termsStyle}>
+              <TermsOfUse />
+            </div>
+            <div css={marginTop12}>
+              <Button
+                text="확인"
+                width={rem(70)}
+                height={rem(30)}
+                background={color.point}
+                color={color.white}
+                cursor="pointer"
+                border="none"
+                size={rem(14)}
+                onClick={showTermsOfUseHandler}
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {showTermsOfPP ? (
+        <div css={[modalBackgroundStyle, backgroundNone]}>
+          <div css={[backgroundStyle, flexVertical, padding35]}>
+            <div css={termsStyle}>
+              <TermsOfPrivacyPolicy />
+            </div>
+            <div css={marginTop12}>
+              <Button
+                text="확인"
+                width={rem(70)}
+                height={rem(30)}
+                background={color.point}
+                color={color.white}
+                cursor="pointer"
+                border="none"
+                size={rem(14)}
+                onClick={showTermsOfPPHandler}
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
       <div className="Singup" css={backgroundStyle}>
         <div css={x} onClick={() => setSignupModal(false)}>
           &times;
@@ -227,9 +299,9 @@ function Signup() {
             <span>이메일</span>
             <div css={alignLeft}>
               {email.length > 0 ? (
-                emailValid ? (
+                emailDupliacte ? (
                   <span css={noticeOk}>* 사용 가능한 이메일 입니다.</span>
-                ) : (
+                ) : emailValid ? null : (
                   <span css={noticeNo}>* 이메일 형식을 지켜주세요.</span>
                 )
               ) : null}
@@ -262,14 +334,12 @@ function Signup() {
               >
                 {confirmPassword.length > 0 && passwordValid ? (
                   password === confirmPassword ? (
-                    <div css={noticeOk}>* 비밀번호가 일치합니다.</div>
+                    <div css={noticeOk}>* 사용가능한 비밀번호입니다.</div>
                   ) : (
                     <div css={noticeNo}>* 비밀번호가 일치하지 않습니다.</div>
                   )
                 ) : password.length > 0 ? (
-                  passwordValid ? (
-                    <div css={noticeOk}>* 사용가능한 비밀번호입니다.</div>
-                  ) : (
+                  passwordValid ? null : (
                     <div css={noticeNo}>
                       * 영문, 숫자 조합 8자 이상 입력해주세요.{' '}
                     </div>
@@ -285,7 +355,7 @@ function Signup() {
               fontSize={12}
               onChange={passwordHandler}
               value={password}
-              type="text"
+              type="password"
               placeholder="비밀번호를 입력해주세요."
             />
           </div>
@@ -296,13 +366,13 @@ function Signup() {
               fontSize={12}
               onChange={confirmPasswordHandler}
               value={confirmPassword}
-              type="text"
+              type="password"
               placeholder="비밀번호를 한 번 더입력해주세요."
             />
           </div>
 
           <div css={[flexBetween, marginTop12, alignItemCenter]}>
-            <span>이용약관</span>
+            <span>{`[필수] 이용약관`}</span>
             <Button
               text="보기"
               width={rem(41)}
@@ -311,10 +381,13 @@ function Signup() {
               color={color.white}
               border="none"
               size={rem(10)}
+              hover="0.85"
+              cursor="pointer"
+              onClick={showTermsOfUseHandler}
             />
           </div>
           <div css={[flexBetween, marginTop6, alignItemCenter]}>
-            <span>이용약관</span>
+            <span>{`[필수] 개인정보 수집 및 이용`}</span>
             <Button
               text="보기"
               width={rem(41)}
@@ -323,6 +396,9 @@ function Signup() {
               color={color.white}
               border="none"
               size={rem(10)}
+              hover="0.85"
+              cursor="pointer"
+              onClick={showTermsOfPPHandler}
             />
           </div>
           <div css={[checkStyle, marginTop12]}>
@@ -333,10 +409,11 @@ function Signup() {
                 margin-right: 0.5625rem;
               `}
               type="checkbox"
+              onClick={acceptTermsHandler}
             />
             <span>{`모든 이용약관에 동의합니다.`}</span>
           </div>
-          <div css={marginTop12}>
+          <div css={marginTop12} onClick={signupRequest}>
             <Button
               text="회원가입"
               width={rem(205)}
@@ -345,11 +422,13 @@ function Signup() {
                 nickDupliacte &&
                 emailDupliacte &&
                 passwordValid &&
-                password === confirmPassword
+                password === confirmPassword &&
+                acceptTerms
                   ? color.point
                   : color.border
               }
               color={color.white}
+              cursor="pointer"
               border="none"
               size={rem(12)}
             />
