@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import axios from 'axios';
 import { useState } from 'react';
-import { constSelector, useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { showSignupModal } from '../Atom';
 import {
   color,
@@ -119,7 +119,7 @@ const backgroundNone = css`
 `;
 
 function Signup() {
-  const [signupModal, setSignupModal] = useRecoilState(showSignupModal);
+  const setSignupModal = useSetRecoilState(showSignupModal);
   const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

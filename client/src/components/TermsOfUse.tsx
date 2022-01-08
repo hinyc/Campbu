@@ -1,8 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-
-import { color, rem } from '../common';
-
 export default function TermsOfUse() {
   return (
     <div>
