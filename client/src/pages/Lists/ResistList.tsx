@@ -9,14 +9,18 @@ import { link, visit } from './tab';
 import { container, section, message } from './tab';
 import Product from '../../components/Product';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { posts, Posts } from '../../Atom';
+import { resists, UserPost } from '../../Atom';
 
 const img = css`
   margin-top: ${rem(21)};
 `;
 
+interface Resists {
+  posts: UserPost[];
+}
+
 function ResistList() {
-  const resistLists = useRecoilValue<Posts[]>(posts);
+  const resistLists = useRecoilValue<Resists>(resists);
   return (
     <>
       <ListTab />
@@ -54,18 +58,18 @@ function ResistList() {
           hover="80%"
         /> */}
         <section css={section}>
-          {resistLists.map((resistList) => (
-            <Link to={`${resistList.id}`} css={textDecorationNone}>
-              <Product
-                isFill={true}
-                display="none"
-                img_urls={resistList.img_urls}
-                address={resistList.address}
-                title={resistList.title}
-                deposit={resistList.deposit}
-                rental_fee={resistList.rental_fee}
-              />
-            </Link>
+          {resistLists['posts'].map((resistList: UserPost) => (
+            <Product
+              count={resistList.likes.count}
+              isFill={true}
+              display="none"
+              postId={resistList.id}
+              img_urls={resistList.img_urls}
+              address={resistList.address}
+              title={resistList.title}
+              deposit={resistList.deposit}
+              rental_fee={resistList.rental_fee}
+            />
           ))}
         </section>
       </div>

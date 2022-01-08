@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { rem, absolute, flexBetween } from '../common';
+import { rem, absolute, flexBetween, textDecorationNone } from '../common';
 import LikeSymbol from './LikeSymbol';
 import Here from '../assets/Here.svg';
 import {
@@ -11,6 +11,7 @@ import {
   addressStyle,
   moneyTitle,
 } from './post';
+import { Link } from 'react-router-dom';
 
 interface Props {
   isFill: boolean;
@@ -20,14 +21,24 @@ interface Props {
   title: string;
   deposit: number;
   rental_fee: number;
+  count: number;
+  postId: number;
 }
 
 function Product(props: Props) {
-  const { isFill, display, img_urls, address, title, deposit, rental_fee } =
-    props;
+  const {
+    isFill,
+    display,
+    img_urls,
+    address,
+    title,
+    deposit,
+    rental_fee,
+    count,
+    postId,
+  } = props;
   return (
     <div css={post}>
-      <img src={img_urls} alt="product" css={img} />
       <div
         css={[
           absolute,
@@ -40,29 +51,32 @@ function Product(props: Props) {
         <LikeSymbol
           isFill={isFill}
           fontSize={13}
-          count={17}
+          count={count}
           width={46}
           height={24}
           display={display}
         />
       </div>
-      <div css={textContainer}>
-        <span css={[span, moneyTitle, addressStyle]}>
-          <img src={Here} alt="위치" style={{ marginRight: '4px' }} />
-          {address}
-        </span>
-        <span css={span}>{title}</span>
-        <div css={flexBetween}>
-          <span>
-            <div css={[span, moneyTitle]}>보증금</div>
-            <div css={[span, `margin-bottom: ${rem(15)}`]}>{deposit}원</div>
+      <Link to={`${postId}`} css={textDecorationNone}>
+        <img src={img_urls} alt="product" css={img} />
+        <div css={textContainer}>
+          <span css={[span, moneyTitle, addressStyle]}>
+            <img src={Here} alt="위치" style={{ marginRight: '4px' }} />
+            {address}
           </span>
-          <span>
-            <div css={[span, moneyTitle]}>대여비</div>
-            <div css={span}>{rental_fee}원</div>
-          </span>
+          <span css={span}>{title}</span>
+          <div css={flexBetween}>
+            <span>
+              <div css={[span, moneyTitle]}>보증금</div>
+              <div css={[span, `margin-bottom: ${rem(15)}`]}>{deposit}원</div>
+            </span>
+            <span>
+              <div css={[span, moneyTitle]}>대여비</div>
+              <div css={span}>{rental_fee}원</div>
+            </span>
+          </div>
         </div>
-      </div>
+      </Link>
     </div>
   );
 }
