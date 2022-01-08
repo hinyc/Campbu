@@ -22,7 +22,7 @@ export class users {
   @Column()
   nickname: string;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @Column()
