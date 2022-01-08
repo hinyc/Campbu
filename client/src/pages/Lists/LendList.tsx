@@ -11,10 +11,46 @@ import { container, section, message } from './tab';
 import Complete from '../../components/Complete';
 import YesOrNo from '../../components/YesOrNo';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { posts, Posts } from '../../Atom';
+import { lends } from '../../Atom';
+import { useState } from 'react';
+
+interface Lends {
+  posts: Post[];
+}
+
+interface Post {
+  id: number;
+  category: string;
+  deposit: number;
+  rental_fee: number;
+  unavailable_dates: string[];
+  title: string;
+  content: string;
+  longitude: number;
+  latitude: number;
+  address: string;
+  img_urls: string;
+  users_id: number;
+  likes: {
+    count: number;
+  };
+  reservation: List[];
+}
+
+interface List {
+  id: number;
+  users_id: number;
+  posts_id: number;
+  reservation_dates: string[];
+  reservation_status: number;
+}
 
 function LendList() {
-  const lendLists = useRecoilValue<Posts[]>(posts);
+  const lendLists = useRecoilValue<Lends>(lends);
+  const [buttonClick, setButtonClick] = useState<boolean>(false);
+  const onButtonClick = () => {
+    setButtonClick(true);
+  };
   return (
     <>
       <ListTab />
@@ -48,31 +84,33 @@ function LendList() {
           border={`1px solid ${color.mid}`}
           size={`${rem(14)}`}
         /> */}
-        {/* <Complete text="반납이 확인되었습니다" /> */}
-        <YesOrNo
-          text="취소"
-          title="예약 취소"
-          text1="예약을 취소하시겠습니까?"
-          text2="대여자가 예약을 수락하기 전까지 취소할 수 있습니다."
-        />
+        {buttonClick ? (
+          <YesOrNo
+            //! reservation_status에 따라 text 바꾸기
+            text="취소"
+            title="예약 취소"
+            text1="예약을 취소하시겠습니까?"
+            text2="대여자가 예약을 수락하기 전까지 취소할 수 있습니다."
+          />
+        ) : null}
         <section css={section}>
-          {lendLists.map((lendList) => (
-            <Link to={`${lendList.id}`} css={textDecorationNone}>
-              <Reservation
-                text="예약 취소"
-                background={`${color.point}`}
-                color="white"
-                cursor="pointer"
-                hover="80%"
-                postId={lendList.id}
-                img_urls={lendList.img_urls}
-                address={lendList.address}
-                title={lendList.title}
-                deposit={lendList.deposit}
-                rental_fee={lendList.rental_fee}
-                reservation_dates={lendList.reservation_dates}
-              />
-            </Link>
+          {lendLists['posts'].map((lendList: Post) => (
+            //! reservation_status에 따라 버튼 text 바꾸기
+            <Reservation
+              text="예약 취소"
+              background={`${color.point}`}
+              color="white"
+              cursor="pointer"
+              hover="80%"
+              postId={lendList.id}
+              img_urls={lendList.img_urls}
+              address={lendList.address}
+              title={lendList.title}
+              deposit={lendList.deposit}
+              rental_fee={lendList.rental_fee}
+              reservation_dates={lendList.reservation[0].reservation_dates}
+              onButtonClick={onButtonClick}
+            />
             // <Reservation
             //   text="반납하기"
             //   background={`${color.point}`}
