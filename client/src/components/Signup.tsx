@@ -166,18 +166,20 @@ function Signup() {
   const confirmPasswordHandler = (e: any) => setConfirmPassword(e.target.value);
 
   const nicknameDuplicateCheckHandler = () => {
-    setNickDuplicateClick(true);
+    if (nickname.length > 0) {
+      setNickDuplicateClick(true);
 
-    const res = { status: 200 };
-    if (res.status === 200) {
-      console.log('닉네임 사용가능', setNickDupliacte(true));
-    } else {
-      console.log('닉네임 중복', setNickDupliacte(false));
+      const res = { status: 200 };
+      if (res.status === 200) {
+        console.log('닉네임 사용가능', setNickDupliacte(true));
+      } else {
+        console.log('닉네임 중복', setNickDupliacte(false));
+      }
     }
   };
   const emailDuplicateCheckHandler = () => {
-    setEmailDuplicateClick(true);
     if (emailValid) {
+      setEmailDuplicateClick(true);
       console.log(`이메일중복확인 요청 =>  ${host}/user/signup/${email}`);
       const res = { status: 200 };
       if (res.status === 200) {
