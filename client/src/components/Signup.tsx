@@ -169,34 +169,31 @@ function Signup() {
     if (nickname.length > 0) {
       setNickDuplicateClick(true);
 
-      const res = { status: 200 };
-      if (res.status === 200) {
-        console.log('닉네임 사용가능', setNickDupliacte(true));
-      } else {
-        console.log('닉네임 중복', setNickDupliacte(false));
-      }
+      axios.get(`${host}/user/signup/${nickname}`).then((res) => {
+        if (res.status === 200) {
+          console.log(`API ${host}/user/signup/${nickname}`);
+          console.log('이메일 사용가능', setEmailDupliacte(true));
+        } else {
+          setEmailDupliacte(false);
+          console.log('이메일 중복', setEmailDupliacte(false));
+        }
+      });
     }
   };
+
   const emailDuplicateCheckHandler = () => {
     if (emailValid) {
       setEmailDuplicateClick(true);
-      console.log(`이메일중복확인 요청 =>  ${host}/user/signup/${email}`);
-      const res = { status: 200 };
-      if (res.status === 200) {
-        console.log('이메일 사용가능', setEmailDupliacte(true));
-      } else {
-        setEmailDupliacte(false);
-        console.log('이메일 중복', setEmailDupliacte(false));
-      }
 
-      // axios.get(`${host}/user/signup/${email}`).then((res) => {
-      //   if (res.status === 200) {
-      //     console.log('이메일 사용가능', setEmailDupliacte(true));
-      //   } else {
-      //     setEmailDupliacte(false);
-      //     console.log('이메일 중복', setEmailDupliacte(false));
-      //   }
-      // });
+      axios.get(`${host}/user/signup/${email}`).then((res) => {
+        if (res.status === 200) {
+          console.log(`API ${host}/user/signup/${email}`);
+          console.log('이메일 사용가능', setEmailDupliacte(true));
+        } else {
+          setEmailDupliacte(false);
+          console.log('이메일 중복', setEmailDupliacte(false));
+        }
+      });
     }
   };
 
@@ -215,7 +212,6 @@ function Signup() {
       acceptTerms
     ) {
       console.log('회원가입 api 요청 gogo');
-
       const signUpData: { email: string; nickname: string; password: string } =
         {
           email: email,
@@ -223,20 +219,21 @@ function Signup() {
           password: password,
         };
 
-      console.log('API', `${host}/users/signup`);
+      console.log('API', `${host}/user/signup`);
       console.log('body', signUpData);
-      return axios
-        .post(`${process.env.REACT_APP_API_URL}/user/signup`, signUpData, {
+      axios
+        .post(`${host}/user/signup`, signUpData, {
           headers: {
             'Content-Type': 'application/json',
           },
         })
         .then((res) => {
-          console.log('ok');
-        });
+          console.log('signup ok');
+        })
+        .catch((err) => console.log(err));
+    } else {
+      console.log('모든 정보를 입력하세요 api 요청 거절');
     }
-
-    console.log('모든 정보를 입력하세요 api 요청 거절');
   };
 
   return (
