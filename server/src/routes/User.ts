@@ -6,7 +6,7 @@ import logoutController from '../controllers/user/Logout';
 import likeController from '../controllers/user/Likes';
 import reviewController from '../controllers/user/Reviews';
 
-router.get('/signup/:email', signupController.get);
+router.get('/signup/', signupController.get);
 router.post('/signup', signupController.post);
 router.post('/login', loginController);
 router.get('/logout', logoutController);

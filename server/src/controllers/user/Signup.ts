@@ -2,17 +2,47 @@ import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import { users } from '../../entity/users';
 
+interface info {
+  email: string;
+  nickname: string;
+}
+
 export default {
-  get: async (req: Request, res: Response) => {
-    const email: string = req.params.email;
+  get: async (req: Request<{}, {}, {}, info>, res: Response) => {
+    const { query } = req;
     const usersRepository = getRepository(users);
 
-    const userInfo = await usersRepository.findOne({ email: email });
+    if (query.email) {
+      const userInfo = await usersRepository.findOne({ email: query.email });
+
+      if (userInfo) {
+        return res.status(409).json({ message: 'Email already exists' });
+      } else {
+        return res.status(200).json({ message: 'Avaliable Email' });
+      }
+    } else if (query.nickname) {
+      const userInfo = await usersRepository.findOne({
+        nickname: query.nickname,
+      });
+
+      if (userInfo) {
+        return res.status(409).json({ message: 'Nickname already exists' });
+      } else {
+        return res.status(200).json({ message: 'Avaliable Nickname' });
+      }
+    }
+  },
+  nickname: async (req: Request, res: Response) => {
+    console.log(req.query);
+    const nickname: string = req.params.nickname;
+    const usersRepository = getRepository(users);
+
+    const userInfo = await usersRepository.findOne({ nickname: nickname });
 
     if (userInfo) {
-      return res.status(409).json({ message: 'Email already exists' });
+      return res.status(409).json({ message: 'Nickname already exists' });
     } else {
-      return res.status(200).json({ message: 'Avaliable Email' });
+      return res.status(200).json({ message: 'Avaliable Nickname' });
     }
   },
   post: async (req: Request, res: Response) => {
@@ -22,10 +52,10 @@ export default {
       password: string;
       users_img: string;
     }
-    const { email, nickname, password, users_img }: signupType = req.body;
+    const { email, nickname, password }: signupType = req.body;
     const usersRepository = getRepository(users);
 
-    if (!email || !nickname || !password || !users_img) {
+    if (!email || !nickname || !password) {
       return res.status(400).json({ message: 'Bad Request' });
     } else {
       const userInfo = await usersRepository.findOne({ email: email });
@@ -37,7 +67,6 @@ export default {
         email: email,
         nickname: nickname,
         password: password,
-        users_img: users_img,
       });
 
       return res.status(201).json({ message: 'Create Successfully' });
