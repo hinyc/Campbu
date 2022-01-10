@@ -5,7 +5,7 @@ import { Button } from './Button';
 import Input from './Input';
 import naver from '../assets/naver.png';
 import kakao from '../assets/kakao.png';
-import { constSelector, useRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { isLogin, showLoginModal, showSignupModal } from '../Atom';
 import { useState } from 'react';
 import axios from 'axios';

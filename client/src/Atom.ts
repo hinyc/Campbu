@@ -239,3 +239,10 @@ export interface UserPost {
     count: number;
   };
 }
+
+//? 달력 컴포넌트용 전역 상태
+
+export const selectDate = atom<string[]>({
+  key: 'selectDate',
+  default: [],
+});
