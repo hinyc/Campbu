@@ -172,10 +172,10 @@ function Signup() {
       axios.get(`${host}/user/signup/${nickname}`).then((res) => {
         if (res.status === 200) {
           console.log(`API ${host}/user/signup/${nickname}`);
-          console.log('이메일 사용가능', setEmailDupliacte(true));
+          console.log('닉네임 사용가능', setNickDupliacte(true));
         } else {
-          setEmailDupliacte(false);
-          console.log('이메일 중복', setEmailDupliacte(false));
+          setNickDupliacte(false);
+          console.log('닉네임 중복', setNickDupliacte(false));
         }
       });
     }
@@ -203,7 +203,7 @@ function Signup() {
   const acceptTermsHandler = (e: any) => {
     setAcceptTerms(e.target.checked);
   };
-  const signupRequest = () => {
+  const signupHandler = () => {
     if (
       nickDupliacte &&
       emailDupliacte &&
@@ -212,12 +212,17 @@ function Signup() {
       acceptTerms
     ) {
       console.log('회원가입 api 요청 gogo');
-      const signUpData: { email: string; nickname: string; password: string } =
-        {
-          email: email,
-          nickname: nickname,
-          password: password,
-        };
+      const signUpData: {
+        email: string;
+        nickname: string;
+        password: string;
+        users_img: string;
+      } = {
+        email: email,
+        nickname: nickname,
+        password: password,
+        users_img: 'sfd',
+      };
 
       console.log('API', `${host}/user/signup`);
       console.log('body', signUpData);
@@ -229,6 +234,7 @@ function Signup() {
         })
         .then((res) => {
           console.log('signup ok');
+          setSignupModal(false);
         })
         .catch((err) => console.log(err));
     } else {
@@ -442,7 +448,7 @@ function Signup() {
             />
             <span>{`모든 이용약관에 동의합니다.`}</span>
           </div>
-          <div css={marginTop12} onClick={signupRequest}>
+          <div css={marginTop12} onClick={signupHandler}>
             <Button
               text="회원가입"
               width={rem(205)}
