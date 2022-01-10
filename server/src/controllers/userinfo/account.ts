@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { createQueryBuilder, getRepository } from 'typeorm';
 import { users } from '../../entity/users';
-import { users_reviews } from '../../entity/users_reviews';
 import { authorizeToken } from '../jwt/AuthorizeToken';
 
 export default {
@@ -41,11 +40,14 @@ export default {
     if (!userInfo) {
       return res.status(401).json({ message: 'Unauthorized User' });
     } else {
-      console.log('nickname', nickname);
-      console.log('password', password);
-      console.log('users_img', users_img);
       if (nickname) {
         await usersRepository.update(userInfo.id, { nickname: nickname });
+      }
+      if (password) {
+        await usersRepository.update(userInfo.id, { password: password });
+      }
+      if (users_img) {
+        await usersRepository.update(userInfo.id, { users_img: users_img });
       }
       const userReviews = await createQueryBuilder('users_reviews')
         .select(['reviews_id', 'count'])
@@ -55,10 +57,26 @@ export default {
       const userInfoUpdated = await usersRepository.findOne({
         email: decoded.email,
       });
-
       return res
         .status(200)
         .json({ users: userInfoUpdated, reviews: userReviews });
     }
+  },
+  delete: async (req: Request, res: Response) => {
+    const decoded = await authorizeToken(req, res);
+    const usersRepository = getRepository(users);
+
+    const userInfo = await usersRepository.findOne({
+      email: decoded.email,
+    });
+
+    if (!userInfo) {
+      return res.status(401).json({ message: 'Unauthorized User' });
+    } else {
+      await usersRepository.delete({ id: userInfo.id });
+    }
+    return res
+      .status(200)
+      .json({ message: 'Account information Successfully Deleted' });
   },
 };
