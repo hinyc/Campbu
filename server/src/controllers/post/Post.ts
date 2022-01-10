@@ -34,7 +34,7 @@ export default {
       img_urls: string[];
     }
 
-    const id: string = req.params.postId;
+    const id: number = Number(req.params.postId);
 
     const {
       category,
@@ -58,25 +58,25 @@ export default {
       const reviewRepository = getRepository(users_reviews);
 
       if (category) {
-        await postRepository.update(Number(id), { category });
+        await postRepository.update(id, { category });
       }
       if (deposit) {
-        await postRepository.update(Number(id), { deposit });
+        await postRepository.update(id, { deposit });
       }
       if (rental_fee) {
-        await postRepository.update(Number(id), { rental_fee });
+        await postRepository.update(id, { rental_fee });
       }
       if (unavailable_dates) {
-        await postRepository.update(Number(id), { unavailable_dates });
+        await postRepository.update(id, { unavailable_dates });
       }
       if (title) {
-        await postRepository.update(Number(id), { title });
+        await postRepository.update(id, { title });
       }
       if (content) {
-        await postRepository.update(Number(id), { content });
+        await postRepository.update(id, { content });
       }
       if (img_urls) {
-        await postRepository.update(Number(id), { img_urls });
+        await postRepository.update(id, { img_urls });
       }
       if (address) {
         const coordinates = await axios
@@ -91,14 +91,28 @@ export default {
           .then((res) => {
             return res.data.documents[0];
           });
-        await postRepository.update(Number(id), {
+        await postRepository.update(id, {
           address,
           longitude: coordinates.x,
           latitude: coordinates.y,
         });
       }
-      const post = await postRepository.findOne({ id: Number(id) });
-      const reviews = await reviewRepository.find({ users_id: user });
+
+      const userId = await userRepository
+        .createQueryBuilder()
+        .select('id')
+        .where('users.email = :email', { email: decoded.email })
+        .getRawOne()
+        .then((res: Response) => {
+          return Object.values(res)[0];
+        });
+
+      const post = await postRepository.findOne({ id });
+      const reviews = await reviewRepository
+        .createQueryBuilder()
+        .select(['count', 'reviews_id'])
+        .where('users_reviews.users_id = :users_id', { users_id: userId })
+        .getRawMany();
 
       res.status(200).json({ posts: post, reviews });
     }
