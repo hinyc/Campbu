@@ -9,6 +9,8 @@ import SearchInput from '../components/SearchInput';
 import Category from '../components/Category';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { posts } from '../Atom';
+import { useState } from 'react';
+import LoginModal from '../components/LoginModal';
 
 const container = css`
   width: ${rem(1280)};
@@ -58,6 +60,7 @@ export interface Post {
 
 function Main() {
   const products = useRecoilValue<Posts>(posts);
+  const [modalShow, setModalShow] = useState(false);
   const onSearchClick = () => {};
 
   return (
@@ -79,10 +82,13 @@ function Main() {
           <img src={SearchGreen} alt="search" />
         </button>
       </span>
+      {modalShow ? <LoginModal /> : null}
       <section css={section}>
         {products['posts'].map((product: Post) => (
           <Product
+            setModalShow={setModalShow}
             count={product.likes.count}
+            //! 좋아요 눌렀는지 안눌렀는지 상태 변경
             isFill={false}
             postId={product.id}
             img_urls={product.img_urls}

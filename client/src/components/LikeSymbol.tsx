@@ -32,21 +32,32 @@ interface LikeProps {
   fontSize?: number | undefined;
   borderColor?: string | undefined;
   display?: string | undefined;
+  fillHeart?: boolean;
+  countHeart?: number;
 }
 
 function LikeSymbol(props: LikeProps) {
-  const { isFill, count, width, height, fontSize, borderColor, display } =
-    props;
-  const [fillHeart, setFillHeart] = useState<boolean>(isFill);
-  const [countHeart, setCountHeart] = useState<number>(count);
-  const onHeartClick = () => {
-    setFillHeart(!fillHeart);
-    if (fillHeart === true) {
-      setCountHeart(countHeart - 1);
-    } else {
-      setCountHeart(countHeart + 1);
-    }
-  };
+  const {
+    isFill,
+    count,
+    width,
+    height,
+    fontSize,
+    borderColor,
+    display,
+    fillHeart,
+    countHeart,
+  } = props;
+  // const [fillHeart, setFillHeart] = useState<boolean>(isFill);
+  // const [countHeart, setCountHeart] = useState<number>(count);
+  // const onHeartClick = () => {
+  // setFillHeart(!fillHeart);
+  // if (fillHeart === true) {
+  //   setCountHeart(countHeart - 1);
+  // } else {
+  //   setCountHeart(countHeart + 1);
+  // }
+  // };
   return (
     <div
       css={[
@@ -59,7 +70,7 @@ function LikeSymbol(props: LikeProps) {
           display: ${display ? display : 'flex'};
         `,
       ]}
-      onClick={onHeartClick}
+      // onClick={onHeartClick}
     >
       <button css={heart}>
         {fillHeart ? (
