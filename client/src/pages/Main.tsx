@@ -62,6 +62,7 @@ function Main() {
   const products = useRecoilValue<Posts>(posts);
   const [modalShow, setModalShow] = useState(false);
   const onSearchClick = () => {};
+  const onChange = () => {};
 
   return (
     <div css={container}>
@@ -77,6 +78,7 @@ function Main() {
           placeholder={`#afc89b`}
           padding={`${rem(18)}`}
           margin={`${rem(26)} 0`}
+          onChange={onChange}
         />
         <button css={button} onClick={onSearchClick}>
           <img src={SearchGreen} alt="search" />
@@ -88,7 +90,7 @@ function Main() {
           <Product
             setModalShow={setModalShow}
             count={product.likes.count}
-            //! 좋아요 눌렀는지 안눌렀는지 상태 변경
+            // TODO: 좋아요 눌렀는지 안눌렀는지 상태 변경
             isFill={false}
             postId={product.id}
             img_urls={product.img_urls}
