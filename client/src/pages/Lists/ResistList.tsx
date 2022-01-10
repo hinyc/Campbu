@@ -63,7 +63,7 @@ function ResistList() {
           {resistLists['posts'].map((resistList: UserPost) => (
             <Product
               setModalShow={setModalShow}
-              count={resistList.likes.count}
+              count={resistList.likes_count}
               isFill={true}
               display="none"
               postId={resistList.id}

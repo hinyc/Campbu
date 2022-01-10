@@ -24,9 +24,7 @@ export const posts = atom({
           'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
         users_id: 1,
         reservation_dates: ['2021-12-29', '2021-12-30', '2021-12-31'],
-        likes: {
-          count: 15,
-        },
+        likes_count: 15,
       },
       {
         id: 2,
@@ -43,9 +41,7 @@ export const posts = atom({
           'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
         users_id: 2,
         reservation_dates: ['2022-01-01', '2021-01-02', '2022-01-03'],
-        likes: {
-          count: 5,
-        },
+        likes_count: 5,
       },
     ],
   },
@@ -93,9 +89,7 @@ export const borrows = atom({
           img_urls:
             'https://static.coupangcdn.com/image/vendor_inventory/a0f5/5fe889df54254c27c75877f9c5339137c91d5b5ac68799e924573a317d15.jpeg',
           users_id: 1,
-          likes: {
-            count: 5,
-          },
+          likes_count: 5,
         },
       },
       {
@@ -118,9 +112,7 @@ export const borrows = atom({
           img_urls:
             'https://static.coupangcdn.com/image/vendor_inventory/a0f5/5fe889df54254c27c75877f9c5339137c91d5b5ac68799e924573a317d15.jpeg',
           users_id: 1,
-          likes: {
-            count: 5,
-          },
+          likes_count: 5,
         },
       },
     ],
@@ -145,9 +137,7 @@ export const lends = atom({
         img_urls:
           'https://5.imimg.com/data5/GD/XU/MY-27300/vintage-camping-tent-500x500.jpg',
         users_id: 1,
-        likes: {
-          count: 5,
-        },
+        likes_count: 5,
         reservation: [
           {
             id: 1,
@@ -180,9 +170,7 @@ export const likes = atom({
         img_urls:
           'https://folkency.nfm.go.kr/upload/img/20200522/20200522183534_t_.jpg',
         users_id: 1,
-        likes: {
-          count: 5,
-        },
+        likes_count: 5,
       },
     ],
     likes: [
@@ -213,9 +201,7 @@ export const resists = atom({
         img_urls:
           'https://wacarrandson.co.uk/wp-content/uploads/2018/03/Bell-tent-Hire.jpg',
         users_id: 1,
-        likes: {
-          count: 5,
-        },
+        likes_count: 5,
       },
     ],
   },
@@ -235,9 +221,7 @@ export interface UserPost {
   address: string;
   img_urls: string;
   users_id: number;
-  likes: {
-    count: number;
-  };
+  likes_count: number;
 }
 
 //? 달력 컴포넌트용 전역 상태

@@ -58,9 +58,7 @@ export interface Post {
   img_urls: string;
   users_id: number;
   reservation_dates: string[];
-  likes: {
-    count: number;
-  };
+  likes_count: number;
 }
 
 function Main() {
@@ -178,7 +176,7 @@ function Main() {
           {products['posts'].map((product: Post) => (
             <Product
               setModalShow={setLoginModalShow}
-              count={product.likes.count}
+              count={product.likes_count}
               // TODO: 좋아요 눌렀는지 안눌렀는지 상태 변경
               isFill={false}
               postId={product.id}
