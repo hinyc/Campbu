@@ -1,29 +1,52 @@
-import { Request, Response } from 'express';
+import { Request, response, Response } from 'express';
 import { posts } from '../../entity/posts';
 import { users } from '../../entity/users';
 import { users_reviews } from '../../entity/users_reviews';
 import { getRepository } from 'typeorm';
+import { authorizeToken } from '../jwt/AuthorizeToken';
 
 export default {
   get: async (req: Request, res: Response) => {
     const id: number = Number(req.params.postId);
     const postRepository = getRepository(posts);
-    const reviewRepository = getRepository(users_reviews);
     const userRepository = getRepository(users);
+    const reviewRepository = getRepository(users_reviews);
 
-    const products = await getRepository(posts)
+    const post = await postRepository
       .createQueryBuilder('post')
       .loadRelationCountAndMap('post.likes_count', 'post.likes')
       .where('post.id = :id', { id: id })
       .getOne();
 
-    const user = userRepository.findOne({});
-    res.status(200).json({ posts: products });
+    const userId = await postRepository
+      .createQueryBuilder()
+      .select('users_id')
+      .where('posts.id = :id', { id: id })
+      .getRawOne()
+      .then(async (res: Response) => {
+        return Object.values(res)[0];
+      });
+
+    const reviews = await reviewRepository
+      .createQueryBuilder()
+      .select(['count', 'reviews_id'])
+      .where('users_reviews.users_id = :users_id', { users_id: userId })
+      .getRawMany();
+
+    res.status(200).json({ posts: post, reviews });
   },
   delete: async (req: Request, res: Response) => {
-    const id: string = req.params.postId;
-    const postRepository = getRepository(posts);
-    await postRepository.delete({ id: Number(id) });
-    res.status(200).json({ message: 'Product Post Successfully Deleted' });
+    const decoded = await authorizeToken(req, res);
+    const userRepository = await getRepository(users);
+    const user = await userRepository.findOne({ email: decoded.email });
+
+    if (!user) {
+      res.status(401).json({ message: 'Unauthorized User' });
+    } else {
+      const id: string = req.params.postId;
+      const postRepository = getRepository(posts);
+      await postRepository.delete({ id: Number(id) });
+      res.status(200).json({ message: 'Product Post Successfully Deleted' });
+    }
   },
 };

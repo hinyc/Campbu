@@ -4,6 +4,7 @@ import axios from 'axios';
 import { posts } from '../../entity/posts';
 import { users } from '../../entity/users';
 import { likes } from '../../entity/likes';
+import { authorizeToken } from '../jwt/AuthorizeToken';
 const jwt = require('jsonwebtoken');
 
 export = async (req: Request, res: Response) => {
@@ -56,38 +57,34 @@ export = async (req: Request, res: Response) => {
         },
       );
 
-      const products = await getRepository(posts)
+      const post = await getRepository(posts)
         .createQueryBuilder('post')
         .loadRelationCountAndMap('post.likes_count', 'post.likes')
         .where('post.id IN (:...ids)', { ids: nearbyProductId })
         .getMany();
 
       if (req.cookies.jwt) {
-        const decoded = jwt.verify(
-          req.cookies.jwt,
-          process.env.JWT_SECRET,
-          (err: Error, decoded: object) => {
-            if (err) {
-              return { email: null };
-            } else {
-              return decoded;
-            }
-          },
-        );
-
+        const decoded = await authorizeToken(req, res);
         const userRepository = await getRepository(users);
-        const user = await userRepository.findOne({ email: decoded.email });
+        const userId = await userRepository
+          .createQueryBuilder()
+          .select('id')
+          .where('users.email = :email', { email: decoded.email })
+          .getRawOne()
+          .then((res: Response) => {
+            return Object.values(res)[0];
+          });
 
         const likesRepository = await getRepository(likes);
         const like = await likesRepository
           .createQueryBuilder()
-          .where({ users_id: user })
-          .addSelect('likes.posts_id')
-          .getMany();
+          .select('posts_id')
+          .where('likes.users_id = :users_id', { users_id: userId })
+          .getRawMany();
 
-        res.status(200).json({ posts: products, likes: like });
+        res.status(200).json({ posts: post, likes: like });
       } else {
-        res.status(200).json({ posts: products, likes: [] });
+        res.status(200).json({ posts: post, likes: [] });
       }
     }
   }
