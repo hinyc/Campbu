@@ -12,6 +12,7 @@ interface Props {
   placeholder: string;
   padding: string;
   margin: string;
+  onChange: any;
 }
 function SearchInput(props: Props) {
   const {
@@ -24,6 +25,7 @@ function SearchInput(props: Props) {
     placeholder,
     padding,
     margin,
+    onChange,
   } = props;
   return (
     <input
@@ -52,6 +54,7 @@ function SearchInput(props: Props) {
         } /* Firefox 18- */
       `}
       placeholder={text}
+      onChange={onChange}
     />
   );
 }

@@ -1,6 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { rem, absolute, flexBetween, textDecorationNone } from '../common';
+import {
+  rem,
+  absolute,
+  flexBetween,
+  textDecorationNone,
+  host,
+} from '../common';
 import LikeSymbol from './LikeSymbol';
 import Here from '../assets/Here.svg';
 import {
@@ -12,6 +18,10 @@ import {
   moneyTitle,
 } from './post';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useRecoilValue } from 'recoil';
+import { isLogin } from '../Atom';
+import { useState } from 'react';
 
 interface Props {
   isFill: boolean;
@@ -23,6 +33,7 @@ interface Props {
   rental_fee: number;
   count: number;
   postId: number;
+  setModalShow: any;
 }
 
 function Product(props: Props) {
@@ -36,7 +47,39 @@ function Product(props: Props) {
     rental_fee,
     count,
     postId,
+    setModalShow,
   } = props;
+
+  const [countHeart, setCountHeart] = useState<number>(count);
+  const [fillHeart, setFillHeart] = useState<boolean>(isFill);
+  const HeartClickPOST = () => {
+    // axios
+    //   .post(
+    //     `${host}/user/like`,
+    //     { post_id: postId },
+    //     {
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //     },
+    //   )
+    //   .then((res) => {
+    //     if (res.status === 201) {
+    if (fillHeart) {
+      console.log('cancel post [liked]!');
+      setCountHeart(count - 1);
+    } else {
+      console.log('add post [liked]!');
+      setCountHeart(countHeart + 1);
+    }
+    setFillHeart(!fillHeart);
+    // } else if (res.status === 401) {
+    //   console.log('Unauthorized User');
+    //   setModalShow(true);
+    // }
+    // });
+  };
+
   return (
     <div css={post}>
       <div
@@ -48,14 +91,18 @@ function Product(props: Props) {
           `,
         ]}
       >
-        <LikeSymbol
-          isFill={isFill}
-          fontSize={13}
-          count={count}
-          width={46}
-          height={24}
-          display={display}
-        />
+        <div onClick={HeartClickPOST}>
+          <LikeSymbol
+            fillHeart={fillHeart}
+            countHeart={countHeart}
+            isFill={isFill}
+            fontSize={13}
+            count={count}
+            width={46}
+            height={24}
+            display={display}
+          />
+        </div>
       </div>
       <Link to={`${postId}`} css={textDecorationNone}>
         <img src={img_urls} alt="product" css={img} />
