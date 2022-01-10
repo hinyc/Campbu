@@ -10,6 +10,7 @@ import { container, section, message } from './tab';
 import Product from '../../components/Product';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { likes, UserPost } from '../../Atom';
+import { useState } from 'react';
 
 const img = css`
   margin-top: ${rem(51)};
@@ -26,6 +27,7 @@ interface Likes {
 
 function LikeList() {
   const likeLists = useRecoilValue<Likes>(likes);
+  const [modalShow, setModalShow] = useState(false);
   return (
     <>
       <ListTab />
@@ -64,6 +66,7 @@ function LikeList() {
         <section css={section}>
           {likeLists['posts'].map((likeList: UserPost) => (
             <Product
+              setModalShow={setModalShow}
               count={likeList.likes.count}
               isFill={true}
               postId={likeList.id}

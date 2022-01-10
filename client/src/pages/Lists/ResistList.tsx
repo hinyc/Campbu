@@ -10,6 +10,7 @@ import { container, section, message } from './tab';
 import Product from '../../components/Product';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { resists, UserPost } from '../../Atom';
+import { useState } from 'react';
 
 const img = css`
   margin-top: ${rem(21)};
@@ -21,6 +22,7 @@ interface Resists {
 
 function ResistList() {
   const resistLists = useRecoilValue<Resists>(resists);
+  const [modalShow, setModalShow] = useState(false);
   return (
     <>
       <ListTab />
@@ -60,6 +62,7 @@ function ResistList() {
         <section css={section}>
           {resistLists['posts'].map((resistList: UserPost) => (
             <Product
+              setModalShow={setModalShow}
               count={resistList.likes.count}
               isFill={true}
               display="none"

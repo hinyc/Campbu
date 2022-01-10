@@ -24,14 +24,18 @@ export class users_reviews {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne((type) => users)
+  @ManyToOne((type) => users, (users) => users.users_reviews, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({
     name: 'users_id',
     referencedColumnName: 'id',
   })
   users_id: users;
 
-  @ManyToOne((type) => reviews)
+  @ManyToOne((type) => reviews, (reviews) => reviews.users_reviews, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({
     name: 'reviews_id',
     referencedColumnName: 'id',

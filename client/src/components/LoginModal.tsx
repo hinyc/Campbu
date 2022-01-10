@@ -1,12 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, modalBackgroundStyle, rem, shadow } from '../common';
+import { color, host, modalBackgroundStyle, rem, shadow } from '../common';
 import { Button } from './Button';
 import Input from './Input';
 import naver from '../assets/naver.png';
 import kakao from '../assets/kakao.png';
-import { useRecoilState } from 'recoil';
-import { showLoginModal, showSignupModal } from '../Atom';
+import { useSetRecoilState } from 'recoil';
+import { isLogin, showLoginModal, showSignupModal } from '../Atom';
+import { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const backgroundStyle = css`
   background-color: white;
@@ -46,6 +49,13 @@ const oauth = css`
   height: ${rem(40)};
   font-size: ${rem(12)};
   position: relative;
+  transition: 0.1s;
+  :hover {
+    opacity: 0.5;
+  }
+  :active {
+    opacity: 95%;
+  }
 `;
 const oauthIcon = css`
   width: ${rem(19)};
@@ -57,9 +67,6 @@ const oauthIcon = css`
 
 const marginTop6 = css`
   margin-top: ${rem(6)};
-`;
-const marginTop17 = css`
-  margin-top: ${rem(17)};
 `;
 
 const topLine = css`
@@ -85,10 +92,81 @@ const floatingText = css`
   top: ${rem(-5)};
 `;
 
+const reqMsg = css`
+  height: ${rem(18)};
+  line-height: ${rem(18)};
+  font-size: ${rem(10)};
+  color: ${color.point};
+  margin-left: ${rem(12)};
+`;
+
 function LoginModal() {
-  const [showLogin, setShowLogin] = useRecoilState(showLoginModal);
-  const [showSignup, setShowSignup] = useRecoilState(showSignupModal);
-  console.log('showlogin', showLogin);
+  const setShowLogin = useSetRecoilState(showLoginModal);
+  const setIsLogin = useSetRecoilState(isLogin);
+
+  const setShowSignup = useSetRecoilState(showSignupModal);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [emailReqMsg, setEmailReqMsg] = useState(false);
+  const [passwordReqMsg, setPasswordReqMsg] = useState(false);
+
+  const navigate = useNavigate();
+
+  const emailHandler = (e: any) => {
+    setEmail(e.target.value);
+  };
+
+  const passwordHandler = (e: any) => {
+    setPassword(e.target.value);
+  };
+
+  const loginHandler = () => {
+    interface loginType {
+      email: string;
+      password: string;
+    }
+
+    const loginInfo: loginType = {
+      email,
+      password,
+    };
+
+    if (!email) return setEmailReqMsg(true);
+    if (!password) {
+      setEmailReqMsg(false);
+      setPasswordReqMsg(true);
+      return;
+    }
+
+    axios
+      .post(`${host}/user/login`, loginInfo, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          console.log('로그인성공');
+          setShowLogin(false);
+          setIsLogin(true);
+          navigate('/');
+          return;
+        } else {
+          setPasswordReqMsg(false);
+          console.log(passwordReqMsg);
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const kakaoLogin = () => {
+    console.log('카카오 로그인요청');
+  };
+  const naverLogin = () => {
+    console.log('네이버로그인요청');
+  };
+
   return (
     <div css={modalBackgroundStyle}>
       <div css={backgroundStyle}>
@@ -103,6 +181,8 @@ function LoginModal() {
               borderRadius={5}
               placeholder="이메일을 입력해주세요."
               fontSize={12}
+              onChange={emailHandler}
+              value={email}
             />
           </div>
           <div css={marginTop6}>
@@ -112,9 +192,17 @@ function LoginModal() {
               borderRadius={5}
               placeholder="비밀번호를 입력해주세요."
               fontSize={12}
+              onChange={passwordHandler}
+              value={password}
+              type="password"
             />
           </div>
-          <div css={marginTop17}>
+          <div css={reqMsg}>
+            {emailReqMsg ? <div>* 이메일을 입력해주세요.</div> : null}
+            {passwordReqMsg ? <div>* 비밀번호를 입력해주세요.</div> : null}
+          </div>
+
+          <div>
             <Button
               text="로그인"
               width={rem(205)}
@@ -123,6 +211,8 @@ function LoginModal() {
               color={color.white}
               border="none"
               size={rem(12)}
+              hover=".85"
+              onClick={loginHandler}
             />
           </div>
         </div>
@@ -139,11 +229,11 @@ function LoginModal() {
               또는
             </div>
           </div>
-          <button css={[oauth]}>
+          <button css={[oauth]} onClick={naverLogin}>
             <img css={oauthIcon} src={naver} alt="naver login" />
             <div>네이버로 로그인하기</div>
           </button>
-          <button css={[oauth, marginTop6]}>
+          <button css={[oauth, marginTop6]} onClick={kakaoLogin}>
             <img css={oauthIcon} src={kakao} alt="naver login" />
             <div>카카오로 로그인하기</div>
           </button>
@@ -170,6 +260,7 @@ function LoginModal() {
             border={`1px solid ${color.point}`}
             size={rem(12)}
             fontWeight={700}
+            hover=".7"
             onClick={() => {
               setShowSignup(true);
               setShowLogin(false);

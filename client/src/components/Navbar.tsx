@@ -7,7 +7,7 @@ import Logo from '../assets/Logo.svg';
 import Menu from '../assets/Menu.svg';
 import Profile from '../assets/Profile.svg';
 
-import { showLoginModal, showSignupModal } from '../Atom';
+import { isLogin, showLoginModal, showSignupModal } from '../Atom';
 import { color, hover, rem, shadow } from '../common';
 
 import { Button } from './Button';
@@ -28,6 +28,7 @@ const headerStyle = css`
 
 function Navbar() {
   const [click, setClick] = useState<boolean>(false);
+  const login = useRecoilValue(isLogin);
   const [showLogin, setShowLogin] = useRecoilState(showLoginModal);
 
   const showSignup = useRecoilValue(showSignupModal);
@@ -43,23 +44,7 @@ function Navbar() {
       <Link to="/">
         <img src={Logo} className="CampBu-logo" alt="logo" />
       </Link>
-      {click ? (
-        <Button
-          text="Login"
-          width={`${rem(83)}`}
-          height={`${rem(36)}`}
-          background={`${color.point}`}
-          color="white"
-          border="none"
-          size={`${rem(14)}`}
-          hoverBackground="#F18556"
-          cursor="pointer"
-          onClick={() => {
-            onClick();
-            setShowLogin(true);
-          }}
-        />
-      ) : (
+      {isLogin ? (
         <>
           <Button
             width={`${rem(83)}`}
@@ -79,7 +64,7 @@ function Navbar() {
               alt="logo"
               style={{ margin: `0 ${rem(14)} ${rem(2)} 0` }}
             />
-            {/* //! 프로필 사진이 들어가야 함 */}
+            {/* //TODO: 프로필 사진이 들어가야 함 */}
             <img
               style={{ marginTop: rem(2) }}
               src={Profile}
@@ -87,9 +72,24 @@ function Navbar() {
               alt="logo"
             />
           </Button>
-
-          <ProfileDropdown />
+          {click ? <ProfileDropdown /> : null}
         </>
+      ) : (
+        <Button
+          text="Login"
+          width={`${rem(83)}`}
+          height={`${rem(36)}`}
+          background={`${color.point}`}
+          color="white"
+          border="none"
+          size={`${rem(14)}`}
+          hoverBackground="#F18556"
+          cursor="pointer"
+          onClick={() => {
+            onClick();
+            setShowLogin(true);
+          }}
+        />
       )}
     </header>
   );

@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { selectDate } from '../Atom';
 import { flexBetween, rem, color } from '../common';
 
 const calendarContainerStyle = css`
@@ -76,12 +78,47 @@ interface AdateProps {
   idx: number;
   width: number;
   height: number;
+  year: number;
+  month: number;
 }
 
 function Adate(props: AdateProps) {
+  const { date, idx, width, year, month } = props;
   const [isSelect, setIsSelect] = useState(false);
+  const [setDates, setSetDates] = useRecoilState(selectDate);
 
-  const { date, width } = props;
+  let thisYear = year;
+  let thisMonth = month;
+  let isWeekend = 'black';
+
+  if (idx < 6 && date - 10 > 0) {
+    const preMonth = new Date(year, month - 1, 0);
+    thisYear = preMonth.getFullYear();
+    thisMonth = preMonth.getMonth() + 1;
+  }
+
+  if (idx > 20 && 10 - date > 0) {
+    const preMonth = new Date(year, month + 1, 0);
+    thisYear = preMonth.getFullYear();
+    thisMonth = preMonth.getMonth() + 1;
+  }
+
+  const selectDateHandler = () => {
+    setIsSelect(!isSelect);
+
+    const alreadySelected = setDates.indexOf(
+      `${thisYear}.${thisMonth}.${date}`,
+    );
+
+    if (isSelect) {
+      setSetDates([
+        ...setDates.slice(0, alreadySelected),
+        ...setDates.slice(alreadySelected + 1),
+      ]);
+    } else {
+      setSetDates([...setDates, `${thisYear}.${thisMonth}.${date}`]);
+    }
+  };
   return (
     <div
       css={css`
@@ -90,9 +127,10 @@ function Adate(props: AdateProps) {
         line-height: ${rem(width / 7)};
         font-size: ${rem(14)};
         text-align: center;
+        color: ${isWeekend};
         background-color: ${isSelect ? color.light : null};
       `}
-      onClick={() => setIsSelect(!isSelect)}
+      onClick={selectDateHandler}
     >
       <div
         css={css`
@@ -200,6 +238,8 @@ export default function Calendar() {
               key={idx}
               date={date}
               idx={idx}
+              year={targetYear}
+              month={targetMonth}
               width={widthPixel}
               height={heigthPixel}
             />

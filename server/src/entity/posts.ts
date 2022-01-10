@@ -59,7 +59,7 @@ export class posts {
   @OneToMany((type) => reservation, (reservation) => reservation.posts_id)
   reservation: reservation[];
 
-  @ManyToOne((type) => users)
+  @ManyToOne((type) => users, (users) => users.posts, { onDelete: 'CASCADE' })
   @JoinColumn({
     name: 'users_id',
     referencedColumnName: 'id',
