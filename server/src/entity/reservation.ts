@@ -27,14 +27,18 @@ export class reservation {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne((type) => users)
+  @ManyToOne((type) => users, (users) => users.reservation, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({
     name: 'users_id',
     referencedColumnName: 'id',
   })
   users_id: users;
 
-  @ManyToOne((type) => posts)
+  @ManyToOne((type) => posts, (posts) => posts.reservation, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({
     name: 'posts_id',
     referencedColumnName: 'id',
