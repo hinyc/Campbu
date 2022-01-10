@@ -8,10 +8,25 @@ import {
   flexBetween,
   rem,
   flex,
+  adressAPI,
 } from '../common';
 import { Button } from '../components/Button';
 import BackButton from '../components/BackButton';
 import Calendar from '../components/Calendar';
+import { useState } from 'react';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import {
+  selectDate,
+  searchAddress,
+  selectAddress,
+  showAddressList,
+} from '../Atom';
+import axios from 'axios';
+import SelectAdressList from '../components/SelectAdress';
+
+const fixAddressList = css`
+  position: absolute;
+`;
 
 const textareaStyle = css`
   width: 29.9375rem;
@@ -56,6 +71,7 @@ const marginRightZero = css`
 const addImg = css`
   font-size: 90px;
 `;
+
 const UploadImg = () => {
   return (
     <div
@@ -79,6 +95,16 @@ const UploadImg = () => {
 };
 
 export const Writing = () => {
+  const [setCategory, setSetCategory] = useState<string>('');
+  const [deposit, setDeposit] = useState<string>('');
+  const [rentalFee, setRentalFee] = useState<string>('');
+  const unavailableDates = useRecoilValue(selectDate);
+  const [title, setTitle] = useState<string>('');
+  const [content, setContent] = useState<string>('');
+  const [address, setAddress] = useRecoilState(selectAddress);
+  const setSerchAdress = useSetRecoilState(searchAddress);
+  const [showAdress, setShowAdress] = useRecoilState(showAddressList);
+  const [imgUrls, setImgUrls] = useState<string>('');
   const category: string[] = [
     '카테고리를 입력하세요',
     '패키지',
@@ -89,6 +115,68 @@ export const Writing = () => {
     '취식용품',
     '기타',
   ];
+  const titleHandler = (e: any) => setTitle(e.target.value);
+  const depositHandler = (e: any) => setDeposit(e.target.value);
+  const rentalFeeHandler = (e: any) => setRentalFee(e.target.value);
+  const contentHandler = (e: any) => setContent(e.target.value);
+  const setCategoryHandler = (e: any) => setSetCategory(e.target.value);
+  const addressHandler = (e: any) => setAddress(e.target.value);
+
+  const getAdress = () => {
+    if (address.length > 0) {
+      axios
+        .get(
+          `https://www.juso.go.kr/addrlink/addrLinkApi.do?currentPage=1&countPerPage=20&keyword=${address}&confmKey=${adressAPI}&resultType=json`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        )
+        .then((res) => {
+          const address = res.data.results.juso;
+          const adressList: string[] = [];
+          if (address) {
+            const allSerchAdress = address.map((el: any) => {
+              return `${el.siNm} ${el.sggNm} ${el.emdNm}`;
+            });
+
+            allSerchAdress.forEach((el: string, idx: number) => {
+              if (allSerchAdress.indexOf(el) === idx) {
+                adressList.push(el);
+              }
+            });
+          }
+
+          setSerchAdress(adressList);
+          setShowAdress(true);
+        });
+    }
+  };
+
+  const wrightHandler = () => {
+    interface wrightType {
+      category: string;
+      deposit: number;
+      rental_fee: number;
+      unavailable_dates: string[];
+      title: string;
+      content: string;
+      Address?: string;
+      img_urls?: string;
+    }
+    const wrigthDate: wrightType = {
+      category: setCategory,
+      deposit: Number(deposit),
+      rental_fee: Number(rentalFee),
+      unavailable_dates: unavailableDates,
+      title: title,
+      content: content,
+      Address: address,
+      img_urls: imgUrls,
+    };
+    console.log(wrigthDate);
+  };
 
   return (
     <div css={flexVertical}>
@@ -107,6 +195,7 @@ export const Writing = () => {
             borderStyle="none none solid none"
             borderRadius={0}
             placeholder="제목을 입력해주세요"
+            onChange={titleHandler}
           />
         </div>
         <div css={flexBetween}>
@@ -115,7 +204,11 @@ export const Writing = () => {
               width: 29.9375rem;
             `}
           >
-            <select css={selectStyle}>
+            <select
+              css={selectStyle}
+              onChange={setCategoryHandler}
+              value={setCategory}
+            >
               {category.map((el, idx) => (
                 <option key={idx}>{el}</option>
               ))}
@@ -126,6 +219,8 @@ export const Writing = () => {
                 height={50}
                 borderRadius={5}
                 placeholder="주소를 검색하세요"
+                onChange={addressHandler}
+                value={address}
               />
               <Button
                 text="주소 검색"
@@ -135,7 +230,11 @@ export const Writing = () => {
                 color={color.point}
                 size={rem(16)}
                 border={`1px solid ${color.point}`}
+                onClick={getAdress}
               />
+            </div>
+            <div css={fixAddressList}>
+              {showAdress ? <SelectAdressList /> : null}
             </div>
             <div
               css={[
@@ -152,6 +251,9 @@ export const Writing = () => {
                 height={50}
                 borderRadius={5}
                 placeholder="보증금"
+                onChange={rentalFeeHandler}
+                type="number"
+                value={String(rentalFee)}
               />
               <div
                 css={css`
@@ -184,6 +286,9 @@ export const Writing = () => {
                 height={50}
                 borderRadius={5}
                 placeholder="대여비"
+                onChange={depositHandler}
+                type="number"
+                value={String(deposit)}
               />
               <div
                 css={css`
@@ -205,6 +310,8 @@ export const Writing = () => {
               <textarea
                 css={textareaStyle}
                 placeholder="용품에 대한 설명을 입력해주세요"
+                onChange={contentHandler}
+                value={content}
               />
             </div>
             <div
@@ -243,6 +350,7 @@ export const Writing = () => {
           border="none"
           size={rem(14)}
           margin={`${rem(30)} 0`}
+          onClick={wrightHandler}
         />
       </div>
     </div>
