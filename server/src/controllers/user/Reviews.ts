@@ -26,7 +26,7 @@ export default async (req: Request, res: Response) => {
       }),
     );
     if (!userInfo) {
-      return res.status(401).json({ message: 'Unauthorzied User' });
+      return res.status(401).json({ message: 'Unauthorized User' });
     } else {
       reviewInfo.map(async (data) => {
         const reviewExist = await userReviewsRepository.findOne({
