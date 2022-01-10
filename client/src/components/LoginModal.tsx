@@ -9,6 +9,7 @@ import { constSelector, useRecoilState, useSetRecoilState } from 'recoil';
 import { isLogin, showLoginModal, showSignupModal } from '../Atom';
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const backgroundStyle = css`
   background-color: white;
@@ -48,6 +49,13 @@ const oauth = css`
   height: ${rem(40)};
   font-size: ${rem(12)};
   position: relative;
+  transition: 0.1s;
+  :hover {
+    opacity: 0.5;
+  }
+  :active {
+    opacity: 95%;
+  }
 `;
 const oauthIcon = css`
   width: ${rem(19)};
@@ -59,9 +67,6 @@ const oauthIcon = css`
 
 const marginTop6 = css`
   margin-top: ${rem(6)};
-`;
-const marginTop17 = css`
-  margin-top: ${rem(17)};
 `;
 
 const topLine = css`
@@ -105,6 +110,8 @@ function LoginModal() {
   const [emailReqMsg, setEmailReqMsg] = useState(false);
   const [passwordReqMsg, setPasswordReqMsg] = useState(false);
 
+  const navigate = useNavigate();
+
   const emailHandler = (e: any) => {
     setEmail(e.target.value);
   };
@@ -143,6 +150,7 @@ function LoginModal() {
           console.log('로그인성공');
           setShowLogin(false);
           setIsLogin(true);
+          navigate('/');
           return;
         } else {
           setPasswordReqMsg(false);
@@ -150,6 +158,13 @@ function LoginModal() {
         }
       })
       .catch((err) => console.log(err));
+  };
+
+  const kakaoLogin = () => {
+    console.log('카카오 로그인요청');
+  };
+  const naverLogin = () => {
+    console.log('네이버로그인요청');
   };
 
   return (
@@ -196,6 +211,7 @@ function LoginModal() {
               color={color.white}
               border="none"
               size={rem(12)}
+              hover=".85"
               onClick={loginHandler}
             />
           </div>
@@ -213,11 +229,11 @@ function LoginModal() {
               또는
             </div>
           </div>
-          <button css={[oauth]}>
+          <button css={[oauth]} onClick={naverLogin}>
             <img css={oauthIcon} src={naver} alt="naver login" />
             <div>네이버로 로그인하기</div>
           </button>
-          <button css={[oauth, marginTop6]}>
+          <button css={[oauth, marginTop6]} onClick={kakaoLogin}>
             <img css={oauthIcon} src={kakao} alt="naver login" />
             <div>카카오로 로그인하기</div>
           </button>
@@ -244,6 +260,7 @@ function LoginModal() {
             border={`1px solid ${color.point}`}
             size={rem(12)}
             fontWeight={700}
+            hover=".7"
             onClick={() => {
               setShowSignup(true);
               setShowLogin(false);
