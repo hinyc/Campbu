@@ -48,7 +48,7 @@ function Intro() {
   const navigation = useNavigate();
   const [searchValue, setSearchValue] = useState<string>('');
   const searchAddress = useSetRecoilState<Posts>(posts);
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const onChange = (e: any) => {
     setSearchValue(e.target.value);
