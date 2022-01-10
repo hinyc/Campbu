@@ -1,17 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Link, useNavigate } from 'react-router-dom';
 import Product from '../components/Product';
 import WritingButton from '../components/WritingButton';
-import { rem, textDecorationNone, relative } from '../common';
+import { rem, relative, host } from '../common';
 import SearchGreen from '../assets/SearchGreen.svg';
 import SearchInput from '../components/SearchInput';
 import Category from '../components/Category';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { posts } from '../Atom';
 import { useState } from 'react';
 import LoginModal from '../components/LoginModal';
 import AlertModal from '../components/AlertModal';
+import axios from 'axios';
 
 const container = css`
   width: ${rem(1280)};
@@ -61,69 +61,70 @@ export interface Post {
 }
 
 function Main() {
-  const products = useRecoilValue<Posts>(posts);
-  const searchAddress = useSetRecoilState<Posts>(posts);
+  const [products, searchAddress] = useRecoilState<Posts>(posts);
   const [searchValue, setSearchValue] = useState<string>('');
-  const [modalShow, setModalShow] = useState(false);
+  const [loginModalShow, setLoginModalShow] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const onChange = (e: any) => {
     setSearchValue(e.target.value);
   };
 
-  const onSearchClick = () => {
+  const onSearchClick = async () => {
     if (searchValue.length !== 0) {
       console.log(showSearchModal, ' main page searching...');
-      //   axios
-      //     .get(`${host}/product/address/${searchValue}`)
-      //     .then((res) => {
-      //       if (res.status === 200) {
-      searchAddress((obj) => ({
-        // TODO: 검색 결과를 여기에 추가
-        posts: [
-          {
-            id: 1,
-            category: 'Tent',
-            deposit: 30000,
-            rental_fee: 25000,
-            unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
-            title: '검색했을 때 새로 나오는거',
-            content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
-            longitude: 126.99597295767953,
-            latitude: 35.97664845766847,
-            address: '서울특별시 동작구 신대방동',
-            img_urls:
-              'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
-            users_id: 1,
-            reservation_dates: ['2021-12-29', '2021-12-30', '2021-12-31'],
-            likes: {
-              count: 15,
-            },
-          },
-          {
-            id: 1,
-            category: 'Tent',
-            deposit: 30000,
-            rental_fee: 25000,
-            unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
-            title: '메인페이지 검색',
-            content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
-            longitude: 126.99597295767953,
-            latitude: 35.97664845766847,
-            address: '서울특별시 동작구 신대방동',
-            img_urls:
-              'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
-            users_id: 1,
-            reservation_dates: ['2021-12-29', '2021-12-30', '2021-12-31'],
-            likes: {
-              count: 15,
-            },
-          },
-        ],
-      }));
-      //   }
-      // })
-      // .catch((err) => console.error(err));
+      await axios
+        .get(`${host}/product/address/${searchValue}`)
+        .then((res) => {
+          if (res.status === 200) {
+            searchAddress(() => ({
+              // TODO: 검색 결과를 여기에 추가
+              posts: [
+                {
+                  id: 1,
+                  category: 'Tent',
+                  deposit: 30000,
+                  rental_fee: 25000,
+                  unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
+                  title: '검색했을 때 새로 나오는거',
+                  content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
+                  longitude: 126.99597295767953,
+                  latitude: 35.97664845766847,
+                  address: '서울특별시 동작구 신대방동',
+                  img_urls:
+                    'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
+                  users_id: 1,
+                  reservation_dates: ['2021-12-29', '2021-12-30', '2021-12-31'],
+                  likes: {
+                    count: 15,
+                  },
+                },
+                {
+                  id: 1,
+                  category: 'Tent',
+                  deposit: 30000,
+                  rental_fee: 25000,
+                  unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
+                  title: '메인페이지 검색',
+                  content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
+                  longitude: 126.99597295767953,
+                  latitude: 35.97664845766847,
+                  address: '서울특별시 동작구 신대방동',
+                  img_urls:
+                    'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
+                  users_id: 1,
+                  reservation_dates: ['2021-12-29', '2021-12-30', '2021-12-31'],
+                  likes: {
+                    count: 15,
+                  },
+                },
+              ],
+            }));
+          }
+        })
+        .catch((err) => console.error(err));
+      setLoading(false);
     } else {
       console.log('input text please');
       // TODO: false로 초기화 시키기
@@ -152,11 +153,13 @@ function Main() {
           <img src={SearchGreen} alt="search" />
         </button>
       </span>
-      {modalShow ? <LoginModal /> : null}
+      {loginModalShow ? <LoginModal /> : null}
+      {/* // TODO: 로딩 컴포넌트 추가 */}
+      {/* {loading ? null : ( */}
       <section css={section}>
         {products['posts'].map((product: Post) => (
           <Product
-            setModalShow={setModalShow}
+            setModalShow={setLoginModalShow}
             count={product.likes.count}
             // TODO: 좋아요 눌렀는지 안눌렀는지 상태 변경
             isFill={false}
@@ -169,6 +172,7 @@ function Main() {
           />
         ))}
       </section>
+      {/* )} */}
       <WritingButton />
     </div>
   );
