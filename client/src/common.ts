@@ -71,3 +71,4 @@ export const reviews: { id: number; review: string }[] = [
 ];
 
 export const host = 'http://localhost:5050';
+export const adressAPI = `U01TX0FVVEgyMDIyMDExMDIxMjMzNTExMjExNzA=`;
