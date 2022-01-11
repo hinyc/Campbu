@@ -230,3 +230,20 @@ export const selectDate = atom<string[]>({
   key: 'selectDate',
   default: [],
 });
+
+//?주소 선택용 전역 상태
+
+export const selectAddress = atom<string>({
+  key: 'selectAddress',
+  default: '',
+});
+
+export const searchAddress = atom<string[]>({
+  key: 'searchAddress',
+  default: [],
+});
+
+export const showAddressList = atom({
+  key: 'showAdressList',
+  default: false,
+});

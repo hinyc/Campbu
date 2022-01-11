@@ -169,9 +169,9 @@ function Signup() {
     if (nickname.length > 0) {
       setNickDuplicateClick(true);
 
-      axios.get(`${host}/user/signup/${nickname}`).then((res) => {
+      axios.get(`${host}/user/signup?nickname=${nickname}`).then((res) => {
         if (res.status === 200) {
-          console.log(`API ${host}/user/signup/${nickname}`);
+          console.log(`API ${host}/user/signup?nickname=${nickname}`);
           console.log('닉네임 사용가능', setNickDupliacte(true));
         } else {
           setNickDupliacte(false);
@@ -185,9 +185,9 @@ function Signup() {
     if (emailValid) {
       setEmailDuplicateClick(true);
 
-      axios.get(`${host}/user/signup/${email}`).then((res) => {
+      axios.get(`${host}/user/signup?email=${email}`).then((res) => {
         if (res.status === 200) {
-          console.log(`API ${host}/user/signup/${email}`);
+          console.log(`API ${host}/user/signup?email=${email}`);
           console.log('이메일 사용가능', setEmailDupliacte(true));
         } else {
           setEmailDupliacte(false);
