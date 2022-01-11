@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, rem, flex, textDecorationNone } from '../../common';
+import { color, rem, flex } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Button } from '../../components/Button';
 import emptyLend from '../../assets/pictures/emptyLend.svg';
@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom';
 import { link, visit } from './tab';
 import Reservation from '../../components/Reservation';
 import { container, section, message } from './tab';
-import Complete from '../../components/Complete';
 import YesOrNo from '../../components/YesOrNo';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { lends } from '../../Atom';
@@ -67,21 +66,6 @@ function LendList() {
         </Link>
       </nav>
       <div css={container}>
-        {/* //? 리스트가 하나도 없을 때
-        <img src={emptyLend} alt="camping" />
-        <p css={message}>
-          빌려준 목록이 없어요! <br />
-          캠핑 용품이 있다면 대여 게시글을 올려보세요!
-        </p>
-        <Button
-          text="캠핑 용품 보러 가기"
-          width={`${rem(180)}`}
-          height={`${rem(43)}`}
-          background="white"
-          color={`${color.mid}`}
-          border={`1px solid ${color.mid}`}
-          size={`${rem(14)}`}
-        /> */}
         {buttonClick ? (
           <YesOrNo
             //! reservation_status에 따라 text 바꾸기
@@ -91,11 +75,47 @@ function LendList() {
             text2="대여자가 예약을 수락하기 전까지 취소할 수 있습니다."
           />
         ) : null}
-        <section css={section}>
-          {lendLists['posts'].map((lendList: Post) => (
-            //! reservation_status에 따라 버튼 text 바꾸기
-            <Reservation
-              text="예약 취소"
+        {lendLists['posts'].length === 0 ? (
+          <>
+            <img src={emptyLend} alt="camping" />
+            <p css={message}>
+              빌려준 목록이 없어요! <br />
+              캠핑 용품이 있다면 대여 게시글을 올려보세요!
+            </p>
+            <Button
+              text="캠핑 용품 보러 가기"
+              width={`${rem(180)}`}
+              height={`${rem(43)}`}
+              background="white"
+              color={`${color.mid}`}
+              border={`1px solid ${color.mid}`}
+              size={`${rem(14)}`}
+            />
+          </>
+        ) : (
+          <section css={section}>
+            {lendLists['posts'].map((lendList: Post) => (
+              //! reservation_status에 따라 버튼 text 바꾸기
+              <Reservation
+                text="예약 취소"
+                background={`${color.point}`}
+                color="white"
+                cursor="pointer"
+                hover="80%"
+                postId={lendList.id}
+                img_urls={lendList.img_urls}
+                address={lendList.address}
+                title={lendList.title}
+                deposit={lendList.deposit}
+                rental_fee={lendList.rental_fee}
+                reservation_dates={lendList.reservation[0].reservation_dates}
+                onButtonClick={onButtonClick}
+              />
+            ))}
+          </section>
+        )}
+        {/* <Reservation
+              text="반납하기"
               background={`${color.point}`}
               color="white"
               cursor="pointer"
@@ -106,52 +126,35 @@ function LendList() {
               title={lendList.title}
               deposit={lendList.deposit}
               rental_fee={lendList.rental_fee}
-              reservation_dates={lendList.reservation[0].reservation_dates}
-              onButtonClick={onButtonClick}
+              reservation_dates={['2022.01.01', '2022.01.02']}
             />
-            // <Reservation
-            //   text="반납하기"
-            //   background={`${color.point}`}
-            //   color="white"
-            //   cursor="pointer"
-            //   hover="80%"
-            //   postId={lendList.id}
-            //   img_urls={lendList.img_urls}
-            //   address={lendList.address}
-            //   title={lendList.title}
-            //   deposit={lendList.deposit}
-            //   rental_fee={lendList.rental_fee}
-            //   reservation_dates={['2022.01.01', '2022.01.02']}
-            // />
-            // <Reservation
-            //   text="반납 확인 대기 중"
-            //   background={`${color.point}`}
-            //   opacity="50%"
-            //   color="white"
-            //   cursor="not-allowed"
-            //   postId={lendList.id}
-            //   img_urls={lendList.img_urls}
-            //   address={lendList.address}
-            //   title={lendList.title}
-            //   deposit={lendList.deposit}
-            //   rental_fee={lendList.rental_fee}
-            //   reservation_dates={['2022.01.01', '2022.01.02']}
-            // />
-            // <Reservation
-            //   text="반납완료"
-            //   background={`${color.mid}`}
-            //   color="white"
-            //   cursor="default"
-            //   postId={lendList.id}
-            //   img_urls={lendList.img_urls}
-            //   address={lendList.address}
-            //   title={lendList.title}
-            //   deposit={lendList.deposit}
-            //   rental_fee={lendList.rental_fee}
-            //   reservation_dates={['2022.01.01', '2022.01.02']}
-            // />
-          ))}
-        </section>
+            <Reservation
+              text="반납 확인 대기 중"
+              background={`${color.point}`}
+              opacity="50%"
+              color="white"
+              cursor="not-allowed"
+              postId={lendList.id}
+              img_urls={lendList.img_urls}
+              address={lendList.address}
+              title={lendList.title}
+              deposit={lendList.deposit}
+              rental_fee={lendList.rental_fee}
+              reservation_dates={['2022.01.01', '2022.01.02']}
+            />
+            <Reservation
+              text="반납완료"
+              background={`${color.mid}`}
+              color="white"
+              cursor="default"
+              postId={lendList.id}
+              img_urls={lendList.img_urls}
+              address={lendList.address}
+              title={lendList.title}
+              deposit={lendList.deposit}
+              rental_fee={lendList.rental_fee}
+              reservation_dates={['2022.01.01', '2022.01.02']}
+            /> */}
       </div>
     </>
   );
