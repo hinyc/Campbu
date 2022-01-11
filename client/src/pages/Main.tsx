@@ -6,10 +6,9 @@ import { rem, relative, host } from '../common';
 import SearchGreen from '../assets/SearchGreen.svg';
 import SearchInput from '../components/SearchInput';
 import Category from '../components/Category';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { posts, originalPosts } from '../Atom';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { posts, originalPosts, showLoginModal } from '../Atom';
 import { useState } from 'react';
-import LoginModal from '../components/LoginModal';
 import AlertModal from '../components/AlertModal';
 import axios from 'axios';
 import Loading from '../assets/Loading.svg';
@@ -64,7 +63,6 @@ export interface Post {
 function Main() {
   const [products, searchAddress] = useRecoilState<Posts>(posts);
   const [searchValue, setSearchValue] = useState<string>('');
-  const [loginModalShow, setLoginModalShow] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -167,6 +165,7 @@ function Main() {
       // })
       // .catch((err) => console.error(err));
       // TODO: 로딩 컴포넌트
+      setSearchValue('');
       // setLoading(false);
       // console.log('2nd', loading);
     } else {
@@ -197,7 +196,6 @@ function Main() {
           <img src={SearchGreen} alt="search" />
         </button>
       </span>
-      {loginModalShow ? <LoginModal /> : null}
       {/* // TODO: 로딩 컴포넌트 추가 */}
       {loading ? (
         <img src={Loading} alt="loading..." />
@@ -212,7 +210,6 @@ function Main() {
         <section css={section}>
           {products['posts'].map((product: Post, index) => (
             <Product
-              // setModalShow={setLoginModalShow}
               key={index}
               count={product.likes_count}
               // TODO: 좋아요 눌렀는지 안눌렀는지 상태 변경
