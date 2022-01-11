@@ -85,10 +85,7 @@ function Navbar() {
           size={`${rem(14)}`}
           hoverBackground="#F18556"
           cursor="pointer"
-          onClick={() => {
-            onClick();
-            setShowLogin(true);
-          }}
+          onClick={() => setShowLogin(true)}
         />
       )}
     </header>

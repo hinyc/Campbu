@@ -50,7 +50,6 @@ export default {
       email: string;
       nickname: string;
       password: string;
-      users_img: string;
     }
     const { email, nickname, password }: signupType = req.body;
     const usersRepository = getRepository(users);
