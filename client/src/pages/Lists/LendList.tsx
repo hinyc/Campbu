@@ -31,9 +31,7 @@ interface Post {
   address: string;
   img_urls: string;
   users_id: number;
-  likes: {
-    count: number;
-  };
+  likes_count: number;
   reservation: List[];
 }
 

@@ -67,7 +67,7 @@ function LikeList() {
           {likeLists['posts'].map((likeList: UserPost) => (
             <Product
               setModalShow={setModalShow}
-              count={likeList.likes.count}
+              count={likeList.likes_count}
               isFill={true}
               postId={likeList.id}
               img_urls={likeList.img_urls}
