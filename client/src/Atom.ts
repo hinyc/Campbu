@@ -247,3 +247,10 @@ export const showAddressList = atom({
   key: 'showAdressList',
   default: false,
 });
+
+//? 이미지 삽입 전역 상태
+
+export const imgFiles = atom<any[]>({
+  key: 'imgFiles',
+  default: [],
+});

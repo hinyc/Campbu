@@ -216,12 +216,10 @@ function Signup() {
         email: string;
         nickname: string;
         password: string;
-        users_img: string;
       } = {
         email: email,
         nickname: nickname,
         password: password,
-        users_img: 'sfd',
       };
 
       console.log('API', `${host}/user/signup`);

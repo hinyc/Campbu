@@ -13,16 +13,23 @@ import {
 import { Button } from '../components/Button';
 import BackButton from '../components/BackButton';
 import Calendar from '../components/Calendar';
-import { useState } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useEffect, useState } from 'react';
+import {
+  constSelector,
+  useRecoilState,
+  useRecoilValue,
+  useSetRecoilState,
+} from 'recoil';
 import {
   selectDate,
   searchAddress,
   selectAddress,
   showAddressList,
+  imgFiles,
 } from '../Atom';
 import axios from 'axios';
 import SelectAdressList from '../components/SelectAdress';
+import { getRegisteredStyles } from '@emotion/utils';
 
 const fixAddressList = css`
   position: absolute;
@@ -56,7 +63,7 @@ const marginTop = css`
   margin-top: 1rem;
 `;
 
-const uploadImg = css`
+const onLoadImgStyle = css`
   border: 1px solid ${color.border};
   border-radius: 0.3125rem;
   margin-right: 0.625rem;
@@ -73,23 +80,70 @@ const addImg = css`
 `;
 
 const UploadImg = () => {
+  const [files, setFiles] = useRecoilState(imgFiles);
+  const [preViews, setPreViews] = useState<string[]>([]);
+
+  const onLoadImg = (e: any) => {
+    const selectImgs = e.target.files;
+    setFiles([...files, ...selectImgs]);
+  };
+
+  const onLoadImgUrls = (e: any) => {
+    const selectImgs = e.target.files;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(selectImgs);
+    reader.onloadend = () => {
+      const url = String(reader.result);
+      setPreViews([...preViews, url]);
+    };
+  };
+
+  const addFileHandler = (e: any) => {
+    onLoadImgUrls(e);
+  };
+
+  useEffect(() => {
+    setPreViews([]);
+    files.forEach((el) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(el);
+      reader.onloadend = () => {
+        const url = String(reader.result);
+        setPreViews([...preViews, url]);
+      };
+    });
+  }, [files]);
+
+  console.log('files', files);
+  console.log('previews', preViews);
+
+  const deleteImg = (target: number) => {
+    setFiles(files.filter((el, idx) => idx !== target));
+    setPreViews(preViews.filter((el, idx) => idx !== target));
+  };
+
   return (
-    <div
-      css={[
-        confirm,
-        flex,
-        css`
-          width: 29.9375rem;
-          flex-wrap: wrap;
-        `,
-      ]}
-    >
-      <div css={uploadImg}>업로드한 이미지 미리보기</div>
-      <div css={uploadImg}>업로드한 이미지 미리보기</div>
-      <div css={uploadImg}>업로드한 이미지 미리보기</div>
-      <div css={[uploadImg, marginRightZero]}>업로드한 이미지 미리보기</div>
-      <div css={uploadImg}>업로드한 이미지 미리보기</div>
-      <div css={[uploadImg, addImg, marginRightZero]}>+</div>
+    <div css={[confirm, flex]}>
+      {files.map((el, idx) => {
+        return (
+          <div key={idx} css={onLoadImgStyle}>
+            <div onClick={() => deleteImg(idx)}>삭제</div>
+            <img css={onLoadImgStyle} src={preViews[idx]} alt={el.name} />
+          </div>
+        );
+      })}
+
+      <form>
+        <input
+          type="file"
+          multiple
+          onChange={(e) => {
+            addFileHandler(e);
+          }}
+        />
+        <img src="" alt="" />
+      </form>
     </div>
   );
 };
@@ -126,7 +180,7 @@ export const Writing = () => {
     if (address.length > 0) {
       axios
         .get(
-          `https://www.juso.go.kr/addrlink/addrLinkApi.do?currentPage=1&countPerPage=20&keyword=${address}&confmKey=${adressAPI}&resultType=json`,
+          `https://www.juso.go.kr/addrlink/addrLinkApi.do?currentPage=1&countPerPage=50&keyword=${address}&confmKey=${adressAPI}&resultType=json`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -135,6 +189,7 @@ export const Writing = () => {
         )
         .then((res) => {
           const address = res.data.results.juso;
+          console.log(address);
           const adressList: string[] = [];
           if (address) {
             const allSerchAdress = address.map((el: any) => {
@@ -314,17 +369,6 @@ export const Writing = () => {
                 value={content}
               />
             </div>
-            <div
-              css={[
-                flexBetween,
-                css`
-                  justify-content: flex-start;
-                  margin-top: ${rem(22)};
-                `,
-              ]}
-            >
-              <UploadImg />
-            </div>
           </div>
           <div>
             <div
@@ -339,6 +383,17 @@ export const Writing = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div
+        css={[
+          flexBetween,
+          css`
+            justify-content: flex-start;
+            margin-top: ${rem(22)};
+          `,
+        ]}
+      >
+        <UploadImg />
       </div>
       <div>
         <Button

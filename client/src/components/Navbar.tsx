@@ -44,7 +44,7 @@ function Navbar() {
       <Link to="/">
         <img src={Logo} className="CampBu-logo" alt="logo" />
       </Link>
-      {isLogin ? (
+      {login ? (
         <>
           <Button
             width={`${rem(83)}`}
