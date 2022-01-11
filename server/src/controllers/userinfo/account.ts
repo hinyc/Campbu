@@ -77,6 +77,7 @@ export default {
     }
     return res
       .status(200)
+      .clearCookie('jwt')
       .json({ message: 'Account information Successfully Deleted' });
   },
 };

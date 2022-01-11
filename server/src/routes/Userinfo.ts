@@ -4,7 +4,7 @@ import productController from '../controllers/userinfo/product';
 const router = express.Router();
 
 router.get('/account', accountController.get);
-router.get('/product/borrow');
+router.get('/product/borrow', productController.borrow);
 router.get('/product/lend');
 router.get('/product/likes');
 router.get('/product/post');
