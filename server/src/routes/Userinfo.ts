@@ -8,7 +8,7 @@ router.get('/product/borrow');
 router.get('/product/lend');
 router.get('/product/likes');
 router.get('/product/post');
-router.patch('/account');
-router.delete('/account');
+router.patch('/account', accountController.patch);
+router.delete('/account', accountController.delete);
 
 export = router;
