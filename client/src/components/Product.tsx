@@ -19,8 +19,8 @@ import {
 } from './post';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { useRecoilValue } from 'recoil';
-import { isLogin } from '../Atom';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { isLogin, showLoginModal, showSignupModal } from '../Atom';
 import { useState } from 'react';
 
 interface Props {
@@ -33,7 +33,7 @@ interface Props {
   rental_fee: number;
   count: number;
   postId: number;
-  setModalShow: any;
+  // setModalShow: any;
 }
 
 function Product(props: Props) {
@@ -47,12 +47,13 @@ function Product(props: Props) {
     rental_fee,
     count,
     postId,
-    setModalShow,
   } = props;
-
+  const [login, setLogin] = useRecoilState(showLoginModal);
+  const loginUser = useRecoilValue<boolean>(isLogin);
   const [countHeart, setCountHeart] = useState<number>(count);
   const [fillHeart, setFillHeart] = useState<boolean>(isFill);
   const HeartClickPOST = () => {
+    console.log('postId', postId);
     // axios
     //   .post(
     //     `${host}/user/like`,
@@ -65,18 +66,23 @@ function Product(props: Props) {
     //   )
     //   .then((res) => {
     //     if (res.status === 201) {
-    if (fillHeart) {
-      console.log('cancel post [liked]!');
-      setCountHeart(count - 1);
+    if (loginUser) {
+      if (fillHeart) {
+        console.log('cancel post [liked]!');
+        setCountHeart(countHeart - 1);
+        setFillHeart(!fillHeart);
+      } else {
+        console.log('add post [liked]!');
+        setCountHeart(countHeart + 1);
+        setFillHeart(!fillHeart);
+      }
     } else {
-      console.log('add post [liked]!');
-      setCountHeart(countHeart + 1);
+      setLogin(true);
     }
-    setFillHeart(!fillHeart);
+
     // } else if (res.status === 401) {
-    //   console.log('Unauthorized User');
-    //   setModalShow(true);
-    // }
+    // console.log('Unauthorized User');
+    //   }
     // });
   };
 
