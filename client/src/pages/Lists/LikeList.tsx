@@ -66,7 +66,7 @@ function LikeList() {
         <section css={section}>
           {likeLists['posts'].map((likeList: UserPost) => (
             <Product
-              setModalShow={setModalShow}
+              // setModalShow={setModalShow}
               count={likeList.likes_count}
               isFill={true}
               postId={likeList.id}

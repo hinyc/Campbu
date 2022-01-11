@@ -44,7 +44,7 @@ function Navbar() {
       <Link to="/">
         <img src={Logo} className="CampBu-logo" alt="logo" />
       </Link>
-      {isLogin ? (
+      {login ? (
         <>
           <Button
             width={`${rem(83)}`}
@@ -85,10 +85,7 @@ function Navbar() {
           size={`${rem(14)}`}
           hoverBackground="#F18556"
           cursor="pointer"
-          onClick={() => {
-            onClick();
-            setShowLogin(true);
-          }}
+          onClick={() => setShowLogin(true)}
         />
       )}
     </header>

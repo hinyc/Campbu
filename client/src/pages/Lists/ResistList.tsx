@@ -62,7 +62,7 @@ function ResistList() {
         <section css={section}>
           {resistLists['posts'].map((resistList: UserPost) => (
             <Product
-              setModalShow={setModalShow}
+              // setModalShow={setModalShow}
               count={resistList.likes_count}
               isFill={true}
               display="none"
