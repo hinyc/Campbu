@@ -7,29 +7,25 @@ import {
   flexVertical,
   flexBetween,
   rem,
-  flex,
   adressAPI,
+  relative,
 } from '../common';
 import { Button } from '../components/Button';
 import BackButton from '../components/BackButton';
 import Calendar from '../components/Calendar';
-import { useEffect, useState } from 'react';
-import {
-  constSelector,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from 'recoil';
+import { useState } from 'react';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   selectDate,
   searchAddress,
   selectAddress,
   showAddressList,
-  imgFiles,
+  preView,
+  formData,
+  imgFile,
 } from '../Atom';
 import axios from 'axios';
 import SelectAdressList from '../components/SelectAdress';
-import { getRegisteredStyles } from '@emotion/utils';
 
 const fixAddressList = css`
   position: absolute;
@@ -64,85 +60,143 @@ const marginTop = css`
 `;
 
 const onLoadImgStyle = css`
-  border: 1px solid ${color.border};
+  border-radius: 0.35rem;
+  margin-right: 0.625rem;
+  text-align: center;
+  background-color: ${color.border};
+  width: 7rem;
+  height: 7rem;
+  transition: 0.1s;
+  color: rgba(0, 0, 0, 0);
+  :hover {
+    color: ${color.placeholder};
+  }
+`;
+
+const imgStyle = css`
+  border: 1px solid ${color.placeholder};
+
   border-radius: 0.3125rem;
   margin-right: 0.625rem;
-  margin-bottom: 0.625rem;
+  text-align: center;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  transition: 0.1s;
+  :hover {
+    opacity: 0.4;
+  }
+`;
+const inputFileStyle = css`
+  border: 1px solid ${color.border};
+  border-radius: 0.3125rem;
+
   text-align: center;
   width: 7rem;
   height: 7rem;
 `;
-const marginRightZero = css`
-  margin-right: 0;
+
+const hidden = css`
+  position: absolute;
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  border: 0;
 `;
-const addImg = css`
-  font-size: 90px;
+const inputFileCenter = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const labelStyle = css`
+  color: ${color.placeholder};
+  font-size: 5rem;
+  width: 7rem;
+  height: 7rem;
+  line-height: 7.6rem;
+  transition: 0.1s;
+  :hover {
+    opacity: 0.6;
+  }
+  :active {
+    opacity: 0.95;
+  }
+`;
+const xStyle = css`
+  font-size: 2rem;
+  position: absolute;
+  top: 0.1rem;
+  right: 0.5rem;
+`;
+
+const uploadImgStyle = css`
+  width: ${rem(850)};
+  display: flex;
+  align-content: center;
+  align-items: center;
 `;
 
 const UploadImg = () => {
-  const [files, setFiles] = useRecoilState(imgFiles);
-  const [preViews, setPreViews] = useState<string[]>([]);
+  const [imgfiles, setFiles] = useRecoilState(imgFile);
+  const [preViews, setPreViews] = useRecoilState(preView);
+  const insertImgHandler = (e: any) => {
+    const target = e.target.files[0];
 
-  const onLoadImg = (e: any) => {
-    const selectImgs = e.target.files;
-    setFiles([...files, ...selectImgs]);
-  };
+    let reader = new FileReader();
 
-  const onLoadImgUrls = (e: any) => {
-    const selectImgs = e.target.files;
+    if (target) {
+      reader.readAsDataURL(target);
+      setFiles([...imgfiles, target]);
+    }
 
-    const reader = new FileReader();
-    reader.readAsDataURL(selectImgs);
     reader.onloadend = () => {
-      const url = String(reader.result);
-      setPreViews([...preViews, url]);
+      const preViewUrl = reader.result;
+      if (preViewUrl) {
+        setPreViews([...preViews, preViewUrl]);
+      }
     };
   };
 
-  const addFileHandler = (e: any) => {
-    onLoadImgUrls(e);
-  };
-
-  useEffect(() => {
-    setPreViews([]);
-    files.forEach((el) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(el);
-      reader.onloadend = () => {
-        const url = String(reader.result);
-        setPreViews([...preViews, url]);
-      };
-    });
-  }, [files]);
-
-  console.log('files', files);
-  console.log('previews', preViews);
-
   const deleteImg = (target: number) => {
-    setFiles(files.filter((el, idx) => idx !== target));
+    setFiles(imgfiles.filter((el, idx) => idx !== target));
     setPreViews(preViews.filter((el, idx) => idx !== target));
   };
 
+  console.log(imgfiles);
+  console.log(preViews);
   return (
-    <div css={[confirm, flex]}>
-      {files.map((el, idx) => {
+    <div css={[uploadImgStyle, confirm]}>
+      {imgfiles.map((el, idx) => {
         return (
-          <div key={idx} css={onLoadImgStyle}>
-            <div onClick={() => deleteImg(idx)}>삭제</div>
-            <img css={onLoadImgStyle} src={preViews[idx]} alt={el.name} />
+          <div key={idx} css={[onLoadImgStyle, relative]}>
+            <img
+              css={imgStyle}
+              draggable="false"
+              src={preViews[idx]}
+              alt={el.name}
+            />
+            <div css={xStyle} onClick={() => deleteImg(idx)}>
+              ×
+            </div>
           </div>
         );
       })}
-
-      <form>
+      <form
+        css={[inputFileStyle, inputFileCenter]}
+        encType="multiparty/form-data"
+      >
+        <label htmlFor="file" css={labelStyle}>
+          +
+        </label>
         <input
+          css={hidden}
           type="file"
-          multiple
-          onChange={(e) => {
-            addFileHandler(e);
-          }}
+          id="file"
+          accept="image/*"
+          onChange={insertImgHandler}
         />
-        <img src="" alt="" />
       </form>
     </div>
   );
@@ -159,6 +213,9 @@ export const Writing = () => {
   const setSerchAdress = useSetRecoilState(searchAddress);
   const [showAdress, setShowAdress] = useRecoilState(showAddressList);
   const [imgUrls, setImgUrls] = useState<string>('');
+  const imgfiles = useRecoilValue(imgFile);
+  const [formDatas, setFormDatas] = useRecoilState(formData);
+
   const category: string[] = [
     '카테고리를 입력하세요',
     '패키지',
@@ -231,6 +288,21 @@ export const Writing = () => {
       img_urls: imgUrls,
     };
     console.log(wrigthDate);
+
+    /// 사진전송
+    const fd = new FormData();
+    console.log('!!', imgfiles);
+    Object.values(imgfiles).forEach((file) => fd.append('file', file));
+
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+
+      // axios.post(API, fd, config)
+    };
+
+    console.log('??', fd);
   };
 
   return (

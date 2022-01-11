@@ -300,7 +300,17 @@ export const showAddressList = atom({
 
 //? 이미지 삽입 전역 상태
 
-export const imgFiles = atom<any[]>({
+export const imgFile = atom<any[]>({
   key: 'imgFiles',
+  default: [],
+});
+
+export const preView = atom<any[]>({
+  key: 'preView',
+  default: [],
+});
+
+export const formData = atom<any[]>({
+  key: 'formData',
   default: [],
 });
