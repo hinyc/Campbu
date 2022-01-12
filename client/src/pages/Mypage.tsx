@@ -8,7 +8,6 @@ import {
   host,
   reviews,
   hidden,
-  confirm,
   relative,
   colorPlaceholder,
   inactive,
@@ -17,7 +16,7 @@ import ReviewBox from '../components/ReviewBox';
 import ReviewTitle from '../components/ReviweTitle';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { imgFile, preView } from '../Atom';
+import { imgFile } from '../Atom';
 import { useRecoilState } from 'recoil';
 
 const imgStyle = css`
@@ -135,7 +134,6 @@ function Mypage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [imgfiles, setFiles] = useRecoilState(imgFile);
-  const [preViews, setPreViews] = useState<string>('');
   const [getReviews, setGetReviews] = useState<
     {
       id: number;
@@ -236,10 +234,9 @@ function Mypage() {
         ],
       },
     };
-    setPreViews(userinfo.users.users_img);
+    setUserImg(userinfo.users.users_img);
     setNickname(userinfo.users.nickname);
     setEmail(userinfo.users.email);
-    setUserImg(userinfo.users.users_img);
 
     //받은 review 목록
     let tempReviews: {
@@ -309,7 +306,7 @@ function Mypage() {
       } = {
         nickname: nickname,
         password: password,
-        user_img: preViews,
+        user_img: userImg,
       };
       console.log('data', modifyData);
     }
@@ -342,7 +339,7 @@ function Mypage() {
     reader.onloadend = () => {
       const preViewUrl = reader.result;
       if (preViewUrl) {
-        setPreViews(String(preViewUrl));
+        setUserImg(String(preViewUrl));
       }
     };
   };
@@ -371,7 +368,7 @@ function Mypage() {
             imgStyle,
             relative,
             css`
-              background-image: ${`url(${preViews})`};
+              background-image: ${`url(${userImg})`};
             `,
           ]}
         >
