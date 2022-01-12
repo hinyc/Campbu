@@ -297,3 +297,20 @@ export const showAddressList = atom({
   key: 'showAdressList',
   default: false,
 });
+
+//? 이미지 삽입 전역 상태
+
+export const imgFile = atom<any[]>({
+  key: 'imgFiles',
+  default: [],
+});
+
+export const preView = atom<any[]>({
+  key: 'preView',
+  default: [],
+});
+
+export const formData = atom<any[]>({
+  key: 'formData',
+  default: [],
+});
