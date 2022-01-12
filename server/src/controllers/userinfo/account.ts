@@ -76,7 +76,7 @@ export default {
       await usersRepository.delete({ id: userInfo.id });
     }
     return res
-      .status(200)
+      .status(205)
       .clearCookie('jwt')
       .json({ message: 'Account information Successfully Deleted' });
   },

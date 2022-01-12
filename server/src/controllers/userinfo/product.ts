@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
+import e, { Request, Response } from 'express';
 import { createQueryBuilder, getRepository } from 'typeorm';
 import { users } from '../../entity/users';
 import { posts } from '../../entity/posts';
-import { reservation } from '../../entity/reservation';
+import { likes } from '../../entity/likes';
 import { authorizeToken } from '../jwt/AuthorizeToken';
 
 export default {
@@ -47,6 +47,8 @@ export default {
   like: async (req: Request, res: Response) => {
     const decoded = await authorizeToken(req, res);
     const usersRepository = getRepository(users);
+    const likesRepository = getRepository(likes);
+    const postsRepository = getRepository(posts);
 
     const userInfo = await usersRepository.findOne({
       email: decoded.email,
@@ -55,6 +57,22 @@ export default {
     if (!userInfo) {
       return res.status(401).json({ message: 'Unauthorized User' });
     } else {
+      const likesInfo = await likesRepository
+        .createQueryBuilder('likes')
+        .select(['users_id', 'posts_id'])
+        .where('likes.users_id = :users_id', { users_id: userInfo.id })
+        .getRawMany();
+
+      const postsInfo = await Promise.all(
+        likesInfo.map(async (el) => {
+          return await postsRepository
+            .createQueryBuilder('post')
+            .loadRelationCountAndMap('post.likes_count', 'post.likes')
+            .where('post.id = :id', { id: el.posts_id })
+            .getMany();
+        }),
+      );
+      return res.status(200).json({ posts: postsInfo, likes: likesInfo });
     }
   },
   post: async (req: Request, res: Response) => {
