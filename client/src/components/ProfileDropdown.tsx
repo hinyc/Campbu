@@ -49,6 +49,9 @@ function ProfileDropdown() {
         <Link to="/lists/resistlist" css={textDecorationNone}>
           <li css={li}>내가 쓴 글</li>
         </Link>
+        <Link to="/lists/Chat" css={textDecorationNone}>
+          <li css={li}>채팅</li>
+        </Link>
         <div css={line} />
         <Link to="mypage" css={textDecorationNone}>
           <li css={li}>계정</li>
