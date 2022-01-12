@@ -1,11 +1,24 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import Gage from '../components/Gage';
-import { color, rem, hover } from '../common';
+import {
+  color,
+  rem,
+  hover,
+  host,
+  reviews,
+  hidden,
+  confirm,
+  relative,
+  colorPlaceholder,
+  inactive,
+} from '../common';
 import ReviewBox from '../components/ReviewBox';
 import ReviewTitle from '../components/ReviweTitle';
-
-const profileImg: string = `https://images.unsplash.com/photo-1497906539264-eb74442e37a9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80`;
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+import { imgFile, preView } from '../Atom';
+import { useRecoilState } from 'recoil';
 
 const imgStyle = css`
   width: ${rem(114)};
@@ -13,7 +26,6 @@ const imgStyle = css`
   border: 4px solid ${color.point};
   border-radius: 50%;
   background-size: cover;
-  background-image: ${`url(${profileImg})`};
 `;
 
 const hello = css`
@@ -65,15 +77,275 @@ const buttonStyle = css`
   }
 `;
 
+const noticeOk = css`
+  font-size: ${rem(10)};
+  color: ${color.mid};
+`;
+const noticeNo = css`
+  font-size: ${rem(10)};
+  color: ${color.point};
+`;
+
+const validButtonInactive = css`
+  color: ${color.border};
+  font-weight: 700;
+`;
+const validButtonActive = css`
+  color: ${color.point};
+  font-weight: 700;
+  :hover {
+    color: ${color.point};
+    cursor: pointer;
+    opacity: 0.8;
+  }
+  :active {
+    opacity: 0.95;
+  }
+`;
+
+const reviewsAlign = css`
+  width: ${rem(371)};
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+`;
+const hiddenUpload = css`
+  position: absolute;
+  line-height: ${rem(107)};
+  color: white;
+  top: -4px;
+  left: -4px;
+  background-color: black;
+  opacity: 0;
+  text-align: center;
+  transition: 0.2s;
+  :hover {
+    opacity: 0.4;
+    cursor: pointer;
+  }
+  :active {
+    opacity: 0.1;
+  }
+`;
+
 function Mypage() {
-  const reviews: { id: number; review: string; count: number }[] = [
-    { id: 1, review: '합리적인 가격', count: 7 },
-    { id: 2, review: '정확한 시간 약속', count: 7 },
-    { id: 3, review: '물건의 좋은 질', count: 7 },
-    { id: 4, review: '빠른 답장', count: 7 },
-    { id: 7, review: '잦은 약속 변경', count: 7 },
-    { id: 8, review: '느린 답장', count: 7 },
-  ];
+  const [nickname, setNickname] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [userImg, setUserImg] = useState<string>('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [imgfiles, setFiles] = useRecoilState(imgFile);
+  const [preViews, setPreViews] = useState<string>('');
+  const [getReviews, setGetReviews] = useState<
+    {
+      id: number;
+      review: string;
+      count?: number;
+    }[]
+  >([
+    {
+      id: 0,
+      review: '',
+      count: 0,
+    },
+  ]);
+
+  const [passwordValid, setPasswordValid] = useState(false);
+  const [nickDuplicateClick, setNickDuplicateClick] = useState(false);
+  const [nickDupliacte, setNickDupliacte] = useState(false);
+
+  // 유저정보요청
+  useEffect(() => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    // axios
+    //   .get(`${host}/userinfo/account`, config)
+    //   .then((res) => console.log(res));
+
+    // 서버로부터 받은 데이터 예시
+    const userinfo = {
+      users: {
+        id: 1,
+        email: 'code@gmail.com',
+        nickname: '김코딩',
+        users_img:
+          'https://images.unsplash.com/photo-1497906539264-eb74442e37a9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80',
+        created_at: '2021-12-16T09:42:40.000Z',
+        updated_at: '2021-12-16T09:42:40.000Z',
+        reviews: [
+          {
+            id: 1,
+            users_id: 1,
+            reviews_id: 1,
+            count: 5,
+            created_at: '2021-12-16T09:42:40.000Z',
+            updated_at: '2021-12-16T09:42:40.000Z',
+          },
+          {
+            id: 1,
+            users_id: 1,
+            reviews_id: 2,
+            count: 5,
+            created_at: '2021-12-16T09:42:40.000Z',
+            updated_at: '2021-12-16T09:42:40.000Z',
+          },
+          {
+            id: 1,
+            users_id: 1,
+            reviews_id: 4,
+            count: 5,
+            created_at: '2021-12-16T09:42:40.000Z',
+            updated_at: '2021-12-16T09:42:40.000Z',
+          },
+          {
+            id: 1,
+            users_id: 1,
+            reviews_id: 7,
+            count: 5,
+            created_at: '2021-12-16T09:42:40.000Z',
+            updated_at: '2021-12-16T09:42:40.000Z',
+          },
+          {
+            id: 1,
+            users_id: 1,
+            reviews_id: 8,
+            count: 5,
+            created_at: '2021-12-16T09:42:40.000Z',
+            updated_at: '2021-12-16T09:42:40.000Z',
+          },
+          {
+            id: 1,
+            users_id: 1,
+            reviews_id: 10,
+            count: 5,
+            created_at: '2021-12-16T09:42:40.000Z',
+            updated_at: '2021-12-16T09:42:40.000Z',
+          },
+          {
+            id: 1,
+            users_id: 1,
+            reviews_id: 6,
+            count: 5,
+            created_at: '2021-12-16T09:42:40.000Z',
+            updated_at: '2021-12-16T09:42:40.000Z',
+          },
+        ],
+      },
+    };
+    setPreViews(userinfo.users.users_img);
+    setNickname(userinfo.users.nickname);
+    setEmail(userinfo.users.email);
+    setUserImg(userinfo.users.users_img);
+
+    //받은 review 목록
+    let tempReviews: {
+      id: number;
+      review: string;
+      count?: number;
+    }[] = [...reviews];
+    console.log('??', tempReviews);
+
+    userinfo.users.reviews.forEach((el) => {
+      tempReviews[el.reviews_id - 1] = {
+        ...tempReviews[el.reviews_id - 1],
+        count: el.count,
+      };
+    });
+
+    setGetReviews(tempReviews);
+  }, []);
+
+  const nicknameHandler = (e: any) => setNickname(e.target.value);
+  const nicknameDuplicateCheckHandler = () => {
+    if (nickname.length > 0) {
+      setNickDuplicateClick(true);
+
+      axios
+        .get(`${host}/user/signup?nickname=${nickname}`)
+        .then((res) => {
+          if (res.status === 200) {
+            console.log(`API ${host}/user/signup?nickname=${nickname}`);
+            console.log('닉네임 사용가능', setNickDupliacte(true));
+          }
+        })
+        .catch((err) => {
+          setNickDupliacte(false);
+          console.log('닉네임 중복', setNickDupliacte(false));
+        });
+    }
+  };
+
+  const emailHandler = (e: any) => setEmail(e.target.value);
+  const passwordHandler = (e: any) => {
+    const password = e.target.value;
+    setPassword(password);
+    const passwordValidator = /(?=.*[0-9])(?=.*[A-Za-z]).{8,}/g;
+    setPasswordValid(passwordValidator.test(password));
+  };
+
+  const confirmPasswordHandler = (e: any) => setConfirmPassword(e.target.value);
+
+  const campbuIndicator = 0.3; // 계산 방법 필요
+
+  //! 수정 탈퇴 요청 함수
+  const API = `${host}/userinfo/account`;
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const modifyAccount = () => {
+    if (passwordValid && password === confirmPassword) {
+      console.log('수정요청 axios.patch', API);
+      const modifyData: {
+        nickname: string;
+        password: string;
+        user_img: string;
+      } = {
+        nickname: nickname,
+        password: password,
+        user_img: preViews,
+      };
+      console.log('data', modifyData);
+    }
+  };
+  const deleteAccount = () => {
+    console.log('삭제요청 axios.delete', API);
+
+    // axios
+    //   .delete(API, config)
+    //   .then((res) => {
+    //     if (res.status === 200) {
+    //       console.log('탈퇴완료');
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log('잘못된요청');
+    //   });
+  };
+
+  const insertImgHandler = (e: any) => {
+    const target = e.target.files[0];
+
+    let reader = new FileReader();
+
+    if (target) {
+      reader.readAsDataURL(target);
+      setFiles([...imgfiles, target]);
+    }
+
+    reader.onloadend = () => {
+      const preViewUrl = reader.result;
+      if (preViewUrl) {
+        setPreViews(String(preViewUrl));
+      }
+    };
+  };
 
   return (
     <div
@@ -94,9 +366,30 @@ function Mypage() {
           `,
         ]}
       >
-        <div css={imgStyle}></div>
-        <div css={hello}>{`안녕하세요, ${`깐부`} 님`}</div>
-        <Gage ratio={0.83} />
+        <div
+          css={[
+            imgStyle,
+            relative,
+            css`
+              background-image: ${`url(${preViews})`};
+            `,
+          ]}
+        >
+          <form encType="multiparty/form-data">
+            <label css={[imgStyle, hiddenUpload]} htmlFor="file">
+              수정하기
+            </label>
+            <input
+              css={hidden}
+              type="file"
+              id="file"
+              accept="image/*"
+              onChange={insertImgHandler}
+            />
+          </form>
+        </div>
+        <div css={hello}>{`안녕하세요, ${nickname} 님`}</div>
+        <Gage ratio={campbuIndicator} />
         <div
           css={[
             wnr,
@@ -107,30 +400,38 @@ function Mypage() {
             `,
           ]}
         >
-          깐부지수 83%
+          {`깐부지수 ${campbuIndicator * 100}%`}
         </div>
-        <ReviewTitle text="대여자에게 받은 좋은 리뷰" />
-        {reviews.map((review, idx) => {
-          return review.id < 7 ? (
-            <ReviewBox
-              key={idx}
-              content={review.review}
-              count={review.count}
-              isBad={false}
-            />
-          ) : null;
-        })}
-        <ReviewTitle text="대여자에게 받은 나쁜 리뷰" />
-        {reviews.map((review, idx) => {
-          return review.id < 7 ? null : (
-            <ReviewBox
-              key={idx}
-              content={review.review}
-              count={review.count}
-              isBad={true}
-            />
-          );
-        })}
+        <ReviewTitle text="대여자에게 받은 좋은 리뷰" width={371} />
+        <div css={reviewsAlign}>
+          {getReviews.map((review, idx) => {
+            return review.id < 7 ? (
+              <ReviewBox
+                key={idx}
+                content={review.review}
+                count={review.count}
+                isBad={false}
+                width={180}
+                margin={`${rem(5)} 0`}
+              />
+            ) : null;
+          })}
+        </div>
+        <ReviewTitle text="대여자에게 받은 나쁜 리뷰" width={371} />
+        <div css={reviewsAlign}>
+          {getReviews.map((review, idx) => {
+            return review.id < 7 ? null : (
+              <ReviewBox
+                key={idx}
+                content={review.review}
+                count={review.count}
+                isBad={true}
+                width={180}
+                margin={`${rem(5)} 0`}
+              />
+            );
+          })}
+        </div>
       </div>
       <div
         css={css`
@@ -142,27 +443,28 @@ function Mypage() {
       >
         <div css={[verticalAlign]}>
           <div css={hello}>회원정보 수정</div>
-          <div css={[wnr, contentAlign]}>
-            <span>프로필 사진</span>
-            <span
-              css={css`
-                color: ${color.border};
-              `}
-            >
-              업로드
-            </span>
-          </div>
-          <input
-            css={[wnr, inputStyle]}
-            type="text"
-            placeholder="닉네임을 입력해주세요."
-          />
+
           <div css={[wnr, contentAlign]}>
             <span>닉네임</span>
-            <span
+            <div
               css={css`
-                color: ${color.border};
+                width: ${rem(120)};
+                margin-right: ${rem(8)};
               `}
+            >
+              {nickDuplicateClick ? (
+                nickDupliacte ? (
+                  <div css={noticeOk}> * 사용가능한 닉네임입니다.</div>
+                ) : (
+                  <div css={noticeNo}> * 중복된 닉네임입니다.</div>
+                )
+              ) : null}
+            </div>
+            <span
+              css={
+                nickname.length > 0 ? validButtonActive : validButtonInactive
+              }
+              onClick={nicknameDuplicateCheckHandler}
             >
               중복 검사
             </span>
@@ -171,33 +473,67 @@ function Mypage() {
             css={[wnr, inputStyle]}
             type="text"
             placeholder="닉네임을 입력해주세요."
+            onChange={nicknameHandler}
+            value={nickname}
           />
           <div css={[wnr, contentAlign]}>
             <span>이메일</span>
           </div>
           <input
-            css={[wnr, inputStyle]}
+            css={[wnr, inputStyle, colorPlaceholder, inactive]}
             type="text"
             placeholder="이메일을 입력해주세요."
+            onChange={emailHandler}
+            value={email}
+            readOnly
           />
-          <div css={[wnr, contentAlign]}>비밀번호</div>
+          <div css={[wnr, contentAlign]}>
+            <div>비밀번호</div>
+            <div
+              css={css`
+                width: ${rem(180)};
+                margin-right: ${rem(24)};
+              `}
+            >
+              {confirmPassword.length > 0 && passwordValid ? (
+                password === confirmPassword ? (
+                  <div css={noticeOk}>* 사용가능한 비밀번호입니다.</div>
+                ) : (
+                  <div css={noticeNo}>* 비밀번호가 일치하지 않습니다.</div>
+                )
+              ) : password.length > 0 ? (
+                passwordValid ? null : (
+                  <div css={noticeNo}>
+                    * 영문, 숫자 조합 8자 이상 입력해주세요.{' '}
+                  </div>
+                )
+              ) : null}
+            </div>
+          </div>
           <input
             css={[wnr, inputStyle]}
-            type="text"
+            type="password"
             placeholder="비밀번호를 입력해주세요."
+            onChange={passwordHandler}
+            value={password}
           />
           <input
             css={[wnr, inputStyle]}
-            type="text"
+            type="password"
             placeholder="비밀번호를 한 번 더 입력해주세요."
+            onChange={confirmPasswordHandler}
+            value={confirmPassword}
           />
-          <button css={[wnr, buttonStyle]}>수정완료</button>
+          <button css={[wnr, buttonStyle]} onClick={modifyAccount}>
+            수정완료
+          </button>
           <div
             css={css`
               color: ${color.border};
               margin-top: ${rem(30)};
               text-decoration: underline;
             `}
+            onClick={deleteAccount}
           >
             회원탈퇴
           </div>
@@ -206,4 +542,5 @@ function Mypage() {
     </div>
   );
 }
+
 export default Mypage;
