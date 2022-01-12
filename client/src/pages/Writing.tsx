@@ -7,8 +7,8 @@ import {
   flexVertical,
   flexBetween,
   rem,
-  flex,
   adressAPI,
+  relative,
 } from '../common';
 import { Button } from '../components/Button';
 import BackButton from '../components/BackButton';
@@ -20,6 +20,9 @@ import {
   searchAddress,
   selectAddress,
   showAddressList,
+  preView,
+  formData,
+  imgFile,
 } from '../Atom';
 import axios from 'axios';
 import SelectAdressList from '../components/SelectAdress';
@@ -56,40 +59,145 @@ const marginTop = css`
   margin-top: 1rem;
 `;
 
-const uploadImg = css`
-  border: 1px solid ${color.border};
+const onLoadImgStyle = css`
+  border-radius: 0.35rem;
+  margin-right: 0.625rem;
+  text-align: center;
+  background-color: ${color.border};
+  width: 7rem;
+  height: 7rem;
+  transition: 0.1s;
+  color: rgba(0, 0, 0, 0);
+  :hover {
+    color: ${color.placeholder};
+  }
+`;
+
+const imgStyle = css`
+  border: 1px solid ${color.placeholder};
+
   border-radius: 0.3125rem;
   margin-right: 0.625rem;
-  margin-bottom: 0.625rem;
+  text-align: center;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  transition: 0.1s;
+  :hover {
+    opacity: 0.4;
+  }
+`;
+const inputFileStyle = css`
+  border: 1px solid ${color.border};
+  border-radius: 0.3125rem;
+
   text-align: center;
   width: 7rem;
   height: 7rem;
 `;
-const marginRightZero = css`
-  margin-right: 0;
+
+const hidden = css`
+  position: absolute;
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  border: 0;
 `;
-const addImg = css`
-  font-size: 90px;
+const inputFileCenter = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const labelStyle = css`
+  color: ${color.placeholder};
+  font-size: 5rem;
+  width: 7rem;
+  height: 7rem;
+  line-height: 7.6rem;
+  transition: 0.1s;
+  :hover {
+    opacity: 0.6;
+  }
+  :active {
+    opacity: 0.95;
+  }
+`;
+const xStyle = css`
+  font-size: 2rem;
+  position: absolute;
+  top: 0.1rem;
+  right: 0.5rem;
+`;
+
+const uploadImgStyle = css`
+  width: ${rem(850)};
+  display: flex;
+  align-content: center;
+  align-items: center;
 `;
 
 const UploadImg = () => {
+  const [imgfiles, setFiles] = useRecoilState(imgFile);
+  const [preViews, setPreViews] = useRecoilState(preView);
+  const insertImgHandler = (e: any) => {
+    const target = e.target.files[0];
+
+    let reader = new FileReader();
+
+    if (target) {
+      reader.readAsDataURL(target);
+      setFiles([...imgfiles, target]);
+    }
+
+    reader.onloadend = () => {
+      const preViewUrl = reader.result;
+      if (preViewUrl) {
+        setPreViews([...preViews, preViewUrl]);
+      }
+    };
+  };
+
+  const deleteImg = (target: number) => {
+    setFiles(imgfiles.filter((el, idx) => idx !== target));
+    setPreViews(preViews.filter((el, idx) => idx !== target));
+  };
+
+  console.log(imgfiles);
+  console.log(preViews);
   return (
-    <div
-      css={[
-        confirm,
-        flex,
-        css`
-          width: 29.9375rem;
-          flex-wrap: wrap;
-        `,
-      ]}
-    >
-      <div css={uploadImg}>업로드한 이미지 미리보기</div>
-      <div css={uploadImg}>업로드한 이미지 미리보기</div>
-      <div css={uploadImg}>업로드한 이미지 미리보기</div>
-      <div css={[uploadImg, marginRightZero]}>업로드한 이미지 미리보기</div>
-      <div css={uploadImg}>업로드한 이미지 미리보기</div>
-      <div css={[uploadImg, addImg, marginRightZero]}>+</div>
+    <div css={[uploadImgStyle, confirm]}>
+      {imgfiles.map((el, idx) => {
+        return (
+          <div key={idx} css={[onLoadImgStyle, relative]}>
+            <img
+              css={imgStyle}
+              draggable="false"
+              src={preViews[idx]}
+              alt={el.name}
+            />
+            <div css={xStyle} onClick={() => deleteImg(idx)}>
+              ×
+            </div>
+          </div>
+        );
+      })}
+      <form
+        css={[inputFileStyle, inputFileCenter]}
+        encType="multiparty/form-data"
+      >
+        <label htmlFor="file" css={labelStyle}>
+          +
+        </label>
+        <input
+          css={hidden}
+          type="file"
+          id="file"
+          accept="image/*"
+          onChange={insertImgHandler}
+        />
+      </form>
     </div>
   );
 };
@@ -105,6 +213,9 @@ export const Writing = () => {
   const setSerchAdress = useSetRecoilState(searchAddress);
   const [showAdress, setShowAdress] = useRecoilState(showAddressList);
   const [imgUrls, setImgUrls] = useState<string>('');
+  const imgfiles = useRecoilValue(imgFile);
+  const [formDatas, setFormDatas] = useRecoilState(formData);
+
   const category: string[] = [
     '카테고리를 입력하세요',
     '패키지',
@@ -126,7 +237,7 @@ export const Writing = () => {
     if (address.length > 0) {
       axios
         .get(
-          `https://www.juso.go.kr/addrlink/addrLinkApi.do?currentPage=1&countPerPage=20&keyword=${address}&confmKey=${adressAPI}&resultType=json`,
+          `https://www.juso.go.kr/addrlink/addrLinkApi.do?currentPage=1&countPerPage=50&keyword=${address}&confmKey=${adressAPI}&resultType=json`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -135,6 +246,7 @@ export const Writing = () => {
         )
         .then((res) => {
           const address = res.data.results.juso;
+          console.log(address);
           const adressList: string[] = [];
           if (address) {
             const allSerchAdress = address.map((el: any) => {
@@ -176,6 +288,21 @@ export const Writing = () => {
       img_urls: imgUrls,
     };
     console.log(wrigthDate);
+
+    /// 사진전송
+    const fd = new FormData();
+    console.log('!!', imgfiles);
+    Object.values(imgfiles).forEach((file) => fd.append('file', file));
+
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+
+      // axios.post(API, fd, config)
+    };
+
+    console.log('??', fd);
   };
 
   return (
@@ -314,17 +441,6 @@ export const Writing = () => {
                 value={content}
               />
             </div>
-            <div
-              css={[
-                flexBetween,
-                css`
-                  justify-content: flex-start;
-                  margin-top: ${rem(22)};
-                `,
-              ]}
-            >
-              <UploadImg />
-            </div>
           </div>
           <div>
             <div
@@ -339,6 +455,17 @@ export const Writing = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div
+        css={[
+          flexBetween,
+          css`
+            justify-content: flex-start;
+            margin-top: ${rem(22)};
+          `,
+        ]}
+      >
+        <UploadImg />
       </div>
       <div>
         <Button

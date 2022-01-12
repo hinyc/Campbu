@@ -1,16 +1,19 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { rem, color, hover } from '../common';
+import { rem, color, hover, shadow, host } from '../common';
 import { Button } from './Button';
 import { useState } from 'react';
 import Complete from './Complete';
+import { useRecoilState } from 'recoil';
+import { showConfirmModal } from '../Atom';
+import axios from 'axios';
 
 const box = css`
   position: fixed;
   width: ${rem(420)};
   background-color: white;
   border-radius: ${rem(15)};
-  box-shadow: ${hover};
+  box-shadow: ${shadow};
   z-index: 999;
   left: 50%;
   transform: translate(-50%, 0);
@@ -33,21 +36,42 @@ interface Props {
   text1: string;
   text2: string;
   title: string;
+  reservationId: number;
+  reservation_status: number;
 }
 
-function YesOrNo({ text1, text2, title, text }: Props) {
-  const [show, setShow] = useState<boolean>(true);
-  const [next, setNext] = useState<boolean>(false);
+function YesOrNo({
+  text1,
+  text2,
+  title,
+  text,
+  reservationId,
+  reservation_status,
+}: Props) {
+  const [confirm, setConfirm] = useRecoilState(showConfirmModal);
+  const [complete, setComplete] = useState<boolean>(false);
   const onOkClick = () => {
-    setShow(!show);
-    setNext(true);
+    // axios
+    //   .patch(
+    //     `${host}/reservation/:${reservationId}`,
+    //     { reservation_status },
+    //     { headers: { 'Content-Type': 'application/json' } },
+    //   )
+    //   .then((res) => {
+    // console.log(res);
+    setConfirm(false);
+    setComplete(true);
+    // });
   };
   const onNoClick = () => {
-    setShow(!show);
+    setConfirm(false);
+  };
+  const onCompleteClick = () => {
+    setComplete(false);
   };
   return (
     <>
-      {show ? (
+      {confirm ? (
         <div css={box}>
           <h3 css={titleStyle}>{title}</h3>
           <p css={message}>{text1}</p>
@@ -80,7 +104,9 @@ function YesOrNo({ text1, text2, title, text }: Props) {
           />
         </div>
       ) : null}
-      {next ? <Complete text="예약이 취소되었습니다" /> : null}
+      {complete ? (
+        <Complete text="예약이 취소되었습니다" onClick={onCompleteClick} />
+      ) : null}
     </>
   );
 }

@@ -15,7 +15,7 @@ export const originalPosts = atom({
         category: 'Tent',
         deposit: 30000,
         rental_fee: 25000,
-        unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
+        unavailable_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
         title: '테스트테스트1',
         content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
         longitude: 126.99597295767953,
@@ -24,7 +24,7 @@ export const originalPosts = atom({
         img_urls:
           'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
         users_id: 1,
-        reservation_dates: ['2021-12-29', '2021-12-30', '2021-12-31'],
+        reservation_dates: ['2021.12.29', '2021.12.30', '2021.12.31'],
         likes_count: 15,
       },
       {
@@ -32,7 +32,7 @@ export const originalPosts = atom({
         category: 'Chair',
         deposit: 30000,
         rental_fee: 25000,
-        unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
+        unavailable_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
         title: '테스트테스트2',
         content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
         longitude: 126.99597295767953,
@@ -41,7 +41,7 @@ export const originalPosts = atom({
         img_urls:
           'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
         users_id: 1,
-        reservation_dates: ['2021-12-29', '2021-12-30', '2021-12-31'],
+        reservation_dates: ['2021.12.29', '2021.12.30', '2021.12.31'],
         likes_count: 15,
       },
     ],
@@ -58,7 +58,7 @@ export const posts = atom({
         category: 'Tent',
         deposit: 30000,
         rental_fee: 25000,
-        unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
+        unavailable_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
         title: '테스트테스트1',
         content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
         longitude: 126.99597295767953,
@@ -67,7 +67,7 @@ export const posts = atom({
         img_urls:
           'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
         users_id: 1,
-        reservation_dates: ['2021-12-29', '2021-12-30', '2021-12-31'],
+        reservation_dates: ['2021.12.29', '2021.12.30', '2021.12.31'],
         likes_count: 15,
       },
       {
@@ -75,7 +75,7 @@ export const posts = atom({
         category: 'Chair',
         deposit: 30000,
         rental_fee: 25000,
-        unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
+        unavailable_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
         title: '테스트테스트2',
         content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
         longitude: 126.99597295767953,
@@ -84,7 +84,7 @@ export const posts = atom({
         img_urls:
           'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
         users_id: 1,
-        reservation_dates: ['2021-12-29', '2021-12-30', '2021-12-31'],
+        reservation_dates: ['2021.12.29', '2021.12.30', '2021.12.31'],
         likes_count: 15,
       },
     ],
@@ -115,6 +115,12 @@ export const showAlertModal = atom({
   default: false,
 });
 
+//? 대여 확인 모달 : ㅇㅇ를 하시겠습니까? [예/아니오]
+export const showConfirmModal = atom({
+  key: 'showConfirmModal',
+  default: false,
+});
+
 export const borrows = atom({
   key: 'borrows',
   default: {
@@ -123,14 +129,14 @@ export const borrows = atom({
         id: 1,
         users_id: 1,
         posts_id: 1,
-        reservation_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
-        reservation_status: 1,
+        reservation_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
+        reservation_status: 2,
         posts: {
           id: 1,
           category: 'Tent',
           deposit: 20000,
           rental_fee: 20000,
-          unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
+          unavailable_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
           title: '3~4인용 텐트 빌려드려요',
           content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
           longitude: 126.99597295767953,
@@ -146,14 +152,14 @@ export const borrows = atom({
         id: 2,
         users_id: 2,
         posts_id: 1,
-        reservation_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
-        reservation_status: 2,
+        reservation_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
+        reservation_status: 1,
         posts: {
           id: 1,
           category: 'Tent',
           deposit: 20000,
           rental_fee: 20000,
-          unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
+          unavailable_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
           title: '3~4인용 텐트 빌려드려요',
           content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
           longitude: 126.99597295767953,
@@ -178,7 +184,7 @@ export const lends = atom({
         category: 'Tent',
         deposit: 20000,
         rental_fee: 20000,
-        unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
+        unavailable_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
         title: '3~4인용 텐트 빌려드려요',
         content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
         longitude: 126.99597295767953,
@@ -193,7 +199,7 @@ export const lends = atom({
             id: 1,
             users_id: 1,
             posts_id: 1,
-            reservation_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
+            reservation_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
             reservation_status: 1,
           },
         ],
@@ -211,7 +217,7 @@ export const likes = atom({
         category: 'Tent',
         deposit: 20000,
         rental_fee: 20000,
-        unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
+        unavailable_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
         title: '3~4인용 텐트 빌려드려요',
         content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
         longitude: 126.99597295767953,
@@ -242,7 +248,7 @@ export const resists = atom({
         category: 'Tent',
         deposit: 20000,
         rental_fee: 20000,
-        unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
+        unavailable_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
         title: '3~4인용 텐트 빌려드려요',
         content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
         longitude: 126.99597295767953,
@@ -257,7 +263,7 @@ export const resists = atom({
   },
 });
 
-//? atom borromList와 LikeList, ResistsList에서 반복되는 interface
+//? atom borrowList와 LikeList, ResistsList에서 반복되는 interface
 export interface UserPost {
   id: number;
   category: string;
@@ -296,4 +302,21 @@ export const searchAddress = atom<string[]>({
 export const showAddressList = atom({
   key: 'showAdressList',
   default: false,
+});
+
+//? 이미지 삽입 전역 상태
+
+export const imgFile = atom<any[]>({
+  key: 'imgFiles',
+  default: [],
+});
+
+export const preView = atom<any[]>({
+  key: 'preView',
+  default: [],
+});
+
+export const formData = atom<any[]>({
+  key: 'formData',
+  default: [],
 });
