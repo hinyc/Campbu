@@ -257,6 +257,35 @@ export const resists = atom({
   },
 });
 
+export const chat = atom({
+  key: 'chat',
+  default: {
+    Post: {
+      id: 1,
+      category: 'Tent',
+      deposit: 20000,
+      rental_fee: 20000,
+      unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
+      title: '3~4인용 텐트 빌려드려요',
+      content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
+      longitude: 126.99597295767953,
+      latitude: 35.97664845766847,
+      address: '서울특별시 동작구 신대방동',
+      img_urls:
+        'https://5.imimg.com/data5/GD/XU/MY-27300/vintage-camping-tent-500x500.jpg',
+      users_id: 1,
+      likes_count: 5,
+      reservation: {
+        id: 1,
+        users_id: 1,
+        posts_id: 1,
+        reservation_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
+        reservation_status: 1,
+      },
+    },
+  },
+});
+
 //? atom borromList와 LikeList, ResistsList에서 반복되는 interface
 export interface UserPost {
   id: number;
