@@ -152,12 +152,13 @@ function LoginModal() {
           setIsLogin(true);
           navigate('/');
           return;
-        } else {
-          setPasswordReqMsg(false);
-          console.log(passwordReqMsg);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((res) => {
+        console.log(res);
+        setPasswordReqMsg(false);
+        console.log(passwordReqMsg);
+      });
   };
 
   const kakaoLogin = () => {
