@@ -9,6 +9,7 @@ import {
   rem,
   adressAPI,
   relative,
+  hidden,
 } from '../common';
 import { Button } from '../components/Button';
 import BackButton from '../components/BackButton';
@@ -96,15 +97,6 @@ const inputFileStyle = css`
   height: 7rem;
 `;
 
-const hidden = css`
-  position: absolute;
-  width: 0;
-  height: 0;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  border: 0;
-`;
 const inputFileCenter = css`
   display: flex;
   justify-content: center;
