@@ -55,6 +55,25 @@ export const modalBackgroundStyle = css`
   place-items: center;
 `;
 
+export const hidden = css`
+  position: absolute;
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  border: 0;
+`;
+
+export const colorPlaceholder = css`
+  color: ${color.placeholder};
+`;
+export const inactive = css`
+  :focus {
+    outline: none;
+  }
+`;
+
 export const reviews: { id: number; review: string }[] = [
   { id: 1, review: '가까운 거래장소' },
   { id: 2, review: '상세한 물품 설명' },
