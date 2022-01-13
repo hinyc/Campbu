@@ -35,12 +35,12 @@ const line = css`
 `;
 
 function ProfileDropdown() {
-  // const onLogoutClick = () => {
-  //   axios
-  //     .get(`${host}/user/logout`)
-  //     .then((res) => console.log(res.data))
-  //     .catch((err) => console.error(err));
-  // };
+  const onLogoutClick = () => {
+    //   axios
+    //     .get(`${host}/user/logout`)
+    //     .then((res) => console.log(res.data))
+    //     .catch((err) => console.error(err));
+  };
   return (
     <div css={box}>
       <ul css={ulStyle}>
