@@ -63,7 +63,7 @@ export default {
         .where('likes.users_id = :users_id', { users_id: userInfo.id })
         .getRawMany();
 
-      const postsInfo = await Promise.all(
+      const postInfo = await Promise.all(
         likesInfo.map(async (el) => {
           return await postsRepository
             .createQueryBuilder('post')
@@ -72,7 +72,7 @@ export default {
             .getMany();
         }),
       );
-      return res.status(200).json({ posts: postsInfo });
+      return res.status(200).json({ posts: postInfo.flat() });
     }
   },
   post: async (req: Request, res: Response) => {
