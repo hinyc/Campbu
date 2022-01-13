@@ -35,7 +35,7 @@ interface ReviewContent {
   isBad: boolean;
   isCenterText?: string;
   margin?: string;
-  onClick?: Boolean;
+  onClick?: any;
 }
 
 function ReviewBox(props: ReviewContent) {

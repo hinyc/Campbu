@@ -67,6 +67,18 @@ function ReviewModal({ userId }: Props) {
     setSubmit(true);
   };
 
+  const onGoodReviewClick = (id: number) => {
+    const selectedId = reviewId.concat(id);
+    setReviewId(selectedId);
+    console.log('good', selectedId);
+  };
+
+  const onBadReviewClick = (id: number) => {
+    const selectedId = reviewId.concat(id);
+    setReviewId(selectedId);
+    console.log('bad', selectedId);
+  };
+
   return (
     <div css={modalBackgroundStyle}>
       <div css={[background]}>
