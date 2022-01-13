@@ -55,6 +55,25 @@ export const modalBackgroundStyle = css`
   place-items: center;
 `;
 
+export const hidden = css`
+  position: absolute;
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  border: 0;
+`;
+
+export const colorPlaceholder = css`
+  color: ${color.placeholder};
+`;
+export const inactive = css`
+  :focus {
+    outline: none;
+  }
+`;
+
 export const reviews: { id: number; review: string }[] = [
   { id: 1, review: '가까운 거래장소' },
   { id: 2, review: '상세한 물품 설명' },
@@ -71,4 +90,30 @@ export const reviews: { id: number; review: string }[] = [
 ];
 
 export const host = 'http://localhost:5050';
+//주소요청 API
 export const adressAPI = `U01TX0FVVEgyMDIyMDExMDIxMjMzNTExMjExNzA=`;
+
+export type reviewsType = {
+  id: number;
+  review: string;
+  count?: number;
+}[];
+
+export const calCampbuIndicator = (reviews: reviewsType) => {
+  let positive = 0;
+  let negative = 0;
+  reviews.forEach((el) => {
+    if (el.id < 7) {
+      positive = positive + (el.count ? el.count : 0);
+    } else {
+      negative = negative + (el.count ? el.count : 0);
+    }
+  });
+  let cal =
+    positive - negative > 0
+      ? 0
+      : positive - negative < -100
+      ? -100
+      : positive - negative;
+  return (100 + cal) / 100;
+};

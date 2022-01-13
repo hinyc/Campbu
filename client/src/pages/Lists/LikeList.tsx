@@ -46,38 +46,41 @@ function LikeList() {
         </Link>
       </nav>
       <div css={container}>
-        {/* //? 리스트가 하나도 없을 때
-        <img src={emptyHeart} alt="broken heart" css={img} />
-        <p css={message}>
-          찜한 목록이 없어요! <br />
-          마음에 드는 캠핑용품을 찜하고 캠핑을 떠나보세요!
-        </p>
-        <Button
-          text="캠핑 용품 보러 가기"
-          width={`${rem(180)}`}
-          height={`${rem(43)}`}
-          background="white"
-          color={`${color.mid}`}
-          border={`1px solid ${color.mid}`}
-          size={`${rem(14)}`}
-          cursor={'pointer'}
-          hover="80%"
-        /> */}
-        <section css={section}>
-          {likeLists['posts'].map((likeList: UserPost) => (
-            <Product
-              // setModalShow={setModalShow}
-              count={likeList.likes_count}
-              isFill={true}
-              postId={likeList.id}
-              img_urls={likeList.img_urls}
-              address={likeList.address}
-              title={likeList.title}
-              deposit={likeList.deposit}
-              rental_fee={likeList.rental_fee}
+        {likeLists['posts'].length === 0 ? (
+          <>
+            <img src={emptyHeart} alt="broken heart" css={img} />
+            <p css={message}>
+              찜한 목록이 없어요! <br />
+              마음에 드는 캠핑용품을 찜하고 캠핑을 떠나보세요!
+            </p>
+            <Button
+              text="캠핑 용품 보러 가기"
+              width={`${rem(180)}`}
+              height={`${rem(43)}`}
+              background="white"
+              color={`${color.mid}`}
+              border={`1px solid ${color.mid}`}
+              size={`${rem(14)}`}
+              cursor={'pointer'}
+              hover="80%"
             />
-          ))}
-        </section>
+          </>
+        ) : (
+          <section css={section}>
+            {likeLists['posts'].map((likeList: UserPost) => (
+              <Product
+                count={likeList.likes_count}
+                isFill={true}
+                postId={likeList.id}
+                img_urls={likeList.img_urls}
+                address={likeList.address}
+                title={likeList.title}
+                deposit={likeList.deposit}
+                rental_fee={likeList.rental_fee}
+              />
+            ))}
+          </section>
+        )}
       </div>
     </>
   );

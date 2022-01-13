@@ -1,12 +1,40 @@
 /** @jsxImportSource @emotion/react */
-import { color, flexBetween, flexVertical, rem } from '../common';
+import {
+  calCampbuIndicator,
+  color,
+  flexBetween,
+  flexVertical,
+  host,
+  relative,
+  rem,
+  reviews,
+  reviewsType,
+} from '../common';
 import LikeSymbol from '../components/LikeSymbol';
 import ReviewBox from '../components/ReviewBox';
 import ReviewTitle from '../components/ReviweTitle';
-import { css } from '@emotion/react';
+import { css, useTheme } from '@emotion/react';
 import Gage from '../components/Gage';
 import BackButton from '../components/BackButton';
 import { Button } from '../components/Button';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Navigate, useNavigate } from 'react-router-dom';
+import Calendar from '../components/CalendarForLender';
+import {
+  useRecoilState,
+  useRecoilValue,
+  useResetRecoilState,
+  useSetRecoilState,
+} from 'recoil';
+import {
+  endDate,
+  isSelectStart,
+  showCalendar,
+  startDate,
+  unableDate,
+} from '../Atom';
+
 const width = css`
   width: ${rem(752)};
 `;
@@ -41,6 +69,14 @@ const selectDate = css`
   justify-content: space-between;
   align-items: flex-start;
   padding: ${rem(7)};
+  transition: 0.3s;
+  :hover {
+    cursor: pointer;
+    background-color: ${color.border};
+  }
+  :active {
+    opacity: 0.5;
+  }
 `;
 
 const fontSize9 = css`
@@ -53,19 +89,132 @@ const fontSize40 = css`
   color: ${color.border};
 `;
 
-const reviews: { id: number; review: string; count: number }[] = [
-  { id: 1, review: '합리적인 가격', count: 7 },
-  { id: 2, review: '정확한 시간 약속', count: 7 },
-  { id: 3, review: '물건의 좋은 질', count: 7 },
-  { id: 4, review: '빠른 답장', count: 7 },
-  { id: 7, review: '잦은 약속 변경', count: 7 },
-  { id: 8, review: '느린 답장', count: 7 },
-];
+const rightLine = css`
+  border-right: 1px solid ${color.border};
+`;
 
-function DetailView() {
-  const productImgUrl: string =
-    'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg';
+interface propsType {
+  postId?: number;
+}
 
+function DetailView({ postId }: propsType) {
+  const navigate = useNavigate();
+  const [deposit, setDeposit] = useState(0);
+  const [rentalFee, setRentalFee] = useState(0);
+  const setUnableDates = useSetRecoilState(unableDate);
+  const start = useRecoilValue(startDate);
+  const end = useRecoilValue(endDate);
+  const isSelectStartState = useSetRecoilState(isSelectStart);
+  const [isShowCalendar, setIsShowCalendar] = useRecoilState(showCalendar);
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [imgUrls, setImgUrls] = useState<any>();
+  const [rentalDates, setRentalDates] = useState<string[]>();
+  const [getReviews, setGetReviews] = useState<reviewsType>([]);
+
+  useEffect(() => {
+    const API = `${host}/product/post/${postId}`;
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    // axios.get(API, config);
+
+    //요청 결과 예시 데이터
+    let dummydata = {
+      posts: [
+        {
+          id: 1,
+          category: 'Tent',
+          deposit: 30000,
+          rental_fee: 20000,
+          unavailable_dates: [
+            '2021-12-20',
+            '2021-12-21',
+            '2021-12-22',
+            '2022-1-22',
+            '2022-1-15',
+            '2022-1-1',
+          ],
+          title: '3~4인용 텐트 빌려드려요',
+          content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
+          longitude: 126.99597295767953,
+          latitude: 35.97664845766847,
+          address: '서울특별시 동작구 신대방동',
+          img_urls:
+            'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
+          users_id: 1,
+          created_at: '2021-12-16T09:42:40.000Z',
+          updated_at: '2021-12-16T09:42:40.000Z',
+          likes_count: 5,
+        },
+      ],
+      reviews: [
+        {
+          id: 1,
+          users_id: 1,
+          reviews_id: 2,
+          count: 15,
+          created_at: '2021-12-16T09:42:40.000Z',
+          updated_at: '2021-12-16T09:42:40.000Z',
+        },
+        {
+          id: 1,
+          users_id: 1,
+          reviews_id: 8,
+          count: 52,
+          created_at: '2021-12-16T09:42:40.000Z',
+          updated_at: '2021-12-16T09:42:40.000Z',
+        },
+        {
+          id: 1,
+          users_id: 1,
+          reviews_id: 4,
+          count: 5,
+          created_at: '2021-12-16T09:42:40.000Z',
+          updated_at: '2021-12-16T09:42:40.000Z',
+        },
+        {
+          id: 1,
+          users_id: 1,
+          reviews_id: 11,
+          count: 5,
+          created_at: '2021-12-16T09:42:40.000Z',
+          updated_at: '2021-12-16T09:42:40.000Z',
+        },
+      ],
+    };
+    let tempReviews: reviewsType = [...reviews];
+
+    dummydata.reviews.forEach((el) => {
+      tempReviews[el.reviews_id - 1] = {
+        ...tempReviews[el.reviews_id - 1],
+        count: el.count,
+      };
+    });
+
+    console.log(1);
+    setGetReviews(tempReviews);
+    setDeposit(dummydata.posts[0].deposit);
+    setRentalFee(dummydata.posts[0].rental_fee);
+    setUnableDates(dummydata.posts[0].unavailable_dates);
+    setTitle(dummydata.posts[0].title);
+    setContent(dummydata.posts[0].content);
+    setImgUrls(dummydata.posts[0].img_urls);
+  }, []);
+
+  const campbuIndicator = calCampbuIndicator(getReviews);
+
+  const startDateHandler = () => {
+    isSelectStartState(true);
+    setIsShowCalendar(true);
+  };
+  const endDateHandler = () => {
+    isSelectStartState(false);
+    setIsShowCalendar(true);
+  };
   return (
     <div css={flexVertical}>
       <div css={flexVertical}>
@@ -76,7 +225,13 @@ function DetailView() {
             margin-bottom: ${rem(32)};
           `}
         >
-          <BackButton />
+          <div
+            onClick={() => {
+              navigate('/main');
+            }}
+          >
+            <BackButton />
+          </div>
         </div>
         <div
           css={[
@@ -88,7 +243,7 @@ function DetailView() {
             `,
           ]}
         >
-          <div>3~4인용 텐트 빌려드려요</div>
+          <div>{title}</div>
           <LikeSymbol
             isFill={false}
             count={14}
@@ -110,7 +265,7 @@ function DetailView() {
             css={[
               productImg,
               css`
-                background-image: ${`url(${productImgUrl})`};
+                background-image: ${`url(${imgUrls})`};
               `,
             ]}
           ></div>
@@ -128,33 +283,36 @@ function DetailView() {
               `,
             ]}
           >
-            <div>산지는 2년 됐지만 사용한 적은 3번 정도 입니다.</div>
-            <div>깨끗하게 사용했습니다.</div>
+            <p>{content}</p>
           </div>
           <ReviewTitle text={'대여자에게 받은 좋은 리뷰'} width={371} />
           <div css={reviewAlign}>
-            {reviews.map((review, idx) => {
+            {getReviews.map((review, idx) => {
               return review.id < 7 ? (
                 <ReviewBox
                   key={idx}
-                  content={review.review}
+                  content={reviews[review.id - 1].review}
                   count={review.count}
                   isBad={false}
                   width={180}
+                  height={37}
+                  margin={`${rem(4)} 0`}
                 />
               ) : null;
             })}
           </div>
           <ReviewTitle text={'대여자에게 받은 나쁜 리뷰'} width={371} />
           <div css={reviewAlign}>
-            {reviews.map((review, idx) => {
+            {getReviews.map((review, idx) => {
               return review.id < 7 ? null : (
                 <ReviewBox
                   key={idx}
-                  content={review.review}
+                  content={reviews[review.id - 1].review}
                   count={review.count}
                   isBad={true}
                   width={180}
+                  height={37}
+                  margin={`${rem(4)} 0`}
                 />
               );
             })}
@@ -185,9 +343,9 @@ function DetailView() {
                     font-weight: 700;
                   `}
                 >
-                  93%
+                  {`${campbuIndicator * 100}%`}
                 </div>
-                <Gage ratio={0.93} width={153} />
+                <Gage ratio={campbuIndicator} width={153} />
               </div>
               <div
                 css={css`
@@ -222,6 +380,7 @@ function DetailView() {
             </div>
             <div
               css={[
+                relative,
                 css`
                   display: flex;
                   margin-top: ${rem(15)};
@@ -231,29 +390,33 @@ function DetailView() {
               ]}
             >
               <div
-                css={[
-                  flexVertical,
-                  selectDate,
-                  css`
-                    border-right: 1px solid ${color.border};
-                  `,
-                ]}
+                css={[flexVertical, selectDate, rightLine]}
+                onClick={startDateHandler}
               >
                 <div css={fontSize9}>대여일</div>
-                <div>날짜</div>
+                <div>{start}</div>
               </div>
-              <div css={[flexVertical, selectDate]}>
+              <div css={[flexVertical, selectDate]} onClick={endDateHandler}>
                 <div css={fontSize9}>반납일</div>
-                <div>날짜</div>
+                <div>{end}</div>
               </div>
+              {isShowCalendar ? <Calendar /> : null}
             </div>
             <div css={[flexBetween, moneyContent]}>
               <span>보증금 </span>
-              <span>금액</span>
+              <span>{`${deposit} 원`}</span>
             </div>
             <div css={[flexBetween, moneyContent]}>
               <span>대여비 </span>
-              <span>금액</span>
+
+              {rentalDates ? (
+                <>
+                  <span>{`${rentalFee} × ${rentalDates.length}일`}</span>
+                  <span>{` ${rentalFee * rentalDates.length} 원`}</span>
+                </>
+              ) : (
+                `${rentalFee} 원`
+              )}
             </div>
             <div
               css={[
@@ -267,10 +430,12 @@ function DetailView() {
               ]}
             >
               <span>총 합계 </span>
-              <span>금액</span>
+              <span>{` ${
+                rentalFee * (rentalDates ? rentalDates.length : 1) + deposit
+              } 원`}</span>
             </div>
             <Button
-              text="요금확인"
+              text="예약하기"
               width={rem(221)}
               height={rem(36)}
               background={color.point}

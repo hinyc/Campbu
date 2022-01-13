@@ -169,15 +169,18 @@ function Signup() {
     if (nickname.length > 0) {
       setNickDuplicateClick(true);
 
-      axios.get(`${host}/user/signup?nickname=${nickname}`).then((res) => {
-        if (res.status === 200) {
-          console.log(`API ${host}/user/signup?nickname=${nickname}`);
-          console.log('닉네임 사용가능', setNickDupliacte(true));
-        } else {
+      axios
+        .get(`${host}/user/signup?nickname=${nickname}`)
+        .then((res) => {
+          if (res.status === 200) {
+            console.log(`API ${host}/user/signup?nickname=${nickname}`);
+            console.log('닉네임 사용가능', setNickDupliacte(true));
+          }
+        })
+        .catch((err) => {
           setNickDupliacte(false);
           console.log('닉네임 중복', setNickDupliacte(false));
-        }
-      });
+        });
     }
   };
 

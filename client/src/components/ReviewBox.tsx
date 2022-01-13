@@ -9,7 +9,7 @@ const reviewStyle = css`
   background-color: ${color.white};
   width: 16.5625rem;
   height: ${rem(43)};
-  line-height: ${rem(46)};
+  line-height: ${rem(43)};
   color: ${color.mid};
   border: 1px solid ${color.mid};
   border-radius: 0.3125rem;
@@ -66,8 +66,15 @@ function ReviewBox(props: ReviewContent) {
           font-size: ${fontSize ? rem(fontSize) : null};
           width: ${width ? rem(width) : null};
           height: ${height ? rem(height) : null};
-          color: ${click ? color.white : isBad ? color.deep : null};
-          border-color: ${isBad ? color.deep : null};
+          line-height: ${height ? rem(height) : null};
+          color: ${count
+            ? click
+              ? color.white
+              : isBad
+              ? color.deep
+              : null
+            : color.border};
+          border-color: ${count ? (isBad ? color.deep : null) : color.border};
           margin: ${margin ? margin : null};
           background-color: ${click ? (isBad ? color.deep : color.mid) : null};
           :hover {
@@ -108,7 +115,18 @@ function ReviewBox(props: ReviewContent) {
             `,
           ]}
         >{`+${count}`}</div>
-      ) : null}
+      ) : (
+        <div
+          css={[
+            countStyle,
+            css`
+              margin-right: ${width ? rem(width * 0.075) : null};
+            `,
+          ]}
+        >
+          -
+        </div>
+      )}
     </div>
   );
 }

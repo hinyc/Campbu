@@ -41,40 +41,43 @@ function ResistList() {
         </Link>
       </nav>
       <div css={container}>
-        {/* //? 리스트가 하나도 없을 때
-        <img src={emptyWriting} alt="broken heart" css={img} />
-        <p css={message}>
-          내가 쓴 글이 없어요!
-          <br />
-          캠핑 용품이 있다면 대여 게시글을 올려보세요!
-        </p>
-        <Button
-          text="글 쓰러 가기"
-          width={`${rem(180)}`}
-          height={`${rem(43)}`}
-          background="white"
-          color={`${color.mid}`}
-          border={`1px solid ${color.mid}`}
-          size={`${rem(14)}`}
-          cursor={'pointer'}
-          hover="80%"
-        /> */}
-        <section css={section}>
-          {resistLists['posts'].map((resistList: UserPost) => (
-            <Product
-              // setModalShow={setModalShow}
-              count={resistList.likes_count}
-              isFill={true}
-              display="none"
-              postId={resistList.id}
-              img_urls={resistList.img_urls}
-              address={resistList.address}
-              title={resistList.title}
-              deposit={resistList.deposit}
-              rental_fee={resistList.rental_fee}
+        {resistLists['posts'].length === 0 ? (
+          <>
+            <img src={emptyWriting} alt="broken heart" css={img} />
+            <p css={message}>
+              내가 쓴 글이 없어요!
+              <br />
+              캠핑 용품이 있다면 대여 게시글을 올려보세요!
+            </p>
+            <Button
+              text="글 쓰러 가기"
+              width={`${rem(180)}`}
+              height={`${rem(43)}`}
+              background="white"
+              color={`${color.mid}`}
+              border={`1px solid ${color.mid}`}
+              size={`${rem(14)}`}
+              cursor={'pointer'}
+              hover="80%"
             />
-          ))}
-        </section>
+          </>
+        ) : (
+          <section css={section}>
+            {resistLists['posts'].map((resistList: UserPost) => (
+              <Product
+                count={resistList.likes_count}
+                isFill={true}
+                display="none"
+                postId={resistList.id}
+                img_urls={resistList.img_urls}
+                address={resistList.address}
+                title={resistList.title}
+                deposit={resistList.deposit}
+                rental_fee={resistList.rental_fee}
+              />
+            ))}
+          </section>
+        )}
       </div>
     </>
   );
