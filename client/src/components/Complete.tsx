@@ -28,7 +28,7 @@ const message = css`
 
 interface Props {
   text: string;
-  onClick: any;
+  onClick: () => void;
 }
 
 function Complete({ text, onClick }: Props) {

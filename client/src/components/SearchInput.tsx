@@ -12,7 +12,7 @@ interface Props {
   placeholder: string;
   padding: string;
   margin: string;
-  onChange: any;
+  onChange: (e: any) => void;
 }
 function SearchInput(props: Props) {
   const {

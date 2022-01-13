@@ -11,6 +11,9 @@ import Product from '../../components/Product';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { likes, UserPost } from '../../Atom';
 import { useState } from 'react';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { host } from '../../common';
 
 const img = css`
   margin-top: ${rem(51)};
@@ -26,8 +29,19 @@ interface Likes {
 }
 
 function LikeList() {
-  const likeLists = useRecoilValue<Likes>(likes);
+  const [likeLists, setLikeLists] = useRecoilState<Likes>(likes);
   const [modalShow, setModalShow] = useState(false);
+
+  // useEffect(() => {
+  //   axios
+  //     .get(`${host}/userinfo/product/like`)
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       setLikeLists(res.data);
+  //     })
+  //     .catch((err) => console.error(err));
+  // });
+
   return (
     <>
       <ListTab />

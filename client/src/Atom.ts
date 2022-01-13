@@ -110,7 +110,13 @@ export const showReviewModal = atom({
   default: false,
 });
 
-//? 경고 모달 보여주기용 어떤페이지에서든 누르면 나오게하기위함
+//? 리뷰 등록 확인
+export const showSubmitModal = atom({
+  key: 'showSubmitModal',
+  default: false,
+});
+
+//? 경고 모달
 export const showAlertModal = atom({
   key: 'showAlertModal',
   default: false,
@@ -119,6 +125,12 @@ export const showAlertModal = atom({
 //? 대여 확인 모달 : ㅇㅇ를 하시겠습니까? [예/아니오]
 export const showConfirmModal = atom({
   key: 'showConfirmModal',
+  default: false,
+});
+
+//? 대여 확인 모달 : ㅇㅇ가 완료되었습니다.
+export const showCompleteModal = atom({
+  key: 'showCompleteModal',
   default: false,
 });
 
@@ -131,7 +143,7 @@ export const borrows = atom({
         users_id: 1,
         posts_id: 1,
         reservation_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
-        reservation_status: 2,
+        reservation_status: 1,
         posts: {
           id: 1,
           category: 'Tent',
@@ -154,7 +166,53 @@ export const borrows = atom({
         users_id: 2,
         posts_id: 1,
         reservation_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
-        reservation_status: 1,
+        reservation_status: 2,
+        posts: {
+          id: 1,
+          category: 'Tent',
+          deposit: 20000,
+          rental_fee: 20000,
+          unavailable_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
+          title: '3~4인용 텐트 빌려드려요',
+          content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
+          longitude: 126.99597295767953,
+          latitude: 35.97664845766847,
+          address: '서울특별시 동작구 신대방동',
+          img_urls:
+            'https://static.coupangcdn.com/image/vendor_inventory/a0f5/5fe889df54254c27c75877f9c5339137c91d5b5ac68799e924573a317d15.jpeg',
+          users_id: 1,
+          likes_count: 5,
+        },
+      },
+      {
+        id: 3,
+        users_id: 2,
+        posts_id: 1,
+        reservation_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
+        reservation_status: 3,
+        posts: {
+          id: 1,
+          category: 'Tent',
+          deposit: 20000,
+          rental_fee: 20000,
+          unavailable_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
+          title: '3~4인용 텐트 빌려드려요',
+          content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
+          longitude: 126.99597295767953,
+          latitude: 35.97664845766847,
+          address: '서울특별시 동작구 신대방동',
+          img_urls:
+            'https://static.coupangcdn.com/image/vendor_inventory/a0f5/5fe889df54254c27c75877f9c5339137c91d5b5ac68799e924573a317d15.jpeg',
+          users_id: 1,
+          likes_count: 5,
+        },
+      },
+      {
+        id: 4,
+        users_id: 2,
+        posts_id: 1,
+        reservation_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
+        reservation_status: 4,
         posts: {
           id: 1,
           category: 'Tent',
@@ -202,6 +260,81 @@ export const lends = atom({
             posts_id: 1,
             reservation_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
             reservation_status: 1,
+          },
+        ],
+      },
+      {
+        id: 2,
+        category: 'Tent',
+        deposit: 20000,
+        rental_fee: 20000,
+        unavailable_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
+        title: '3~4인용 텐트 빌려드려요',
+        content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
+        longitude: 126.99597295767953,
+        latitude: 35.97664845766847,
+        address: '서울특별시 동작구 신대방동',
+        img_urls:
+          'https://5.imimg.com/data5/GD/XU/MY-27300/vintage-camping-tent-500x500.jpg',
+        users_id: 1,
+        likes_count: 5,
+        reservation: [
+          {
+            id: 1,
+            users_id: 1,
+            posts_id: 1,
+            reservation_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
+            reservation_status: 2,
+          },
+        ],
+      },
+      {
+        id: 3,
+        category: 'Tent',
+        deposit: 20000,
+        rental_fee: 20000,
+        unavailable_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
+        title: '3~4인용 텐트 빌려드려요',
+        content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
+        longitude: 126.99597295767953,
+        latitude: 35.97664845766847,
+        address: '서울특별시 동작구 신대방동',
+        img_urls:
+          'https://5.imimg.com/data5/GD/XU/MY-27300/vintage-camping-tent-500x500.jpg',
+        users_id: 1,
+        likes_count: 5,
+        reservation: [
+          {
+            id: 1,
+            users_id: 1,
+            posts_id: 1,
+            reservation_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
+            reservation_status: 3,
+          },
+        ],
+      },
+      {
+        id: 4,
+        category: 'Tent',
+        deposit: 20000,
+        rental_fee: 20000,
+        unavailable_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
+        title: '3~4인용 텐트 빌려드려요',
+        content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
+        longitude: 126.99597295767953,
+        latitude: 35.97664845766847,
+        address: '서울특별시 동작구 신대방동',
+        img_urls:
+          'https://5.imimg.com/data5/GD/XU/MY-27300/vintage-camping-tent-500x500.jpg',
+        users_id: 1,
+        likes_count: 5,
+        reservation: [
+          {
+            id: 1,
+            users_id: 1,
+            posts_id: 1,
+            reservation_dates: ['2021.12.20', '2021.12.21', '2021.12.22'],
+            reservation_status: 4,
           },
         ],
       },
