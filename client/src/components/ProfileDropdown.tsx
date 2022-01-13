@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { rem, shadow, textDecorationNone } from '../common';
+import { host, rem, shadow, textDecorationNone } from '../common';
 
 const box = css`
   width: ${rem(205)};
@@ -34,6 +35,12 @@ const line = css`
 `;
 
 function ProfileDropdown() {
+  // const onLogoutClick = () => {
+  //   axios
+  //     .get(`${host}/user/logout`)
+  //     .then((res) => console.log(res.data))
+  //     .catch((err) => console.error(err));
+  // };
   return (
     <div css={box}>
       <ul css={ulStyle}>
@@ -53,7 +60,9 @@ function ProfileDropdown() {
         <Link to="mypage" css={textDecorationNone}>
           <li css={li}>계정</li>
         </Link>
-        <li css={li}>로그아웃</li>
+        <li css={li} onClick={onLogoutClick}>
+          로그아웃
+        </li>
       </ul>
     </div>
   );
