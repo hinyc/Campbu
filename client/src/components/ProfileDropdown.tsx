@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { host, rem, shadow, textDecorationNone } from '../common';
 
 const box = css`
@@ -35,11 +35,15 @@ const line = css`
 `;
 
 function ProfileDropdown() {
+  const navigation = useNavigate();
   const onLogoutClick = () => {
-    //   axios
-    //     .get(`${host}/user/logout`)
-    //     .then((res) => console.log(res.data))
-    //     .catch((err) => console.error(err));
+    axios
+      .get(`${host}/user/logout`)
+      .then((res) => {
+        console.log(res.data);
+        navigation('/');
+      })
+      .catch((err) => console.error(err));
   };
   return (
     <div css={box}>
