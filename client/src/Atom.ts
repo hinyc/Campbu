@@ -263,7 +263,6 @@ export const resists = atom({
   },
 });
 
-<<<<<<< HEAD
 export const chat = atom({
   key: 'chat',
   default: {
@@ -294,9 +293,6 @@ export const chat = atom({
 });
 
 //? atom borromList와 LikeList, ResistsList에서 반복되는 interface
-=======
-//? atom borrowList와 LikeList, ResistsList에서 반복되는 interface
->>>>>>> 11e70f4d763a9888d912588f890a2f3d6db25a86
 export interface UserPost {
   id: number;
   category: string;

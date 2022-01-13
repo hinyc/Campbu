@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { flex, rem, color } from '../../common';
+import { flex, rem, color, relative } from '../../common';
 import { container, section } from './tab';
 import ListTab from '../../components/ListTab';
 import { chat } from '../../Atom';
@@ -10,6 +10,15 @@ import { Button } from '../../components/Button';
 import { useRecoilValue } from 'recoil';
 import { useState } from 'react';
 import io from 'socket.io-client';
+
+const button = css`
+  background-color: white;
+  border: none;
+  position: absolute;
+  right: ${rem(24)};
+  top: ${rem(-3)};
+  cursor: pointer;
+`;
 
 interface chatList {
   Post: Post;
@@ -80,19 +89,17 @@ function Chat() {
             `,
           ]}
         >
-          <div>ddd</div>
-          <div css={flex}>
-            <Input width={500} height={50} />
-            <Button
-              text="전송"
-              width={rem(70)}
-              height={rem(50)}
-              background={color.point}
-              color={color.white}
-              border="none"
-              size={rem(14)}
-            />
-          </div>
+          <div
+            css={[
+              css`
+                height: ${rem(450)};
+              `,
+            ]}
+          ></div>
+          <span css={relative}>
+            <Input width={550} height={50} />
+            <button css={button}>d</button>
+          </span>
         </div>
         <div
           css={[
