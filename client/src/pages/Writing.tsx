@@ -238,7 +238,6 @@ export const Writing = () => {
         )
         .then((res) => {
           const address = res.data.results.juso;
-          console.log(address);
           const adressList: string[] = [];
           if (address) {
             const allSerchAdress = address.map((el: any) => {

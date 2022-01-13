@@ -19,7 +19,7 @@ import ReviewTitle from '../components/ReviweTitle';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { imgFile } from '../Atom';
-import { useRecoilState } from 'recoil';
+import { constSelector, useRecoilState } from 'recoil';
 
 const imgStyle = css`
   width: ${rem(114)};
@@ -129,7 +129,16 @@ const hiddenUpload = css`
   }
 `;
 
+const API = `${host}/userinfo/account`;
+const config = {
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true,
+};
+
 function Mypage() {
+  const [currentNickName, setCurrentNickName] = useState('');
   const [nickname, setNickname] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [userImg, setUserImg] = useState<string>('');
@@ -150,17 +159,10 @@ function Mypage() {
 
   // 유저정보요청
   useEffect(() => {
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-
-    // axios
-    //   .get(`${host}/userinfo/account`, config)
-    //   .then((res) => console.log(res));
-
-    // 서버로부터 받은 데이터 예시
+    axios.get(`${host}/userinfo/account`, config).then((res) => {
+      const userinfo = res.data;
+      console.log('data', userinfo);
+    });
     const userinfo = {
       users: {
         id: 1,
@@ -231,20 +233,25 @@ function Mypage() {
       },
     };
     setUserImg(userinfo.users.users_img);
-    setNickname(userinfo.users.nickname);
+    setCurrentNickName(userinfo.users.nickname);
     setEmail(userinfo.users.email);
 
     //받은 review 목록
     let tempReviews: reviewsType = [...reviews];
-
-    userinfo.users.reviews.forEach((el) => {
-      tempReviews[el.reviews_id - 1] = {
-        ...tempReviews[el.reviews_id - 1],
-        count: el.count,
-      };
-    });
-
-    setGetReviews(tempReviews);
+    console.log(423423, !userinfo.users.reviews);
+    console.log(tempReviews);
+    if (!!userinfo.users.reviews) {
+      console.log(34234);
+      userinfo.users.reviews.forEach((el: any) => {
+        tempReviews[el.reviews_id - 1] = {
+          ...tempReviews[el.reviews_id - 1],
+          count: el.count,
+        };
+      });
+      setGetReviews(tempReviews);
+      console.log(99999, tempReviews);
+    }
+    // 서버로부터 받은 데이터 예시
   }, []);
 
   const nicknameHandler = (e: any) => setNickname(e.target.value);
@@ -277,15 +284,9 @@ function Mypage() {
 
   const confirmPasswordHandler = (e: any) => setConfirmPassword(e.target.value);
 
-  const campbuIndicator = calCampbuIndicator(getReviews); // 계산 방법 필요
-  console.log(campbuIndicator);
+  const campbuIndicator = calCampbuIndicator(getReviews);
+
   //! 수정 탈퇴 요청 함수
-  const API = `${host}/userinfo/account`;
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
 
   const modifyAccount = () => {
     if (passwordValid && password === confirmPassword) {
@@ -299,6 +300,9 @@ function Mypage() {
         password: password,
         user_img: userImg,
       };
+
+      axios.patch(API, modifyData, config).then((res: any) => console.log(res));
+
       console.log('data', modifyData);
     }
   };
@@ -376,7 +380,7 @@ function Mypage() {
             />
           </form>
         </div>
-        <div css={hello}>{`안녕하세요, ${nickname} 님`}</div>
+        <div css={hello}>{`안녕하세요, ${currentNickName} 님`}</div>
         <Gage ratio={campbuIndicator} />
         <div
           css={[

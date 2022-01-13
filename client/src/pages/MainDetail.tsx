@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import {
+  calCampbuIndicator,
   color,
   flexBetween,
   flexVertical,
@@ -7,6 +8,7 @@ import {
   relative,
   rem,
   reviews,
+  reviewsType,
 } from '../common';
 import LikeSymbol from '../components/LikeSymbol';
 import ReviewBox from '../components/ReviewBox';
@@ -19,6 +21,19 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Navigate, useNavigate } from 'react-router-dom';
 import Calendar from '../components/CalendarForLender';
+import {
+  useRecoilState,
+  useRecoilValue,
+  useResetRecoilState,
+  useSetRecoilState,
+} from 'recoil';
+import {
+  endDate,
+  isSelectStart,
+  showCalendar,
+  startDate,
+  unableDate,
+} from '../Atom';
 
 const width = css`
   width: ${rem(752)};
@@ -54,6 +69,14 @@ const selectDate = css`
   justify-content: space-between;
   align-items: flex-start;
   padding: ${rem(7)};
+  transition: 0.3s;
+  :hover {
+    cursor: pointer;
+    background-color: ${color.border};
+  }
+  :active {
+    opacity: 0.5;
+  }
 `;
 
 const fontSize9 = css`
@@ -66,6 +89,10 @@ const fontSize40 = css`
   color: ${color.border};
 `;
 
+const rightLine = css`
+  border-right: 1px solid ${color.border};
+`;
+
 interface propsType {
   postId?: number;
 }
@@ -74,14 +101,16 @@ function DetailView({ postId }: propsType) {
   const navigate = useNavigate();
   const [deposit, setDeposit] = useState(0);
   const [rentalFee, setRentalFee] = useState(0);
-  const [unableDates, setunableDates] = useState<string[]>();
+  const setUnableDates = useSetRecoilState(unableDate);
+  const start = useRecoilValue(startDate);
+  const end = useRecoilValue(endDate);
+  const isSelectStartState = useSetRecoilState(isSelectStart);
+  const [isShowCalendar, setIsShowCalendar] = useRecoilState(showCalendar);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [imgUrls, setImgUrls] = useState<any>();
   const [rentalDates, setRentalDates] = useState<string[]>();
-  const [getReviews, setGetReviews] = useState<
-    { id: number; review: string; count?: number }[]
-  >([]);
+  const [getReviews, setGetReviews] = useState<reviewsType>([]);
 
   useEffect(() => {
     const API = `${host}/product/post/${postId}`;
@@ -101,13 +130,21 @@ function DetailView({ postId }: propsType) {
           category: 'Tent',
           deposit: 30000,
           rental_fee: 20000,
-          unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
+          unavailable_dates: [
+            '2021-12-20',
+            '2021-12-21',
+            '2021-12-22',
+            '2022-1-22',
+            '2022-1-15',
+            '2022-1-1',
+          ],
           title: '3~4인용 텐트 빌려드려요',
           content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
           longitude: 126.99597295767953,
           latitude: 35.97664845766847,
           address: '서울특별시 동작구 신대방동',
-          img_urls: 'https://asdf.s3.ap-northeast-2.amazonaws.com/...',
+          img_urls:
+            'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
           users_id: 1,
           created_at: '2021-12-16T09:42:40.000Z',
           updated_at: '2021-12-16T09:42:40.000Z',
@@ -119,7 +156,7 @@ function DetailView({ postId }: propsType) {
           id: 1,
           users_id: 1,
           reviews_id: 2,
-          count: 5,
+          count: 15,
           created_at: '2021-12-16T09:42:40.000Z',
           updated_at: '2021-12-16T09:42:40.000Z',
         },
@@ -127,7 +164,7 @@ function DetailView({ postId }: propsType) {
           id: 1,
           users_id: 1,
           reviews_id: 8,
-          count: 5,
+          count: 52,
           created_at: '2021-12-16T09:42:40.000Z',
           updated_at: '2021-12-16T09:42:40.000Z',
         },
@@ -149,11 +186,7 @@ function DetailView({ postId }: propsType) {
         },
       ],
     };
-    let tempReviews: {
-      id: number;
-      review: string;
-      count?: number;
-    }[] = [...reviews];
+    let tempReviews: reviewsType = [...reviews];
 
     dummydata.reviews.forEach((el) => {
       tempReviews[el.reviews_id - 1] = {
@@ -166,15 +199,22 @@ function DetailView({ postId }: propsType) {
     setGetReviews(tempReviews);
     setDeposit(dummydata.posts[0].deposit);
     setRentalFee(dummydata.posts[0].rental_fee);
-    setunableDates(dummydata.posts[0].unavailable_dates);
+    setUnableDates(dummydata.posts[0].unavailable_dates);
     setTitle(dummydata.posts[0].title);
     setContent(dummydata.posts[0].content);
     setImgUrls(dummydata.posts[0].img_urls);
   }, []);
 
-  const productImgUrl: string =
-    'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg';
+  const campbuIndicator = calCampbuIndicator(getReviews);
 
+  const startDateHandler = () => {
+    isSelectStartState(true);
+    setIsShowCalendar(true);
+  };
+  const endDateHandler = () => {
+    isSelectStartState(false);
+    setIsShowCalendar(true);
+  };
   return (
     <div css={flexVertical}>
       <div css={flexVertical}>
@@ -225,7 +265,7 @@ function DetailView({ postId }: propsType) {
             css={[
               productImg,
               css`
-                background-image: ${`url(${productImgUrl})`};
+                background-image: ${`url(${imgUrls})`};
               `,
             ]}
           ></div>
@@ -303,9 +343,9 @@ function DetailView({ postId }: propsType) {
                     font-weight: 700;
                   `}
                 >
-                  93%
+                  {`${campbuIndicator * 100}%`}
                 </div>
-                <Gage ratio={0.93} width={153} />
+                <Gage ratio={campbuIndicator} width={153} />
               </div>
               <div
                 css={css`
@@ -340,6 +380,7 @@ function DetailView({ postId }: propsType) {
             </div>
             <div
               css={[
+                relative,
                 css`
                   display: flex;
                   margin-top: ${rem(15)};
@@ -349,25 +390,17 @@ function DetailView({ postId }: propsType) {
               ]}
             >
               <div
-                css={[
-                  flexVertical,
-                  selectDate,
-                  relative,
-                  css`
-                    border-right: 1px solid ${color.border};
-                  `,
-                ]}
+                css={[flexVertical, selectDate, rightLine]}
+                onClick={startDateHandler}
               >
                 <div css={fontSize9}>대여일</div>
-
-                <Calendar />
-
-                <div>날짜</div>
+                <div>{start}</div>
               </div>
-              <div css={[flexVertical, selectDate]}>
+              <div css={[flexVertical, selectDate]} onClick={endDateHandler}>
                 <div css={fontSize9}>반납일</div>
-                <div>날짜</div>
+                <div>{end}</div>
               </div>
+              {isShowCalendar ? <Calendar /> : null}
             </div>
             <div css={[flexBetween, moneyContent]}>
               <span>보증금 </span>
@@ -402,7 +435,7 @@ function DetailView({ postId }: propsType) {
               } 원`}</span>
             </div>
             <Button
-              text="요금확인"
+              text="예약하기"
               width={rem(221)}
               height={rem(36)}
               background={color.point}

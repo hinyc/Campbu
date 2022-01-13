@@ -1,9 +1,26 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useState } from 'react';
-import { useRecoilState } from 'recoil';
-import { selectDate } from '../Atom';
-import { flexBetween, rem, color, shadow } from '../common';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import {
+  endDate,
+  isSelectStart,
+  selectDate,
+  showCalendar,
+  startDate,
+  unableDate,
+} from '../Atom';
+import {
+  flexBetween,
+  rem,
+  color,
+  shadow,
+  relative,
+  absolute,
+  confirm,
+  flex,
+  flexVertical,
+} from '../common';
 
 const calendarContainerStyle = css`
   display: flex;
@@ -55,6 +72,24 @@ const reset = css`
   margin-top: ${rem(20)};
 `;
 
+const pointer = css`
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const unableStyle = css`
+  text-align: center;
+  width: ${rem(40)};
+  height: ${rem(12)};
+  border-radius: ${rem(5)};
+  line-height: ${rem(14)};
+  top: ${rem(30)};
+  font-size: ${rem(10)};
+  background-color: ${color.border};
+  color: ${color.white};
+`;
+
 interface AdayProps {
   day: string;
   idx: number;
@@ -92,7 +127,10 @@ function Adate(props: AdateProps) {
   const { date, idx, width, year, month } = props;
   const [isSelect, setIsSelect] = useState(false);
   const [setDates, setSetDates] = useRecoilState(selectDate);
-
+  const isSelectStartState = useRecoilValue(isSelectStart);
+  const [start, setStart] = useRecoilState(startDate);
+  const [end, setEnd] = useRecoilState(endDate);
+  const unableDates = useRecoilValue(unableDate);
   let thisYear = year;
   let thisMonth = month;
   let isWeekend = 'black';
@@ -109,50 +147,51 @@ function Adate(props: AdateProps) {
     thisMonth = preMonth.getMonth() + 1;
   }
 
+  const isUnable = unableDates.indexOf(`${thisYear}-${thisMonth}-${date}`);
+
+  const today = `${thisYear}.${thisMonth}.${date}`;
   const selectDateHandler = () => {
-    setIsSelect(!isSelect);
-
-    const alreadySelected = setDates.indexOf(
-      `${thisYear}.${thisMonth}.${date}`,
-    );
-
-    if (isSelect) {
-      setSetDates([
-        ...setDates.slice(0, alreadySelected),
-        ...setDates.slice(alreadySelected + 1),
-      ]);
-    } else {
-      setSetDates([...setDates, `${thisYear}.${thisMonth}.${date}`]);
+    if (isUnable === -1) {
+      if (isSelectStartState) {
+        setStart(today);
+      } else {
+        setEnd(today);
+      }
     }
   };
+
   return (
     <div
-      css={css`
-        width: ${rem((width - 2) / 7)};
-        height: ${rem(width / 7)};
-        line-height: ${rem(width / 7)};
-        font-size: ${rem(14)};
-        text-align: center;
-        color: ${isWeekend};
-        background-color: ${isSelect ? color.light : null};
-      `}
+      css={[
+        flexVertical,
+        css`
+          width: ${rem((width - 2) / 7)};
+          height: ${rem(width / 7)};
+          line-height: ${rem(width / 7)};
+          font-size: ${rem(14)};
+          text-align: center;
+          border-radius: ${rem(10)};
+          color: ${isUnable > -1 ? color.placeholder : isWeekend};
+        `,
+        relative,
+      ]}
       onClick={selectDateHandler}
     >
-      <div
-        css={css`
-          :hover {
-            cursor: pointer;
-          }
-        `}
-      >
-        {date}
-      </div>
+      {isUnable === -1 ? (
+        <div css={pointer}>{date}</div>
+      ) : (
+        <>
+          <div css={isUnable === -1 ? pointer : null}>{date}</div>
+          <div css={[absolute, unableStyle]}>예약불가</div>
+        </>
+      )}
     </div>
   );
 }
 
 export default function Calendar() {
   const days: string[] = ['일', '월', '화', '수', '목', '금', '토'];
+  const setIsShowCalendar = useSetRecoilState(showCalendar);
 
   //tagret 오늘기준
   const [getDate, setGetDate] = useState(new Date());
@@ -196,6 +235,9 @@ export default function Calendar() {
   const widthPixel: number = 312;
   const heigthPixel: number = 403;
 
+  const confirmHandler = () => {
+    setIsShowCalendar(false);
+  };
   return (
     <div
       css={[
@@ -252,9 +294,8 @@ export default function Calendar() {
           ))}
         </div>
 
-        <div className="numDays"></div>
-        <div className="reset" css={reset}>
-          초기화
+        <div className="reset" css={reset} onClick={confirmHandler}>
+          확인
         </div>
       </div>
     </div>

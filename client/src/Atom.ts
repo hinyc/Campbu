@@ -1,3 +1,4 @@
+import { decode } from 'punycode';
 import { atom } from 'recoil';
 
 export const isLogin = atom({
@@ -319,4 +320,31 @@ export const preView = atom<any[]>({
 export const formData = atom<any[]>({
   key: 'formData',
   default: [],
+});
+
+//? 상세페이지 전역상태 날짜
+
+export const startDate = atom<string>({
+  key: 'start',
+  default: '',
+});
+
+export const endDate = atom<String>({
+  key: 'end',
+  default: '',
+});
+
+export const unableDate = atom<string[]>({
+  key: 'unable',
+  default: [],
+});
+
+export const isSelectStart = atom<boolean>({
+  key: 'isStartSelect',
+  default: true,
+});
+
+export const showCalendar = atom<boolean>({
+  key: 'showCalendar',
+  default: false,
 });
