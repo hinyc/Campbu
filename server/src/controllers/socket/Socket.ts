@@ -1,20 +1,25 @@
 import { Server } from 'socket.io';
 import { server } from '../../app';
 
-export = async () => {
+export default async () => {
   const io = new Server(server, {
     cors: {
       origin: 'http://localhost:3000',
+      methods: ['GET', 'POST'],
     },
   });
 
   io.on('connection', (socket) => {
-    socket.emit('message', 'Welcome to ChatCord!');
-
-    socket.broadcast.emit('message', 'A user has joined the chat');
-
-    socket.on('disconnet', () => {
-      io.emit('message', 'A user has left the chat');
+    const name = socket.handshake.query.chatRoomName;
+    if (name !== undefined) {
+      socket.join(name);
+    }
+    socket.on('send-message', (info) => {
+      const nickName: string = info.chatRoomName;
+      const text: string = info.chatMessage;
+      console.log(socket.rooms);
+      console.log(text);
+      socket.broadcast.to(nickName).emit('receive-message', { text });
     });
   });
 };
