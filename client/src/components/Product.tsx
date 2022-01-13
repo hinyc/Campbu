@@ -33,7 +33,6 @@ interface Props {
   rental_fee: number;
   count: number;
   postId: number;
-  // setModalShow: any;
 }
 
 function Product(props: Props) {
