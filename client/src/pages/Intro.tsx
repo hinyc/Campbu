@@ -44,6 +44,14 @@ const button = css`
   cursor: pointer;
 `;
 
+const code = new URL(window.location.href).searchParams.get('code');
+
+if (code) {
+  console.log('코드있다');
+  console.log('code', code);
+  console.log('axios요청 보내기 ?');
+}
+
 function Intro() {
   const navigation = useNavigate();
   const [searchValue, setSearchValue] = useState<string>('');

@@ -16,7 +16,13 @@ createConnection()
     console.log(error);
   });
 
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+    methods: ['GET', 'POST', 'OPTION', 'PATCH', 'DELETE'],
+  }),
+);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
