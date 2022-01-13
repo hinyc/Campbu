@@ -8,13 +8,20 @@ import { Link } from 'react-router-dom';
 import { link, visit } from './tab';
 import Reservation from '../../components/Reservation';
 import { container, section, message } from './tab';
-import YesOrNo from '../../components/YesOrNo';
+import YesOrNo from '../../components/ConfirmLend';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { lends, showConfirmModal } from '../../Atom';
+import {
+  lends,
+  showCompleteModal,
+  showConfirmModal,
+  showReviewModal,
+} from '../../Atom';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { host } from '../../common';
+import Complete from '../../components/Complete';
+import ReviewModal from '../../components/ReviewModal';
 
 interface Lends {
   posts: Post[];
@@ -48,14 +55,25 @@ interface List {
 function LendList() {
   const [lendLists, setLendLists] = useRecoilState<Lends>(lends);
   const [confirm, setConfirm] = useRecoilState(showConfirmModal);
+  const [complete, setComplete] = useRecoilState(showCompleteModal);
+  const [review, setReview] = useRecoilState(showReviewModal);
   const [reservationId, setReservationId] = useState(0);
   const [reservationStatus, setReservationStatus] = useState(0);
+  const [userId, setUserId] = useState(0);
   const button = ['예약 수락', '반납 대기 중', '반납 확인', '회수 완료'];
   const printStatusText = (status: number) => button[status - 1];
-  const onButtonClick = (id: number, status: number) => {
+  const onButtonClick = (id: number, status: number, userId: number) => {
     setReservationId(id);
     setReservationStatus(status);
+    setUserId(userId);
     setConfirm(true);
+  };
+
+  const onCompleteClick = () => {
+    setComplete(false);
+    if (reservationStatus === 3) {
+      setReview(true);
+    }
   };
 
   // useEffect(() => {
@@ -100,13 +118,20 @@ function LendList() {
             (reservationStatus === 3 && (
               <YesOrNo
                 reservationId={reservationId}
-                reservation_status={2}
+                reservation_status={3}
                 text={'반납 확인'}
                 title={'반납 확인'}
                 text1={`대여자에게서 물품을 잘 받으셨나요?`}
                 text2={`반납 확인 시 회수 처리가 완료됩니다.`}
               />
             )))}
+        {complete &&
+          (reservationStatus === 1 ? (
+            <Complete text="예약이 수락되었습니다" onClick={onCompleteClick} />
+          ) : (
+            <Complete text="반납이 확인되었습니다" onClick={onCompleteClick} />
+          ))}
+        {review && <ReviewModal userId={userId} />}
         {lendLists['posts'].length === 0 ? (
           <>
             <img src={emptyLend} alt="camping" />
@@ -168,6 +193,7 @@ function LendList() {
                   onButtonClick(
                     lendList.id,
                     lendList.reservation[0].reservation_status,
+                    lendList.reservation[0].users_id,
                   )
                 }
               />

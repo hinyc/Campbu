@@ -123,7 +123,7 @@ function ReviewBox(props: ReviewContent) {
             `,
           ]}
         >
-          -
+          ✔
         </div>
       )}
     </div>

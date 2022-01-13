@@ -121,6 +121,12 @@ export const showConfirmModal = atom({
   default: false,
 });
 
+//? 대여 확인 모달 : ㅇㅇ가 완료되었습니다.
+export const showCompleteModal = atom({
+  key: 'showCompleteModal',
+  default: false,
+});
+
 export const borrows = atom({
   key: 'borrows',
   default: {

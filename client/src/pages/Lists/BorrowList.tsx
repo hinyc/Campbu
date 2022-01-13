@@ -9,10 +9,18 @@ import { Button } from '../../components/Button';
 import emptyBorrow from '../../assets/pictures/emptyBorrow.svg';
 import { container, section, message } from './tab';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { borrows, showConfirmModal, UserPost } from '../../Atom';
+import {
+  borrows,
+  showCompleteModal,
+  showConfirmModal,
+  showReviewModal,
+  UserPost,
+} from '../../Atom';
 import { useEffect, useState } from 'react';
-import YesOrNo from '../../components/YesOrNo';
+import YesOrNo from '../../components/ConfirmBorrow';
 import axios from 'axios';
+import Complete from '../../components/Complete';
+import ReviewModal from '../../components/ReviewModal';
 
 interface Borrow {
   reservation: List[];
@@ -30,15 +38,26 @@ interface List {
 function BorrowList() {
   const [borrowLists, setBorrowLists] = useRecoilState<Borrow>(borrows);
   const [confirm, setConfirm] = useRecoilState(showConfirmModal);
+  const [complete, setComplete] = useRecoilState(showCompleteModal);
+  const [review, setReview] = useRecoilState(showReviewModal);
   const button = ['예약 취소', '반납하기', '반납 확인 대기 중', '반납 완료'];
   const [reservationId, setReservationId] = useState(0);
   const [reservationStatus, setReservationStatus] = useState(0);
+  const [userId, setUserId] = useState(0);
   const printStatusText = (status: number) => button[status - 1];
 
-  const onButtonClick = (id: number, status: number) => {
+  const onButtonClick = (id: number, status: number, userId: number) => {
     setReservationId(id);
     setReservationStatus(status);
+    setUserId(userId);
     setConfirm(true);
+  };
+
+  const onCompleteClick = () => {
+    setComplete(false);
+    if (reservationStatus === 2) {
+      setReview(true);
+    }
   };
 
   // useEffect(() => {
@@ -90,6 +109,13 @@ function BorrowList() {
                 text2={`대여자가 상품 회수 후 반납 확인 시 최종 반납 처리가 됩니다.`}
               />
             )))}
+        {complete &&
+          (reservationStatus === 1 ? (
+            <Complete text="예약이 취소되었습니다" onClick={onCompleteClick} />
+          ) : (
+            <Complete text="반납이 완료되었습니다" onClick={onCompleteClick} />
+          ))}
+        {review && <ReviewModal userId={userId} />}
         {borrowLists['reservation'].length === 0 ? (
           <>
             <img src={emptyBorrow} alt="camping" />
@@ -144,7 +170,11 @@ function BorrowList() {
                   rental_fee={borrowList.posts.rental_fee}
                   reservation_dates={borrowList.reservation_dates}
                   onButtonClick={() =>
-                    onButtonClick(borrowList.id, borrowList.reservation_status)
+                    onButtonClick(
+                      borrowList.id,
+                      borrowList.reservation_status,
+                      borrowList.posts.users_id,
+                    )
                   }
                 />
               ),
