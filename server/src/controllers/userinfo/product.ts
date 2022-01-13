@@ -59,7 +59,7 @@ export default {
     } else {
       const likesInfo = await likesRepository
         .createQueryBuilder('likes')
-        .select(['users_id', 'posts_id'])
+        .select('posts_id')
         .where('likes.users_id = :users_id', { users_id: userInfo.id })
         .getRawMany();
 
@@ -72,7 +72,7 @@ export default {
             .getMany();
         }),
       );
-      return res.status(200).json({ posts: postsInfo, likes: likesInfo });
+      return res.status(200).json({ posts: postsInfo });
     }
   },
   post: async (req: Request, res: Response) => {
