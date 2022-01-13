@@ -1,6 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, modalBackgroundStyle, rem, reviews, shadow } from '../common';
+import axios from 'axios';
+import { useState } from 'react';
+import { useSetRecoilState } from 'recoil';
+import { showCompleteModal, showReviewModal, showSubmitModal } from '../Atom';
+import {
+  color,
+  host,
+  modalBackgroundStyle,
+  rem,
+  reviews,
+  shadow,
+} from '../common';
 import { Button } from './Button';
 import ReviewBox from './ReviewBox';
 
@@ -35,11 +46,43 @@ const subTitle = css`
   text-decoration: underline;
 `;
 
-function ReviewModal() {
+interface Props {
+  userId: number;
+}
+
+function ReviewModal({ userId }: Props) {
+  const setReview = useSetRecoilState(showReviewModal);
+  const setSubmit = useSetRecoilState(showSubmitModal);
+  const [reviewId, setReviewId] = useState<number[]>([]);
+  const onReviewSubmitClick = () => {
+    // axios
+    //   .post(
+    //     `${host}/user/review`,
+    //     { user_id: userId, review_id: reviewId },
+    //     { headers: { 'Content-Type': 'application/json' } },
+    //   )
+    //   .then((res) => console.log(res.data))
+    //   .catch((err) => console.error(err));
+    setReview(false);
+    setSubmit(true);
+  };
+
+  const onGoodReviewClick = (id: number) => {
+    const selectedId = reviewId.concat(id);
+    setReviewId(selectedId);
+    console.log('good', selectedId);
+  };
+
+  const onBadReviewClick = (id: number) => {
+    const selectedId = reviewId.concat(id);
+    setReviewId(selectedId);
+    console.log('bad', selectedId);
+  };
+
   return (
     <div css={modalBackgroundStyle}>
       <div css={[background]}>
-        <div css={title}>상대방과의 거래 어떠셧나요?</div>
+        <div css={title}>상대방과의 거래 어떠셨나요?</div>
         <div css={subTitle}>{`(1가지 이상 선택 필수)`}</div>
         <div>
           <div css={reviewAlign}>
@@ -93,6 +136,7 @@ function ReviewModal() {
             color={color.white}
             border="none"
             size={rem(14)}
+            onClick={onReviewSubmitClick}
           />
         </div>
       </div>

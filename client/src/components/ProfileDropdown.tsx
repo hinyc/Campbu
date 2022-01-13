@@ -1,15 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Link } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
-import { borrows, lends, likes, resists } from '../Atom';
-import { rem, shadow, textDecorationNone } from '../common';
-import {
-  onResistClick,
-  onLikeClick,
-  onLendClick,
-  onBorrowClick,
-} from '../pages/Lists/axios';
+import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
+import { host, rem, shadow, textDecorationNone } from '../common';
 
 const box = css`
   width: ${rem(205)};
@@ -42,66 +35,38 @@ const line = css`
 `;
 
 function ProfileDropdown() {
-  const setBorrowList = useSetRecoilState(borrows);
-  const setLendList = useSetRecoilState(lends);
-  const setLikeList = useSetRecoilState(likes);
-  const setResistList = useSetRecoilState(resists);
+  const navigation = useNavigate();
+  const onLogoutClick = () => {
+    axios
+      .get(`${host}/user/logout`)
+      .then((res) => {
+        console.log(res.data);
+        navigation('/');
+      })
+      .catch((err) => console.error(err));
+  };
   return (
     <div css={box}>
       <ul css={ulStyle}>
         <Link to="/lists/borrowlist" css={textDecorationNone}>
-          <li
-            css={li}
-            onClick={() => {
-              // const result = onBorrowClick();
-              // console.log('result', result)
-              // setResistList(result);
-            }}
-          >
-            빌린 목록
-          </li>
+          <li css={li}>빌린 목록</li>
         </Link>
         <Link to="/lists/lendlist" css={textDecorationNone}>
-          <li
-            css={li}
-            onClick={() => {
-              // const result = onLendClick();
-              // console.log('result', result)
-              // setResistList(result);
-            }}
-          >
-            빌려준 목록
-          </li>
+          <li css={li}>빌려준 목록</li>
         </Link>
         <Link to="/lists/likelist" css={textDecorationNone}>
-          <li
-            css={li}
-            onClick={() => {
-              // const result = onLikeClick();
-              // console.log('result', result)
-              // setResistList(result);
-            }}
-          >
-            찜한 목록
-          </li>
+          <li css={li}>찜한 목록</li>
         </Link>
         <Link to="/lists/resistlist" css={textDecorationNone}>
-          <li
-            css={li}
-            onClick={() => {
-              // const result = onResistClick();
-              // console.log('result', result)
-              // setResistList(result);
-            }}
-          >
-            내가 쓴 글
-          </li>
+          <li css={li}>내가 쓴 글</li>
         </Link>
         <div css={line} />
         <Link to="mypage" css={textDecorationNone}>
           <li css={li}>계정</li>
         </Link>
-        <li css={li}>로그아웃</li>
+        <li css={li} onClick={onLogoutClick}>
+          로그아웃
+        </li>
       </ul>
     </div>
   );

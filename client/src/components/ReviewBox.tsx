@@ -35,7 +35,7 @@ interface ReviewContent {
   isBad: boolean;
   isCenterText?: string;
   margin?: string;
-  onClick?: Boolean;
+  onClick?: any;
 }
 
 function ReviewBox(props: ReviewContent) {
@@ -72,7 +72,7 @@ function ReviewBox(props: ReviewContent) {
               : isBad
               ? color.deep
               : null
-            : color.border};
+            : color.placeholder};
           border-color: ${count ? (isBad ? color.deep : null) : color.border};
           margin: ${margin ? margin : null};
           background-color: ${click ? (isBad ? color.deep : color.mid) : null};
@@ -123,7 +123,7 @@ function ReviewBox(props: ReviewContent) {
             `,
           ]}
         >
-          -
+          ✔
         </div>
       )}
     </div>
