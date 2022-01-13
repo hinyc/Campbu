@@ -109,8 +109,6 @@ export const calCampbuIndicator = (reviews: reviewsType) => {
       negative = negative + (el.count ? el.count : 0);
     }
   });
-  console.log('po', positive);
-  console.log('ne', negative);
   let cal =
     positive - negative > 0
       ? 0
