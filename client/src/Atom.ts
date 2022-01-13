@@ -109,7 +109,13 @@ export const showReviewModal = atom({
   default: false,
 });
 
-//? 경고 모달 보여주기용 어떤페이지에서든 누르면 나오게하기위함
+//? 리뷰 등록 확인
+export const showSubmitModal = atom({
+  key: 'showSubmitModal',
+  default: false,
+});
+
+//? 경고 모달
 export const showAlertModal = atom({
   key: 'showAlertModal',
   default: false,

@@ -72,7 +72,7 @@ function ReviewBox(props: ReviewContent) {
               : isBad
               ? color.deep
               : null
-            : color.border};
+            : color.placeholder};
           border-color: ${count ? (isBad ? color.deep : null) : color.border};
           margin: ${margin ? margin : null};
           background-color: ${click ? (isBad ? color.deep : color.mid) : null};

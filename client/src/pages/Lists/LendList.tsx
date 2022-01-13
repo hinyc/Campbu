@@ -15,6 +15,7 @@ import {
   showCompleteModal,
   showConfirmModal,
   showReviewModal,
+  showSubmitModal,
 } from '../../Atom';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -57,6 +58,7 @@ function LendList() {
   const [confirm, setConfirm] = useRecoilState(showConfirmModal);
   const [complete, setComplete] = useRecoilState(showCompleteModal);
   const [review, setReview] = useRecoilState(showReviewModal);
+  const [submit, setSubmit] = useRecoilState(showSubmitModal);
   const [reservationId, setReservationId] = useState(0);
   const [reservationStatus, setReservationStatus] = useState(0);
   const [userId, setUserId] = useState(0);
@@ -74,6 +76,10 @@ function LendList() {
     if (reservationStatus === 3) {
       setReview(true);
     }
+  };
+
+  const onReviewCompleteClick = () => {
+    setSubmit(false);
   };
 
   // useEffect(() => {
@@ -132,6 +138,12 @@ function LendList() {
             <Complete text="반납이 확인되었습니다" onClick={onCompleteClick} />
           ))}
         {review && <ReviewModal userId={userId} />}
+        {submit && (
+          <Complete
+            text="리뷰가 등록되었습니다."
+            onClick={onReviewCompleteClick}
+          />
+        )}
         {lendLists['posts'].length === 0 ? (
           <>
             <img src={emptyLend} alt="camping" />

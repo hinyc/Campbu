@@ -14,6 +14,7 @@ import {
   showCompleteModal,
   showConfirmModal,
   showReviewModal,
+  showSubmitModal,
   UserPost,
 } from '../../Atom';
 import { useEffect, useState } from 'react';
@@ -40,6 +41,7 @@ function BorrowList() {
   const [confirm, setConfirm] = useRecoilState(showConfirmModal);
   const [complete, setComplete] = useRecoilState(showCompleteModal);
   const [review, setReview] = useRecoilState(showReviewModal);
+  const [submit, setSubmit] = useRecoilState(showSubmitModal);
   const button = ['예약 취소', '반납하기', '반납 확인 대기 중', '반납 완료'];
   const [reservationId, setReservationId] = useState(0);
   const [reservationStatus, setReservationStatus] = useState(0);
@@ -58,6 +60,10 @@ function BorrowList() {
     if (reservationStatus === 2) {
       setReview(true);
     }
+  };
+
+  const onReviewCompleteClick = () => {
+    setSubmit(false);
   };
 
   // useEffect(() => {
@@ -116,6 +122,12 @@ function BorrowList() {
             <Complete text="반납이 완료되었습니다" onClick={onCompleteClick} />
           ))}
         {review && <ReviewModal userId={userId} />}
+        {submit && (
+          <Complete
+            text="리뷰가 등록되었습니다."
+            onClick={onReviewCompleteClick}
+          />
+        )}
         {borrowLists['reservation'].length === 0 ? (
           <>
             <img src={emptyBorrow} alt="camping" />

@@ -1,6 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import axios from 'axios';
+import { useState } from 'react';
+import { useSetRecoilState } from 'recoil';
+import { showCompleteModal, showReviewModal, showSubmitModal } from '../Atom';
 import {
   color,
   host,
@@ -48,9 +51,22 @@ interface Props {
 }
 
 function ReviewModal({ userId }: Props) {
+  const setReview = useSetRecoilState(showReviewModal);
+  const setSubmit = useSetRecoilState(showSubmitModal);
+  const [reviewId, setReviewId] = useState<number[]>([]);
   const onReviewSubmitClick = () => {
-    axios.post(`${host}/user/review`, { user_id: userId, review_id: [] });
+    // axios
+    //   .post(
+    //     `${host}/user/review`,
+    //     { user_id: userId, review_id: reviewId },
+    //     { headers: { 'Content-Type': 'application/json' } },
+    //   )
+    //   .then((res) => console.log(res.data))
+    //   .catch((err) => console.error(err));
+    setReview(false);
+    setSubmit(true);
   };
+
   return (
     <div css={modalBackgroundStyle}>
       <div css={[background]}>
