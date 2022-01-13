@@ -14,7 +14,7 @@ interface Props {
   opacity?: string;
   hover?: string;
   cursor?: string;
-  onClick?: any;
+  onClick?: () => void;
   children?: React.ReactNode;
   shadow?: string;
   fontWeight?: number;
