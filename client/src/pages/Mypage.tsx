@@ -244,7 +244,6 @@ function Mypage() {
       review: string;
       count?: number;
     }[] = [...reviews];
-    console.log('??', tempReviews);
 
     userinfo.users.reviews.forEach((el) => {
       tempReviews[el.reviews_id - 1] = {

@@ -9,7 +9,7 @@ const reviewStyle = css`
   background-color: ${color.white};
   width: 16.5625rem;
   height: ${rem(43)};
-  line-height: ${rem(46)};
+  line-height: ${rem(43)};
   color: ${color.mid};
   border: 1px solid ${color.mid};
   border-radius: 0.3125rem;
@@ -66,6 +66,7 @@ function ReviewBox(props: ReviewContent) {
           font-size: ${fontSize ? rem(fontSize) : null};
           width: ${width ? rem(width) : null};
           height: ${height ? rem(height) : null};
+          line-height: ${height ? rem(height) : null};
           color: ${count
             ? click
               ? color.white
