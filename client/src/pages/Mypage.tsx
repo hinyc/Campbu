@@ -11,6 +11,8 @@ import {
   relative,
   colorPlaceholder,
   inactive,
+  reviewsType,
+  calCampbuIndicator,
 } from '../common';
 import ReviewBox from '../components/ReviewBox';
 import ReviewTitle from '../components/ReviweTitle';
@@ -134,13 +136,7 @@ function Mypage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [imgfiles, setFiles] = useRecoilState(imgFile);
-  const [getReviews, setGetReviews] = useState<
-    {
-      id: number;
-      review: string;
-      count?: number;
-    }[]
-  >([
+  const [getReviews, setGetReviews] = useState<reviewsType>([
     {
       id: 0,
       review: '',
@@ -179,14 +175,14 @@ function Mypage() {
             id: 1,
             users_id: 1,
             reviews_id: 1,
-            count: 5,
+            count: 2,
             created_at: '2021-12-16T09:42:40.000Z',
             updated_at: '2021-12-16T09:42:40.000Z',
           },
           {
             id: 1,
             users_id: 1,
-            reviews_id: 2,
+            reviews_id: 12,
             count: 5,
             created_at: '2021-12-16T09:42:40.000Z',
             updated_at: '2021-12-16T09:42:40.000Z',
@@ -239,11 +235,7 @@ function Mypage() {
     setEmail(userinfo.users.email);
 
     //받은 review 목록
-    let tempReviews: {
-      id: number;
-      review: string;
-      count?: number;
-    }[] = [...reviews];
+    let tempReviews: reviewsType = [...reviews];
 
     userinfo.users.reviews.forEach((el) => {
       tempReviews[el.reviews_id - 1] = {
@@ -285,8 +277,8 @@ function Mypage() {
 
   const confirmPasswordHandler = (e: any) => setConfirmPassword(e.target.value);
 
-  const campbuIndicator = 0.3; // 계산 방법 필요
-
+  const campbuIndicator = calCampbuIndicator(getReviews); // 계산 방법 필요
+  console.log(campbuIndicator);
   //! 수정 탈퇴 요청 함수
   const API = `${host}/userinfo/account`;
   const config = {
