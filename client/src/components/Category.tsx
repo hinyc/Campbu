@@ -58,38 +58,44 @@ function Category() {
 
   const onPackageClick = () => {
     const filtered = introSearch.posts.filter(
-      (obj) => obj.category === 'Package',
+      (obj) => obj.category === '패키지',
     );
     setFilteredPosts({ posts: filtered });
   };
 
   const onTentClick = () => {
-    const filtered = introSearch.posts.filter((obj) => obj.category === 'Tent');
+    const filtered = introSearch.posts.filter(
+      (obj) => obj.category === '텐트/침낭',
+    );
     setFilteredPosts({ posts: filtered });
   };
 
   const onGrillClick = () => {
     const filtered = introSearch.posts.filter(
-      (obj) => obj.category === 'Grill',
+      (obj) => obj.category === '그릴/버너',
     );
     setFilteredPosts({ posts: filtered });
   };
   const onChairClick = () => {
     const filtered = introSearch.posts.filter(
-      (obj) => obj.category === 'Chair',
+      (obj) => obj.category === '의자/테이블',
     );
     setFilteredPosts({ posts: filtered });
   };
   const onBagClick = () => {
-    const filtered = introSearch.posts.filter((obj) => obj.category === 'Bag');
+    const filtered = introSearch.posts.filter(
+      (obj) => obj.category === '배낭/아이스박스',
+    );
     setFilteredPosts({ posts: filtered });
   };
   const onPotClick = () => {
-    const filtered = introSearch.posts.filter((obj) => obj.category === 'Pot');
+    const filtered = introSearch.posts.filter(
+      (obj) => obj.category === '취식용품',
+    );
     setFilteredPosts({ posts: filtered });
   };
   const onEtcClick = () => {
-    const filtered = introSearch.posts.filter((obj) => obj.category === 'Etc');
+    const filtered = introSearch.posts.filter((obj) => obj.category === '기타');
     setFilteredPosts({ posts: filtered });
   };
 

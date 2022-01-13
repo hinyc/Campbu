@@ -434,7 +434,7 @@ export const searchAddress = atom<string[]>({
 });
 
 export const showAddressList = atom({
-  key: 'showAdressList',
+  key: 'showAddressList',
   default: false,
 });
 
