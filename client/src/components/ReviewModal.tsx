@@ -82,7 +82,7 @@ function ReviewModal({ userId }: Props) {
   return (
     <div css={modalBackgroundStyle}>
       <div css={[background]}>
-        <div css={title}>상대방과의 거래 어떠셧나요?</div>
+        <div css={title}>상대방과의 거래 어떠셨나요?</div>
         <div css={subTitle}>{`(1가지 이상 선택 필수)`}</div>
         <div>
           <div css={reviewAlign}>
