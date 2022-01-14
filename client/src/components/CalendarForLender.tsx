@@ -1,7 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useState } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import {
+  constSelector,
+  useRecoilState,
+  useRecoilValue,
+  useSetRecoilState,
+} from 'recoil';
 import {
   endDate,
   isSelectStart,
@@ -40,7 +45,7 @@ const calendarContainerStyle = css`
 const arrow = css`
   width: ${rem(40)};
   height: ${rem(30)};
-  height: ${rem(30)};
+  line-height: ${rem(1)};
   font-size: ${rem(20)};
   border: 1px solid ${color.border};
   border-radius: ${rem(5)};
@@ -89,6 +94,28 @@ const unableStyle = css`
   background-color: ${color.border};
   color: ${color.white};
 `;
+const rentalStartStyle = css`
+  text-align: center;
+  width: ${rem(40)};
+  height: ${rem(12)};
+  border-radius: ${rem(5)};
+  line-height: ${rem(14)};
+  top: ${rem(30)};
+  font-size: ${rem(10)};
+  background-color: ${color.point};
+  color: ${color.white};
+`;
+const rentalEndStyle = css`
+  text-align: center;
+  width: ${rem(40)};
+  height: ${rem(12)};
+  border-radius: ${rem(5)};
+  line-height: ${rem(14)};
+  top: ${rem(30)};
+  font-size: ${rem(10)};
+  background-color: ${color.deep};
+  color: ${color.white};
+`;
 
 interface AdayProps {
   day: string;
@@ -126,39 +153,140 @@ interface AdateProps {
 function Adate(props: AdateProps) {
   const { date, idx, width, year, month } = props;
   const [isSelect, setIsSelect] = useState(false);
-  const [setDates, setSetDates] = useRecoilState(selectDate);
+  const [totalRentalDates, setTotalRentalDates] = useRecoilState(selectDate);
   const isSelectStartState = useRecoilValue(isSelectStart);
   const [start, setStart] = useRecoilState(startDate);
   const [end, setEnd] = useRecoilState(endDate);
   const unableDates = useRecoilValue(unableDate);
-  let thisYear = year;
-  let thisMonth = month;
+  let thisYear = String(year);
+  let thisMonth = String(month);
+  let thisDate = String(date);
   let isWeekend = 'black';
 
   if (idx < 6 && date - 10 > 0) {
     const preMonth = new Date(year, month - 1, 0);
-    thisYear = preMonth.getFullYear();
-    thisMonth = preMonth.getMonth() + 1;
+    thisYear = String(preMonth.getFullYear());
+    thisMonth = String(preMonth.getMonth() + 1);
   }
 
   if (idx > 20 && 10 - date > 0) {
     const preMonth = new Date(year, month + 1, 0);
-    thisYear = preMonth.getFullYear();
-    thisMonth = preMonth.getMonth() + 1;
+    thisYear = String(preMonth.getFullYear());
+    thisMonth = String(preMonth.getMonth() + 1);
   }
 
-  const isUnable = unableDates.indexOf(`${thisYear}-${thisMonth}-${date}`);
+  thisMonth = thisMonth.length === 1 ? 0 + thisMonth : thisMonth;
+  thisDate = thisDate.length === 1 ? 0 + thisDate : thisDate;
 
-  const today = `${thisYear}.${thisMonth}.${date}`;
+  const isUnable = unableDates.indexOf(`${thisYear}.${thisMonth}.${thisDate}`);
+
+  const today = `${thisYear}.${thisMonth}.${thisDate}`;
   const selectDateHandler = () => {
     if (isUnable === -1) {
       if (isSelectStartState) {
+        if (today >= end) {
+          setEnd('');
+        }
         setStart(today);
-      } else {
+        //end가 이미 있고, today end보다 작으면 대여 배열생성
+        if (end && today < end) {
+          let newDates = totalRentalDatesGenerator(today, end);
+          setTotalRentalDates(newDates);
+        }
+      } else if (today > start) {
+        //대여 배열생성
         setEnd(today);
+        let newDates = totalRentalDatesGenerator(start, today);
+        setTotalRentalDates(newDates);
       }
     }
   };
+
+  const totalRentalDatesGenerator = (start: string, end: string): string[] => {
+    let totalRentalDatesArray: string[] = [];
+    const divStart = start.split('.');
+    const syear = Number(divStart[0]);
+    const smonth = Number(divStart[1]);
+    const sdate = Number(divStart[2]);
+
+    const divEnd = end.split('.');
+    const eyear = Number(divEnd[0]);
+    const emonth = Number(divEnd[1]);
+    const edate = Number(divEnd[2]);
+
+    totalRentalDatesArray = [...totalRentalDatesArray];
+
+    if (syear === eyear && smonth === emonth) {
+      let date = sdate;
+      while (date <= edate) {
+        totalRentalDatesArray = [
+          ...totalRentalDatesArray,
+          `${syear}.${smonth}.${date}`,
+        ];
+        date++;
+      }
+      return totalRentalDatesArray;
+    }
+
+    let date = sdate;
+    let startMonthEedDate = new Date(syear, smonth, 0).getDate();
+
+    while (date <= startMonthEedDate) {
+      totalRentalDatesArray = [
+        ...totalRentalDatesArray,
+        `${syear}.${smonth}.${date}`,
+      ];
+      date++;
+    }
+
+    if (syear === eyear) {
+      for (let i = smonth + 1; i < emonth; i++) {
+        console.log(i);
+        date = 1;
+        startMonthEedDate = new Date(syear, i, 0).getDate();
+
+        while (date <= startMonthEedDate) {
+          totalRentalDatesArray = [
+            ...totalRentalDatesArray,
+            `${syear}.${i}.${date}`,
+          ];
+          date++;
+        }
+      }
+    } else {
+      for (let j = syear; j <= eyear; j++) {
+        for (
+          let i = j === syear ? smonth + 1 : smonth;
+          j === eyear ? i < emonth : i <= emonth;
+          i++
+        ) {
+          console.log(i);
+          date = 1;
+          startMonthEedDate = new Date(j, i, 0).getDate();
+
+          while (date <= startMonthEedDate) {
+            totalRentalDatesArray = [
+              ...totalRentalDatesArray,
+              `${j}.${i}.${date}`,
+            ];
+            date++;
+          }
+        }
+      }
+    }
+
+    date = 1;
+    while (date <= edate) {
+      totalRentalDatesArray = [
+        ...totalRentalDatesArray,
+        `${eyear}.${emonth}.${date}`,
+      ];
+      date++;
+    }
+
+    return totalRentalDatesArray;
+  };
+  console.log(totalRentalDates);
 
   return (
     <div
@@ -178,7 +306,14 @@ function Adate(props: AdateProps) {
       onClick={selectDateHandler}
     >
       {isUnable === -1 ? (
-        <div css={pointer}>{date}</div>
+        <>
+          <div css={pointer}>{date}</div>
+          {start === today ? (
+            <div css={[absolute, rentalStartStyle]}>대여일</div>
+          ) : end === today ? (
+            <div css={[absolute, rentalEndStyle]}>반납일</div>
+          ) : null}
+        </>
       ) : (
         <>
           <div css={isUnable === -1 ? pointer : null}>{date}</div>
@@ -259,14 +394,14 @@ export default function Calendar() {
             css={arrow}
             onClick={() => setGetDateHandler(targetYear, targetMonth - 1)}
           >
-            ←
+            &lt;
           </button>
           <span css={thisMonth}>{`${targetYear}년 ${targetMonth}월`}</span>
           <button
             css={arrow}
             onClick={() => setGetDateHandler(targetYear, targetMonth + 1)}
           >
-            →
+            &gt;
           </button>
         </div>
         <div className="days" css={flexBetween}>
