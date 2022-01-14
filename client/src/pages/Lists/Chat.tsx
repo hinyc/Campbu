@@ -437,7 +437,7 @@ function Chat() {
             `,
           ]}
         >
-          <Reservation
+          {/* <Reservation
             text="예약 취소"
             background={`${color.point}`}
             color="white"
@@ -451,7 +451,7 @@ function Chat() {
             rental_fee={chatPost.Post.rental_fee}
             reservation_dates={chatPost.Post.reservation.reservation_dates}
             onButtonClick={onButtonClick}
-          />
+          /> */}
         </div>
       </div>
     </>

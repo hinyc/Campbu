@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, rem, flex, host } from '../../common';
+import { color, rem, flex, host, config } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Button } from '../../components/Button';
 import emptyWriting from '../../assets/pictures/emptyWriting.svg';
@@ -11,34 +11,34 @@ import Product from '../../components/Product';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { UserPost } from './interface';
+import { MyPost } from './interface';
 
 const img = css`
   margin-top: ${rem(21)};
 `;
 
 interface Resists {
-  post: UserPost[];
+  post: MyPost[];
 }
 
 const resists = {
   post: [
     {
-      post_id: 4,
-      post_category: '그릴/버너',
-      post_deposit: 50000,
-      post_rental_fee: 100000,
-      post_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
-      post_title: '튼튼한 그릴입니다',
-      post_content: '절대 쓰러지지 않아요',
-      post_longitude: '128.638149961102',
-      post_latitude: '35.84398924816',
-      post_address: '수성구 황금동',
-      post_img_urls:
+      id: 4,
+      category: '그릴/버너',
+      deposit: 50000,
+      rental_fee: 100000,
+      unavailable_dates: ['2022.01.11', '2022.01.12', '2022.01.13'],
+      title: '튼튼한 그릴입니다',
+      content: '절대 쓰러지지 않아요',
+      longitude: '128.638149961102',
+      latitude: '35.84398924816',
+      address: '수성구 황금동',
+      img_urls: [
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9YMpUEeAhDovNZilJp_nsjHlg77VuPq3roQ&usqp=CAU',
-      post_created_at: '2022-01-11T06:17:48.489Z',
-      post_updated_at: '2022-01-11T06:17:48.489Z',
-      post_users_id: 2,
+      ],
+      created_at: '2022-01-11T06:17:48.489Z',
+      updated_at: '2022-01-11T06:17:48.489Z',
     },
   ],
 };
@@ -47,15 +47,12 @@ function ResistList() {
   const [resistLists, setResistLists] = useState<Resists>(resists);
   const [modalShow, setModalShow] = useState(false);
 
-  // useEffect(() => {
-  //   axios
-  //     .get(`${host}/userinfo/product/post`)
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       setResistLists(res.data);
-  //     })
-  //     .catch((err) => console.error(err));
-  // });
+  useEffect(() => {
+    axios
+      .get(`${host}/userinfo/product/post`, config)
+      .then((res) => setResistLists(res.data))
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
     <>
@@ -97,17 +94,17 @@ function ResistList() {
           </>
         ) : (
           <section css={section}>
-            {resistLists['post'].map((resistList: UserPost) => (
+            {resistLists['post'].map((resistList: MyPost) => (
               <Product
                 count={0} //? display: none
                 isFill={true} //? display: none
                 display="none"
-                postId={resistList.post_id}
-                img_urls={resistList.post_img_urls}
-                address={resistList.post_address}
-                title={resistList.post_title}
-                deposit={resistList.post_deposit}
-                rental_fee={resistList.post_rental_fee}
+                postId={resistList.id}
+                img_urls={resistList.img_urls[0]}
+                address={resistList.address}
+                title={resistList.title}
+                deposit={resistList.deposit}
+                rental_fee={resistList.rental_fee}
               />
             ))}
           </section>
