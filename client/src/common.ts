@@ -91,7 +91,7 @@ export const reviews: { id: number; review: string }[] = [
 
 export const host = 'http://localhost:5050';
 //주소요청 API
-export const adressAPI = `U01TX0FVVEgyMDIyMDExMDIxMjMzNTExMjExNzA=`;
+export const addressAPI = `U01TX0FVVEgyMDIyMDExMDIxMjMzNTExMjExNzA=`;
 
 export type reviewsType = {
   id: number;
@@ -116,4 +116,12 @@ export const calCampbuIndicator = (reviews: reviewsType) => {
       ? -100
       : positive - negative;
   return (100 + cal) / 100;
+};
+
+//axios
+export const config = {
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true,
 };

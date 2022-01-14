@@ -238,19 +238,15 @@ function Mypage() {
 
     //받은 review 목록
     let tempReviews: reviewsType = [...reviews];
-    console.log(423423, !userinfo.users.reviews);
-    console.log(tempReviews);
-    if (!!userinfo.users.reviews) {
-      console.log(34234);
-      userinfo.users.reviews.forEach((el: any) => {
-        tempReviews[el.reviews_id - 1] = {
-          ...tempReviews[el.reviews_id - 1],
-          count: el.count,
-        };
-      });
-      setGetReviews(tempReviews);
-      console.log(99999, tempReviews);
-    }
+
+    userinfo.users.reviews.forEach((el: any) => {
+      tempReviews[el.reviews_id - 1] = {
+        ...tempReviews[el.reviews_id - 1],
+        count: el.count,
+      };
+    });
+    setGetReviews(tempReviews);
+
     // 서버로부터 받은 데이터 예시
   }, []);
 

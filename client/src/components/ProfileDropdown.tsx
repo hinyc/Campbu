@@ -2,12 +2,9 @@
 import { css } from '@emotion/react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-
 import { useSetRecoilState } from 'recoil';
-import {isLogin } from '../Atom';
+import { isLogin } from '../Atom';
 import { host, rem, shadow, textDecorationNone } from '../common';
-
-
 
 const box = css`
   width: ${rem(205)};
@@ -40,19 +37,19 @@ const line = css`
 `;
 
 function ProfileDropdown() {
-
-
   const setIsLogin = useSetRecoilState(isLogin);
   const navigate = useNavigate();
 
   const logout = () => {
     setIsLogin(false);
-    axios.get(`${host}/user/logout`).then((res: any) => {
-      console.log(res.status);
-      navigate('/');
-    }).catch((err) => console.error(err));
+    axios
+      .get(`${host}/user/logout`)
+      .then((res: any) => {
+        console.log(res.status);
+        navigate('/');
+      })
+      .catch((err) => console.error(err));
   };
-
 
   return (
     <div css={box}>
@@ -78,7 +75,6 @@ function ProfileDropdown() {
         </Link>
 
         <li css={li} onClick={logout}>
-
           로그아웃
         </li>
       </ul>

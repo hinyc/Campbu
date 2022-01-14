@@ -10,34 +10,109 @@ import emptyBorrow from '../../assets/pictures/emptyBorrow.svg';
 import { container, section, message } from './tab';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
-  borrows,
   showCompleteModal,
   showConfirmModal,
   showReviewModal,
   showSubmitModal,
-  UserPost,
 } from '../../Atom';
 import { useEffect, useState } from 'react';
 import YesOrNo from '../../components/ConfirmBorrow';
 import axios from 'axios';
 import Complete from '../../components/Complete';
 import ReviewModal from '../../components/ReviewModal';
+import { List } from './interface';
 
 interface Borrow {
-  reservation: List[];
+  borrow: List[];
 }
 
-interface List {
-  id: number;
-  users_id: number;
-  posts_id: number;
-  reservation_dates: string[];
-  reservation_status: number;
-  posts: UserPost;
-}
+const borrows = {
+  borrow: [
+    {
+      reservation_id: 1,
+      reservation_reservation_dates: '2022.01.15,2022.01.16,2022.01.17',
+      reservation_reservation_status: 1,
+      reservation_users_id: 2,
+      reservation_posts_id: 2,
+      posts_id: 2,
+      posts_category: '의자/테이블',
+      posts_deposit: 20000,
+      posts_rental_fee: 40000,
+      posts_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
+      posts_title: '튼튼한 의자 빌려드려요',
+      posts_content: '올라가도 안 부서집니다.',
+      posts_longitude: '127.044484819305',
+      posts_latitude: '37.2244311943994',
+      posts_address: '화성시 기산동',
+      posts_img_urls:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ98OT7JgUOpLY1IN0cPBLYfEDTisFUCKLrZw&usqp=CAU',
+      posts_users_id: 1,
+    },
+    {
+      reservation_id: 2,
+      reservation_reservation_dates: '2022.01.15,2022.01.16,2022.01.17',
+      reservation_reservation_status: 2,
+      reservation_users_id: 1,
+      reservation_posts_id: 1,
+      posts_id: 3,
+      posts_category: '의자/테이블',
+      posts_deposit: 20000,
+      posts_rental_fee: 40000,
+      posts_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
+      posts_title: '튼튼한 의자 빌려드려요',
+      posts_content: '올라가도 안 부서집니다.',
+      posts_longitude: '127.044484819305',
+      posts_latitude: '37.2244311943994',
+      posts_address: '화성시 기산동',
+      posts_img_urls:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ98OT7JgUOpLY1IN0cPBLYfEDTisFUCKLrZw&usqp=CAU',
+      posts_users_id: 1,
+    },
+    {
+      reservation_id: 3,
+      reservation_reservation_dates: '2022.01.15,2022.01.16,2022.01.17',
+      reservation_reservation_status: 3,
+      reservation_users_id: 2,
+      reservation_posts_id: 2,
+      posts_id: 2,
+      posts_category: '의자/테이블',
+      posts_deposit: 20000,
+      posts_rental_fee: 40000,
+      posts_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
+      posts_title: '튼튼한 의자 빌려드려요',
+      posts_content: '올라가도 안 부서집니다.',
+      posts_longitude: '127.044484819305',
+      posts_latitude: '37.2244311943994',
+      posts_address: '화성시 기산동',
+      posts_img_urls:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ98OT7JgUOpLY1IN0cPBLYfEDTisFUCKLrZw&usqp=CAU',
+      posts_users_id: 1,
+    },
+    {
+      reservation_id: 4,
+      reservation_reservation_dates: '2022.01.15,2022.01.16,2022.01.17',
+      reservation_reservation_status: 4,
+      reservation_users_id: 2,
+      reservation_posts_id: 2,
+      posts_id: 2,
+      posts_category: '의자/테이블',
+      posts_deposit: 20000,
+      posts_rental_fee: 40000,
+      posts_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
+      posts_title: '튼튼한 의자 빌려드려요',
+      posts_content: '올라가도 안 부서집니다.',
+      posts_longitude: '127.044484819305',
+      posts_latitude: '37.2244311943994',
+      posts_address: '화성시 기산동',
+      posts_img_urls:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ98OT7JgUOpLY1IN0cPBLYfEDTisFUCKLrZw&usqp=CAU',
+      posts_users_id: 1,
+    },
+  ],
+};
 
 function BorrowList() {
-  const [borrowLists, setBorrowLists] = useRecoilState<Borrow>(borrows);
+  const [borrowLists, setBorrowLists] = useState<Borrow>(borrows);
   const [confirm, setConfirm] = useRecoilState(showConfirmModal);
   const [complete, setComplete] = useRecoilState(showCompleteModal);
   const [review, setReview] = useRecoilState(showReviewModal);
@@ -74,7 +149,7 @@ function BorrowList() {
   //       setBorrowLists(res.data);
   //     })
   //     .catch((err) => console.error(err));
-  // });
+  // },[]);
 
   return (
     <>
@@ -128,7 +203,7 @@ function BorrowList() {
             onClick={onReviewCompleteClick}
           />
         )}
-        {borrowLists['reservation'].length === 0 ? (
+        {borrowLists['borrow'].length === 0 ? (
           <>
             <img src={emptyBorrow} alt="camping" />
             <p css={message}>
@@ -149,48 +224,52 @@ function BorrowList() {
           </>
         ) : (
           <section css={section}>
-            {borrowLists['reservation'].map(
-              (borrowList: List, index: number) => (
-                <Reservation
-                  key={index}
-                  text={printStatusText(borrowList.reservation_status)}
-                  background={
-                    borrowList.reservation_status !== 4
-                      ? `${color.point}`
-                      : `${color.mid}`
-                  }
-                  color="white"
-                  cursor={
-                    borrowList.reservation_status === 1 ||
-                    borrowList.reservation_status === 2
-                      ? 'pointer'
-                      : 'not-allowed'
-                  }
-                  hover={
-                    borrowList.reservation_status === 4
-                      ? '100%'
-                      : borrowList.reservation_status === 3
-                      ? '50%'
-                      : '80%'
-                  }
-                  opacity={borrowList.reservation_status === 3 ? '50%' : '100%'}
-                  postId={borrowList.posts.id}
-                  img_urls={borrowList.posts.img_urls}
-                  address={borrowList.posts.address}
-                  title={borrowList.posts.title}
-                  deposit={borrowList.posts.deposit}
-                  rental_fee={borrowList.posts.rental_fee}
-                  reservation_dates={borrowList.reservation_dates}
-                  onButtonClick={() =>
-                    onButtonClick(
-                      borrowList.id,
-                      borrowList.reservation_status,
-                      borrowList.posts.users_id,
-                    )
-                  }
-                />
-              ),
-            )}
+            {borrowLists['borrow'].map((borrowList: List, index: number) => (
+              <Reservation
+                key={index}
+                text={printStatusText(
+                  borrowList.reservation_reservation_status,
+                )}
+                background={
+                  borrowList.reservation_reservation_status !== 4
+                    ? `${color.point}`
+                    : `${color.mid}`
+                }
+                color="white"
+                cursor={
+                  borrowList.reservation_reservation_status === 1 ||
+                  borrowList.reservation_reservation_status === 2
+                    ? 'pointer'
+                    : 'not-allowed'
+                }
+                hover={
+                  borrowList.reservation_reservation_status === 4
+                    ? '100%'
+                    : borrowList.reservation_reservation_status === 3
+                    ? '50%'
+                    : '80%'
+                }
+                opacity={
+                  borrowList.reservation_reservation_status === 3
+                    ? '50%'
+                    : '100%'
+                }
+                postId={borrowList.posts_id}
+                img_urls={borrowList.posts_img_urls}
+                address={borrowList.posts_address}
+                title={borrowList.posts_title}
+                deposit={borrowList.posts_deposit}
+                rental_fee={borrowList.posts_rental_fee}
+                reservation_dates={borrowList.reservation_reservation_dates}
+                onButtonClick={() =>
+                  onButtonClick(
+                    borrowList.reservation_id,
+                    borrowList.reservation_reservation_status,
+                    borrowList.posts_users_id,
+                  )
+                }
+              />
+            ))}
           </section>
         )}
       </div>

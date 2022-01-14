@@ -1,6 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, host, modalBackgroundStyle, rem, shadow } from '../common';
+import {
+  color,
+  config,
+  host,
+  modalBackgroundStyle,
+  rem,
+  shadow,
+} from '../common';
 import { Button } from './Button';
 import Input from './Input';
 import naverimg from '../assets/naver.png';
@@ -140,12 +147,7 @@ function LoginModal() {
     }
 
     axios
-      .post(`${host}/user/login`, loginInfo, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true,
-      })
+      .post(`${host}/user/login`, loginInfo, config)
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
