@@ -58,6 +58,13 @@ const addressListStyle = css`
 
 export interface Posts {
   posts: Post[];
+  likes?: {
+    id: number;
+    users_id: number;
+    posts_id: number;
+    created_at?: string;
+    updated_at?: string;
+  }[];
 }
 
 export interface Post {
@@ -73,7 +80,8 @@ export interface Post {
   address: string;
   img_urls: string;
   users_id: number;
-  reservation_dates: string[];
+  created_at?: string;
+  updated_at?: string;
   likes_count: number;
 }
 
@@ -122,11 +130,6 @@ function Main() {
                     img_urls:
                       'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
                     users_id: 1,
-                    reservation_dates: [
-                      '2021-12-29',
-                      '2021-12-30',
-                      '2021-12-31',
-                    ],
                     likes_count: 15,
                   },
                   {
@@ -147,11 +150,6 @@ function Main() {
                     img_urls:
                       'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
                     users_id: 1,
-                    reservation_dates: [
-                      '2021-12-29',
-                      '2021-12-30',
-                      '2021-12-31',
-                    ],
                     likes_count: 15,
                   },
                 ],
@@ -178,11 +176,6 @@ function Main() {
                     img_urls:
                       'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
                     users_id: 1,
-                    reservation_dates: [
-                      '2021-12-29',
-                      '2021-12-30',
-                      '2021-12-31',
-                    ],
                     likes_count: 15,
                   },
                   {
@@ -203,11 +196,6 @@ function Main() {
                     img_urls:
                       'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
                     users_id: 1,
-                    reservation_dates: [
-                      '2021-12-29',
-                      '2021-12-30',
-                      '2021-12-31',
-                    ],
                     likes_count: 15,
                   },
                 ],

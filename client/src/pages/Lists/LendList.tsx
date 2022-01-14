@@ -11,7 +11,6 @@ import { container, section, message } from './tab';
 import YesOrNo from '../../components/ConfirmLend';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
-  lends,
   showCompleteModal,
   showConfirmModal,
   showReviewModal,
@@ -23,38 +22,115 @@ import axios from 'axios';
 import { host } from '../../common';
 import Complete from '../../components/Complete';
 import ReviewModal from '../../components/ReviewModal';
+import { List } from './interface';
 
-interface Lends {
-  posts: Post[];
+export interface Lend {
+  lend: List[];
 }
 
-interface Post {
-  id: number;
-  category: string;
-  deposit: number;
-  rental_fee: number;
-  unavailable_dates: string[];
-  title: string;
-  content: string;
-  longitude: number;
-  latitude: number;
-  address: string;
-  img_urls: string;
-  users_id: number;
-  likes_count: number;
-  reservation: List[];
-}
-
-interface List {
-  id: number;
-  users_id: number;
-  posts_id: number;
-  reservation_dates: string[];
-  reservation_status: number;
-}
+const lends = {
+  lend: [
+    {
+      reservation_id: 3,
+      reservation_reservation_dates: '2022.01.12,2022.01.13,2022.01.14',
+      reservation_reservation_status: 1,
+      reservation_created_at: '2022-01-12T06:54:09.862Z',
+      reservation_updated_at: '2022-01-12T06:54:09.862Z',
+      reservation_users_id: 1,
+      reservation_posts_id: 4,
+      posts_id: 4,
+      posts_category: '그릴/버너',
+      posts_deposit: 50000,
+      posts_rental_fee: 100000,
+      posts_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
+      posts_title: '튼튼한 그릴입니다',
+      posts_content: '절대 쓰러지지 않아요',
+      posts_longitude: '128.638149961102',
+      posts_latitude: '35.84398924816',
+      posts_address: '수성구 황금동',
+      posts_img_urls:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfS8nqLKyNTIEtZkMcjSOwGyopmHw8M1HllQ&usqp=CAU',
+      posts_created_at: '2022-01-11T06:17:48.489Z',
+      posts_updated_at: '2022-01-11T06:17:48.489Z',
+      posts_users_id: 2,
+    },
+    {
+      reservation_id: 3,
+      reservation_reservation_dates: '2022.01.12,2022.01.13,2022.01.14',
+      reservation_reservation_status: 2,
+      reservation_created_at: '2022-01-12T06:54:09.862Z',
+      reservation_updated_at: '2022-01-12T06:54:09.862Z',
+      reservation_users_id: 1,
+      reservation_posts_id: 4,
+      posts_id: 4,
+      posts_category: '그릴/버너',
+      posts_deposit: 50000,
+      posts_rental_fee: 100000,
+      posts_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
+      posts_title: '튼튼한 그릴입니다',
+      posts_content: '절대 쓰러지지 않아요',
+      posts_longitude: '128.638149961102',
+      posts_latitude: '35.84398924816',
+      posts_address: '수성구 황금동',
+      posts_img_urls:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2OotEOvgBKM9h-bF7OuGh2tmHbYHidO-bhw&usqp=CAU',
+      posts_created_at: '2022-01-11T06:17:48.489Z',
+      posts_updated_at: '2022-01-11T06:17:48.489Z',
+      posts_users_id: 2,
+    },
+    {
+      reservation_id: 3,
+      reservation_reservation_dates: '2022.01.12,2022.01.13,2022.01.14',
+      reservation_reservation_status: 3,
+      reservation_created_at: '2022-01-12T06:54:09.862Z',
+      reservation_updated_at: '2022-01-12T06:54:09.862Z',
+      reservation_users_id: 1,
+      reservation_posts_id: 4,
+      posts_id: 4,
+      posts_category: '그릴/버너',
+      posts_deposit: 50000,
+      posts_rental_fee: 100000,
+      posts_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
+      posts_title: '튼튼한 그릴입니다',
+      posts_content: '절대 쓰러지지 않아요',
+      posts_longitude: '128.638149961102',
+      posts_latitude: '35.84398924816',
+      posts_address: '수성구 황금동',
+      posts_img_urls:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy1CkRFNJxeSB-hmmrnEQp7T7onntg4NO4YA&usqp=CAU',
+      posts_created_at: '2022-01-11T06:17:48.489Z',
+      posts_updated_at: '2022-01-11T06:17:48.489Z',
+      posts_users_id: 2,
+    },
+    {
+      reservation_id: 3,
+      reservation_reservation_dates: '2022.01.12,2022.01.13,2022.01.14',
+      reservation_reservation_status: 4,
+      reservation_created_at: '2022-01-12T06:54:09.862Z',
+      reservation_updated_at: '2022-01-12T06:54:09.862Z',
+      reservation_users_id: 1,
+      reservation_posts_id: 4,
+      posts_id: 4,
+      posts_category: '그릴/버너',
+      posts_deposit: 50000,
+      posts_rental_fee: 100000,
+      posts_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
+      posts_title: '튼튼한 그릴입니다',
+      posts_content: '절대 쓰러지지 않아요',
+      posts_longitude: '128.638149961102',
+      posts_latitude: '35.84398924816',
+      posts_address: '수성구 황금동',
+      posts_img_urls:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdxiI2CQOzIDKDwjdwbxKkIsO8dlcx4Vf_mQ&usqp=CAU',
+      posts_created_at: '2022-01-11T06:17:48.489Z',
+      posts_updated_at: '2022-01-11T06:17:48.489Z',
+      posts_users_id: 2,
+    },
+  ],
+};
 
 function LendList() {
-  const [lendLists, setLendLists] = useRecoilState<Lends>(lends);
+  const [lendLists, setLendLists] = useState<Lend>(lends);
   const [confirm, setConfirm] = useRecoilState(showConfirmModal);
   const [complete, setComplete] = useRecoilState(showCompleteModal);
   const [review, setReview] = useRecoilState(showReviewModal);
@@ -144,7 +220,7 @@ function LendList() {
             onClick={onReviewCompleteClick}
           />
         )}
-        {lendLists['posts'].length === 0 ? (
+        {lendLists['lend'].length === 0 ? (
           <>
             <img src={emptyLend} alt="camping" />
             <p css={message}>
@@ -163,49 +239,44 @@ function LendList() {
           </>
         ) : (
           <section css={section}>
-            {lendLists['posts'].map((lendList: Post, index: number) => (
+            {lendLists['lend'].map((lendList: List, index: number) => (
               <Reservation
                 key={index}
-                //! reservation index 번호는 유저 아이디에 맞는 예약 조회
-                text={printStatusText(
-                  lendList.reservation[0].reservation_status,
-                )}
+                text={printStatusText(lendList.reservation_reservation_status)}
                 background={
-                  lendList.reservation[0].reservation_status !== 4
+                  lendList.reservation_reservation_status !== 4
                     ? `${color.point}`
                     : `${color.mid}`
                 }
                 color="white"
                 cursor={
-                  lendList.reservation[0].reservation_status === 1 ||
-                  lendList.reservation[0].reservation_status === 3
+                  lendList.reservation_reservation_status === 1 ||
+                  lendList.reservation_reservation_status === 3
                     ? 'pointer'
                     : 'not-allowed'
                 }
                 hover={
-                  lendList.reservation[0].reservation_status === 4
+                  lendList.reservation_reservation_status === 4
                     ? '100%'
-                    : lendList.reservation[0].reservation_status === 2
+                    : lendList.reservation_reservation_status === 2
                     ? '50%'
                     : '80%'
                 }
                 opacity={
-                  lendList.reservation[0].reservation_status === 2
-                    ? '50%'
-                    : '100%'
+                  lendList.reservation_reservation_status === 2 ? '50%' : '100%'
                 }
-                postId={lendList.id}
-                img_urls={lendList.img_urls}
-                address={lendList.address}
-                title={lendList.title}
-                deposit={lendList.deposit}
-                rental_fee={lendList.rental_fee}
-                reservation_dates={lendList.reservation[0].reservation_dates}
+                postId={lendList.posts_id}
+                img_urls={lendList.posts_img_urls}
+                address={lendList.posts_address}
+                title={lendList.posts_title}
+                deposit={lendList.posts_deposit}
+                rental_fee={lendList.posts_rental_fee}
+                reservation_dates={lendList.reservation_reservation_dates}
                 onButtonClick={() =>
                   onButtonClick(
-                    lendList.id,
-                    lendList.reservation[0].reservation_status,
-                    lendList.reservation[0].users_id,
+                    lendList.reservation_id,
+                    lendList.reservation_reservation_status,
+                    lendList.reservation_users_id,
                   )
                 }
               />

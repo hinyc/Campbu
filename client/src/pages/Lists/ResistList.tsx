@@ -9,20 +9,42 @@ import { link, visit } from './tab';
 import { container, section, message } from './tab';
 import Product from '../../components/Product';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { resists, UserPost } from '../../Atom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { UserPost } from './interface';
 
 const img = css`
   margin-top: ${rem(21)};
 `;
 
 interface Resists {
-  posts: UserPost[];
+  post: UserPost[];
 }
 
+const resists = {
+  post: [
+    {
+      post_id: 4,
+      post_category: '그릴/버너',
+      post_deposit: 50000,
+      post_rental_fee: 100000,
+      post_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
+      post_title: '튼튼한 그릴입니다',
+      post_content: '절대 쓰러지지 않아요',
+      post_longitude: '128.638149961102',
+      post_latitude: '35.84398924816',
+      post_address: '수성구 황금동',
+      post_img_urls:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9YMpUEeAhDovNZilJp_nsjHlg77VuPq3roQ&usqp=CAU',
+      post_created_at: '2022-01-11T06:17:48.489Z',
+      post_updated_at: '2022-01-11T06:17:48.489Z',
+      post_users_id: 2,
+    },
+  ],
+};
+
 function ResistList() {
-  const [resistLists, setResistLists] = useRecoilState<Resists>(resists);
+  const [resistLists, setResistLists] = useState<Resists>(resists);
   const [modalShow, setModalShow] = useState(false);
 
   // useEffect(() => {
@@ -53,7 +75,7 @@ function ResistList() {
         </Link>
       </nav>
       <div css={container}>
-        {resistLists['posts'].length === 0 ? (
+        {resistLists['post'].length === 0 ? (
           <>
             <img src={emptyWriting} alt="broken heart" css={img} />
             <p css={message}>
@@ -75,17 +97,17 @@ function ResistList() {
           </>
         ) : (
           <section css={section}>
-            {resistLists['posts'].map((resistList: UserPost) => (
+            {resistLists['post'].map((resistList: UserPost) => (
               <Product
-                count={resistList.likes_count}
+                count={200}
                 isFill={true}
                 display="none"
-                postId={resistList.id}
-                img_urls={resistList.img_urls}
-                address={resistList.address}
-                title={resistList.title}
-                deposit={resistList.deposit}
-                rental_fee={resistList.rental_fee}
+                postId={resistList.post_id}
+                img_urls={resistList.post_img_urls}
+                address={resistList.post_address}
+                title={resistList.post_title}
+                deposit={resistList.post_deposit}
+                rental_fee={resistList.post_rental_fee}
               />
             ))}
           </section>

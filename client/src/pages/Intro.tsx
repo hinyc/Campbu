@@ -121,11 +121,6 @@ function Intro() {
                     img_urls:
                       'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
                     users_id: 1,
-                    reservation_dates: [
-                      '2021-12-29',
-                      '2021-12-30',
-                      '2021-12-31',
-                    ],
                     likes_count: 15,
                   },
                   {
@@ -146,11 +141,6 @@ function Intro() {
                     img_urls:
                       'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
                     users_id: 1,
-                    reservation_dates: [
-                      '2021-12-29',
-                      '2021-12-30',
-                      '2021-12-31',
-                    ],
                     likes_count: 15,
                   },
                 ],
