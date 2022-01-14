@@ -99,8 +99,8 @@ function ResistList() {
           <section css={section}>
             {resistLists['post'].map((resistList: UserPost) => (
               <Product
-                count={200}
-                isFill={true}
+                count={0} //? display: none
+                isFill={true} //? display: none
                 display="none"
                 postId={resistList.post_id}
                 img_urls={resistList.post_img_urls}
