@@ -133,42 +133,45 @@ const uploadImgStyle = css`
 `;
 
 const UploadImg = () => {
-  const [imgfiles, setFiles] = useRecoilState(imgFile);
+  const [imgFiles, setFiles] = useRecoilState(imgFile);
   const [preViews, setPreViews] = useRecoilState(preView);
+  const [test, setTest] = useState('');
+
   const insertImgHandler = (e: any) => {
     const target = e.target.files[0];
+    const preViewUrl = URL.createObjectURL(target);
+    setPreViews([...preViews, preViewUrl]);
 
     let reader = new FileReader();
 
     if (target) {
       reader.readAsDataURL(target);
-      setFiles([...imgfiles, target]);
+      setFiles([...imgFiles, target]);
     }
 
-    reader.onloadend = () => {
-      const preViewUrl = reader.result;
-      if (preViewUrl) {
-        setPreViews([...preViews, preViewUrl]);
-      }
-    };
+    // reader.onloadend = () => {
+    //   const preViewUrl = reader.result;
+    //   if (preViewUrl) {
+    //     setPreViews([...preViews, preViewUrl]);
+    //   }
+    // };
   };
+  console.log('imgFiles:', imgFiles);
+  console.log('preViews:', preViews);
+  console.log('test', test);
+  console.log('prev', preViews[preViews.length - 1]);
 
   const deleteImg = (target: number) => {
-    setFiles(imgfiles.filter((el, idx) => idx !== target));
+    setFiles(imgFiles.filter((el, idx) => idx !== target));
     setPreViews(preViews.filter((el, idx) => idx !== target));
   };
 
   return (
     <div css={[uploadImgStyle, confirm]}>
-      {imgfiles.map((el, idx) => {
+      {preViews.map((el, idx) => {
         return (
           <div key={idx} css={[onLoadImgStyle, relative]}>
-            <img
-              css={imgStyle}
-              draggable="false"
-              src={preViews[idx]}
-              alt={el.name}
-            />
+            <img css={imgStyle} draggable="false" src={el} alt={el.name} />
             <div css={xStyle} onClick={() => deleteImg(idx)}>
               ×
             </div>
@@ -266,7 +269,7 @@ export const Writing = () => {
       title: string;
       content: string;
       Address?: string;
-      img_urls?: string;
+      img_urls?: any[];
     }
 
     const data: wrightType = {
@@ -277,7 +280,7 @@ export const Writing = () => {
       title: title,
       content: content,
       Address: address,
-      img_urls: imgUrls,
+      img_urls: imgfiles,
     };
 
     const API = `${host}/post/newpost`;
