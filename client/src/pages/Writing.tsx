@@ -10,10 +10,12 @@ import {
   adressAPI,
   relative,
   hidden,
+  config,
+  host,
 } from '../common';
 import { Button } from '../components/Button';
 import BackButton from '../components/BackButton';
-import Calendar from '../components/Calendar';
+import Calendar from '../components/CalendarForWrightingpage';
 import { useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
@@ -266,7 +268,8 @@ export const Writing = () => {
       Address?: string;
       img_urls?: string;
     }
-    const wrigthDate: wrightType = {
+
+    const data: wrightType = {
       category: setCategory,
       deposit: Number(deposit),
       rental_fee: Number(rentalFee),
@@ -276,22 +279,12 @@ export const Writing = () => {
       Address: address,
       img_urls: imgUrls,
     };
-    console.log(wrigthDate);
 
-    /// 사진전송
-    const fd = new FormData();
-    console.log('!!', imgfiles);
-    Object.values(imgfiles).forEach((file) => fd.append('file', file));
+    const API = `${host}/post/newpost`;
+    console.log('API:', API);
+    console.log('Data:', data);
 
-    const config = {
-      headers: {
-        'content-type': 'multipart/form-data',
-      },
-
-      // axios.post(API, fd, config)
-    };
-
-    console.log('??', fd);
+    // axios.post(API, data, config).catch(err=>console.log(err))
   };
 
   return (
@@ -309,7 +302,7 @@ export const Writing = () => {
             width={850}
             height={55}
             borderStyle="none none solid none"
-            borderRadius={0}
+            borderRadius={1}
             placeholder="제목을 입력해주세요"
             onChange={titleHandler}
           />
