@@ -52,7 +52,10 @@ export default function SelectAddressList({ width }: Style) {
       ]}
     >
       {addressList.length > 0 ? null : (
-        <div css={fontSize14} onClick={() => setShowAddress(false)}>
+        <div
+          css={[fontSize14, contentStyle]}
+          onClick={() => setShowAddress(false)}
+        >
           검색 결과가 없습니다.
         </div>
       )}

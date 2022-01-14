@@ -14,22 +14,17 @@ import {
 import LikeSymbol from '../components/LikeSymbol';
 import ReviewBox from '../components/ReviewBox';
 import ReviewTitle from '../components/ReviweTitle';
-import { css, useTheme } from '@emotion/react';
+import { css } from '@emotion/react';
 import Gage from '../components/Gage';
 import BackButton from '../components/BackButton';
 import { Button } from '../components/Button';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Calendar from '../components/CalendarForLender';
 import Here from '../assets/Here.svg';
 import { span, addressStyle, moneyTitle } from '../components/post';
-import {
-  useRecoilState,
-  useRecoilValue,
-  useResetRecoilState,
-  useSetRecoilState,
-} from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
   endDate,
   isSelectStart,

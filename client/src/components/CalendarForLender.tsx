@@ -145,7 +145,6 @@ interface AdateProps {
 
 function Adate(props: AdateProps) {
   const { date, idx, width, year, month } = props;
-  const [isSelect, setIsSelect] = useState(false);
   const [totalRentalDates, setTotalRentalDates] = useRecoilState(selectDate);
   const isSelectStartState = useRecoilValue(isSelectStart);
   const [start, setStart] = useRecoilState(startDate);
