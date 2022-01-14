@@ -422,17 +422,17 @@ export const selectDate = atom<string[]>({
 });
 
 //?주소 선택용 전역 상태
-
+//? 주소 선택
 export const selectAddress = atom<string>({
   key: 'selectAddress',
   default: '',
 });
-
+//? 주소 목록
 export const searchAddress = atom<string[]>({
   key: 'searchAddress',
   default: [],
 });
-
+//? 주소 목록창
 export const showAddressList = atom({
   key: 'showAddressList',
   default: false,

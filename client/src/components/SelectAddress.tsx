@@ -31,14 +31,14 @@ interface Style {
 }
 
 export default function SelectAddressList({ width }: Style) {
-  const setSelectAdress = useSetRecoilState(selectAddress);
-  const setSerchAdress = useSetRecoilState(searchAddress);
-  const setShowAdress = useSetRecoilState(showAddressList);
+  const setSelectAddress = useSetRecoilState(selectAddress);
+  const setSearchAddress = useSetRecoilState(searchAddress);
+  const setShowAddress = useSetRecoilState(showAddressList);
 
   const selectAddressHandler = (e: any) => {
-    setSelectAdress(e.target.textContent);
-    setSerchAdress([]);
-    setShowAdress(false);
+    setSelectAddress(e.target.textContent);
+    setSearchAddress([]);
+    setShowAddress(false);
   };
 
   const addressList = useRecoilValue(searchAddress);
@@ -52,12 +52,7 @@ export default function SelectAddressList({ width }: Style) {
       ]}
     >
       {addressList.length > 0 ? null : (
-        <div
-          css={fontSize14}
-          onClick={() => {
-            setShowAdress(false);
-          }}
-        >
+        <div css={fontSize14} onClick={() => setShowAddress(false)}>
           검색 결과가 없습니다.
         </div>
       )}
