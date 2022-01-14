@@ -269,6 +269,7 @@ function DetailView({ postId }: propsType) {
         >
           <div>{title}</div>
           <LikeSymbol
+            postId={1} //! 추가해야하는 props
             isFill={false}
             count={14}
             fontSize={18}
