@@ -11,6 +11,7 @@ import BorrowList from './pages/Lists/BorrowList';
 import LendList from './pages/Lists/LendList';
 import LikeList from './pages/Lists/LikeList';
 import ResistList from './pages/Lists/ResistList';
+import Chat from './pages/Lists/Chat';
 import KakaoLogin from './components/KakaoLogin';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         <Route path="/lists/lendlist" element={<LendList />} />
         <Route path="/lists/likelist" element={<LikeList />} />
         <Route path="/lists/resistlist" element={<ResistList />} />
+        <Route path="/lists/Chat" element={<Chat />} />
         <Route path="/oauth/kakao/callback" element={<KakaoLogin />} />
       </Routes>
       <Footer />
