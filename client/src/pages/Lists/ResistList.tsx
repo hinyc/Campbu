@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, rem, flex, textDecorationNone } from '../../common';
+import { color, rem, flex, host } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Button } from '../../components/Button';
 import emptyWriting from '../../assets/pictures/emptyWriting.svg';
@@ -10,7 +10,8 @@ import { container, section, message } from './tab';
 import Product from '../../components/Product';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { resists, UserPost } from '../../Atom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const img = css`
   margin-top: ${rem(21)};
@@ -21,8 +22,19 @@ interface Resists {
 }
 
 function ResistList() {
-  const resistLists = useRecoilValue<Resists>(resists);
+  const [resistLists, setResistLists] = useRecoilState<Resists>(resists);
   const [modalShow, setModalShow] = useState(false);
+
+  // useEffect(() => {
+  //   axios
+  //     .get(`${host}/userinfo/product/post`)
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       setResistLists(res.data);
+  //     })
+  //     .catch((err) => console.error(err));
+  // });
+
   return (
     <>
       <ListTab />
