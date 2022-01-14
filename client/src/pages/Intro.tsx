@@ -23,6 +23,7 @@ import {
   showAddressList,
   showAlertModal,
   searchAddress,
+  originalPosts,
 } from '../Atom';
 import axios from 'axios';
 import { Post, Posts } from './Main';
@@ -81,6 +82,7 @@ if (code) {
 function Intro() {
   const navigation = useNavigate();
   const searchAddressList = useSetRecoilState<Posts>(posts);
+  const setMainSearch = useSetRecoilState<Posts>(originalPosts);
   const [showModal, setShowModal] = useRecoilState(showAlertModal);
   const [searchValue, setSearchValue] = useRecoilState(selectAddress);
   const setSearchAddress = useSetRecoilState(searchAddress);
@@ -99,52 +101,8 @@ function Intro() {
           .get(`${host}/product/address/${searchValue}`)
           .then((res) => {
             if (res.status === 200) {
-              console.log(res.data);
-              searchAddressList({
-                // TODO: 검색 결과를 여기에 추가
-                posts: [
-                  {
-                    id: 1,
-                    category: 'Tent',
-                    deposit: 30000,
-                    rental_fee: 25000,
-                    unavailable_dates: [
-                      '2021-12-20',
-                      '2021-12-21',
-                      '2021-12-22',
-                    ],
-                    title: '테스트테스트1',
-                    content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
-                    longitude: 126.99597295767953,
-                    latitude: 35.97664845766847,
-                    address: '서울특별시 동작구 신대방동',
-                    img_urls:
-                      'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
-                    users_id: 1,
-                    likes_count: 15,
-                  },
-                  {
-                    id: 1,
-                    category: 'Chair',
-                    deposit: 30000,
-                    rental_fee: 25000,
-                    unavailable_dates: [
-                      '2021-12-20',
-                      '2021-12-21',
-                      '2021-12-22',
-                    ],
-                    title: '테스트테스트2',
-                    content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
-                    longitude: 126.99597295767953,
-                    latitude: 35.97664845766847,
-                    address: '서울특별시 동작구 신대방동',
-                    img_urls:
-                      'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
-                    users_id: 1,
-                    likes_count: 15,
-                  },
-                ],
-              });
+              searchAddressList(res.data);
+              setMainSearch(res.data);
               navigation('/main');
             }
           })
