@@ -26,7 +26,7 @@ const heart = css`
 `;
 interface LikeProps {
   isFill: boolean;
-  count: number;
+  count?: number;
   width?: number | undefined;
   height?: number | undefined;
   fontSize?: number | undefined;
@@ -73,19 +73,11 @@ function LikeSymbol(props: LikeProps) {
       // onClick={onHeartClick}
     >
       <button css={heart}>
-        {fillHeart ? (
-          <img
-            width={fontSize ? fontSize * 0.9 : 14}
-            src={FillHeart}
-            alt="fill heart"
-          />
-        ) : (
-          <img
-            width={fontSize ? fontSize * 0.9 : 14}
-            src={EmptyHeart}
-            alt="empty heart"
-          />
-        )}
+        <img
+          width={fontSize ? fontSize * 0.9 : 14}
+          src={fillHeart ? FillHeart : EmptyHeart}
+          alt="fill heart"
+        />
       </button>
       <span>{countHeart}</span>
     </div>

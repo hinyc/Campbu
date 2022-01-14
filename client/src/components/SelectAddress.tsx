@@ -5,21 +5,19 @@ import { searchAddress, selectAddress, showAddressList } from '../Atom';
 import { color, rem, shadow } from '../common';
 
 const addressListStyle = css`
-  width: ${rem(372)};
   background-color: ${color.white};
   box-shadow: ${shadow};
   border-radius: 0.3125rem;
-  /* border: 1px solid ${color.border}; */
-  padding: 0.75rem;
+  padding: 0.35rem 0;
   margin-top: 0.3rem;
 `;
 
 const contentStyle = css`
   font-size: 0.875rem;
-  margin: 0.1875rem 0;
+  padding: 0.7rem 0.75rem;
   transition: 0.1s;
   :hover {
-    background-color: ${color.border};
+    background-color: #f0f0f0;
     cursor: pointer;
   }
 `;
@@ -28,27 +26,33 @@ const fontSize14 = css`
   font-size: 0.875rem;
 `;
 
-export default function SelectAdressList() {
-  const setSelectAdress = useSetRecoilState(selectAddress);
-  const setSerchAdress = useSetRecoilState(searchAddress);
-  const setShowAdress = useSetRecoilState(showAddressList);
+interface Style {
+  width?: number;
+}
+
+export default function SelectAddressList({ width }: Style) {
+  const setSelectAddress = useSetRecoilState(selectAddress);
+  const setSearchAddress = useSetRecoilState(searchAddress);
+  const setShowAddress = useSetRecoilState(showAddressList);
 
   const selectAddressHandler = (e: any) => {
-    setSelectAdress(e.target.textContent);
-    setSerchAdress([]);
-    setShowAdress(false);
+    setSelectAddress(e.target.textContent);
+    setSearchAddress([]);
+    setShowAddress(false);
   };
 
   const addressList = useRecoilValue(searchAddress);
   return (
-    <div css={addressListStyle}>
+    <div
+      css={[
+        addressListStyle,
+        css`
+          width: ${width ? rem(width) : rem(372)};
+        `,
+      ]}
+    >
       {addressList.length > 0 ? null : (
-        <div
-          css={fontSize14}
-          onClick={() => {
-            setShowAdress(false);
-          }}
-        >
+        <div css={fontSize14} onClick={() => setShowAddress(false)}>
           검색 결과가 없습니다.
         </div>
       )}

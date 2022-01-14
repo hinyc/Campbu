@@ -20,7 +20,15 @@ export default {
       const reservationInfo = await createQueryBuilder('reservation')
         .leftJoinAndSelect('reservation.posts_id', 'posts')
         .where('reservation.users_id = :users_id', { users_id: userInfo.id })
-        .getMany();
+        .getRawMany()
+        .then((res) => {
+          res.map((el) => {
+            el.reservation_reservation_dates =
+              el.reservation_reservation_dates.split(',');
+            el.posts_unavailable_dates = el.posts_unavailable_dates.split(',');
+          });
+          return res;
+        });
 
       return res.status(200).json({ borrow: reservationInfo });
     }
@@ -39,7 +47,15 @@ export default {
       const postsInfo = await createQueryBuilder('reservation')
         .leftJoinAndSelect('reservation.posts_id', 'posts')
         .where('posts.users_id = :users_id', { users_id: userInfo.id })
-        .getMany();
+        .getRawMany()
+        .then((res) => {
+          res.map((el) => {
+            el.reservation_reservation_dates =
+              el.reservation_reservation_dates.split(',');
+            el.posts_unavailable_dates = el.posts_unavailable_dates.split(',');
+          });
+          return res;
+        });
 
       return res.status(200).json({ lend: postsInfo });
     }
@@ -63,7 +79,7 @@ export default {
         .where('likes.users_id = :users_id', { users_id: userInfo.id })
         .getRawMany();
 
-      const postsInfo = await Promise.all(
+      const postInfo = await Promise.all(
         likesInfo.map(async (el) => {
           return await postsRepository
             .createQueryBuilder('post')
@@ -72,7 +88,7 @@ export default {
             .getMany();
         }),
       );
-      return res.status(200).json({ posts: postsInfo });
+      return res.status(200).json({ like: postInfo.flat() });
     }
   },
   post: async (req: Request, res: Response) => {
@@ -87,9 +103,11 @@ export default {
     if (!userInfo) {
       return res.status(401).json({ message: 'Unauthorized User' });
     } else {
-      const postInfo = await postsRepository.find({ users_id: userInfo });
-
-      return res.status(200).json({ posts: postInfo });
+      const postInfo = await postsRepository
+        .createQueryBuilder('post')
+        .where('post.users_id = :id', { id: userInfo.id })
+        .getMany();
+      return res.status(200).json({ post: postInfo });
     }
   },
 };

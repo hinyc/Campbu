@@ -7,7 +7,7 @@ import {
   flexVertical,
   flexBetween,
   rem,
-  adressAPI,
+  addressAPI,
   relative,
   hidden,
   config,
@@ -28,7 +28,7 @@ import {
   imgFile,
 } from '../Atom';
 import axios from 'axios';
-import SelectAdressList from '../components/SelectAdress';
+import SelectAddressList from '../components/SelectAddress';
 
 const fixAddressList = css`
   position: absolute;
@@ -232,7 +232,7 @@ export const Writing = () => {
     if (address.length > 0) {
       axios
         .get(
-          `https://www.juso.go.kr/addrlink/addrLinkApi.do?currentPage=1&countPerPage=50&keyword=${address}&confmKey=${adressAPI}&resultType=json`,
+          `https://www.juso.go.kr/addrlink/addrLinkApi.do?currentPage=1&countPerPage=50&keyword=${address}&confmKey=${addressAPI}&resultType=json`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -346,7 +346,7 @@ export const Writing = () => {
               />
             </div>
             <div css={fixAddressList}>
-              {showAdress ? <SelectAdressList /> : null}
+              {showAdress ? <SelectAddressList /> : null}
             </div>
             <div
               css={[

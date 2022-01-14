@@ -1,8 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import Pencil from '../assets/Pencil.svg';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { rem, color, shadow } from '../common';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { isLogin, showLoginModal } from '../Atom';
 
 const buttonStyle = css`
   width: ${rem(70)};
@@ -23,11 +25,19 @@ const buttonStyle = css`
 `;
 
 function WritingButton() {
+  const login = useRecoilValue(isLogin);
+  const setShowLoginModal = useSetRecoilState(showLoginModal);
+  const navigation = useNavigate();
+  const goWritingPage = () => {
+    if (login) {
+      navigation('/writing');
+    } else {
+      setShowLoginModal(true);
+    }
+  };
   return (
-    <button css={buttonStyle}>
-      <Link to="/writing">
-        <img src={Pencil} alt="writing button" />
-      </Link>
+    <button css={buttonStyle} onClick={goWritingPage}>
+      <img src={Pencil} alt="writing button" />
     </button>
   );
 }

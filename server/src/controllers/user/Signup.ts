@@ -32,19 +32,6 @@ export default {
       }
     }
   },
-  nickname: async (req: Request, res: Response) => {
-    console.log(req.query);
-    const nickname: string = req.params.nickname;
-    const usersRepository = getRepository(users);
-
-    const userInfo = await usersRepository.findOne({ nickname: nickname });
-
-    if (userInfo) {
-      return res.status(409).json({ message: 'Nickname already exists' });
-    } else {
-      return res.status(200).json({ message: 'Avaliable Nickname' });
-    }
-  },
   post: async (req: Request, res: Response) => {
     interface signupType {
       email: string;

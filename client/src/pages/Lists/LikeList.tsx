@@ -9,27 +9,43 @@ import { link, visit } from './tab';
 import { container, section, message } from './tab';
 import Product from '../../components/Product';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { likes, UserPost } from '../../Atom';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { host } from '../../common';
+import { UserPost } from './interface';
 
 const img = css`
   margin-top: ${rem(51)};
 `;
 
 interface Likes {
-  posts: UserPost[];
-  likes: {
-    id: number;
-    users_id: number;
-    posts_id: number;
-  }[];
+  like: UserPost[];
 }
 
+const likes = {
+  like: [
+    {
+      post_id: 2,
+      post_category: '의자/테이블',
+      post_deposit: 20000,
+      post_rental_fee: 40000,
+      post_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
+      post_title: '튼튼한 의자 빌려드려요',
+      post_content: '올라가도 안 부서집니다.',
+      post_longitude: '127.044484819305',
+      post_latitude: '37.2244311943994',
+      post_address: '화성시 기산동',
+      post_img_urls:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_knddBxuSckGT4LIVnc0SR-j4n9om5-5v5Q&usqp=CAU',
+      post_created_at: '2022-01-11T06:14:35.305Z',
+      post_updated_at: '2022-01-11T06:14:35.305Z',
+      post_users_id: 1,
+    },
+  ],
+};
 function LikeList() {
-  const [likeLists, setLikeLists] = useRecoilState<Likes>(likes);
+  const [likeLists, setLikeLists] = useState<Likes>(likes);
   const [modalShow, setModalShow] = useState(false);
 
   // useEffect(() => {
@@ -60,7 +76,7 @@ function LikeList() {
         </Link>
       </nav>
       <div css={container}>
-        {likeLists['posts'].length === 0 ? (
+        {likeLists['like'].length === 0 ? (
           <>
             <img src={emptyHeart} alt="broken heart" css={img} />
             <p css={message}>
@@ -81,16 +97,16 @@ function LikeList() {
           </>
         ) : (
           <section css={section}>
-            {likeLists['posts'].map((likeList: UserPost) => (
+            {likeLists['like'].map((likeList: UserPost) => (
               <Product
-                count={likeList.likes_count}
+                count={99}
                 isFill={true}
-                postId={likeList.id}
-                img_urls={likeList.img_urls}
-                address={likeList.address}
-                title={likeList.title}
-                deposit={likeList.deposit}
-                rental_fee={likeList.rental_fee}
+                postId={likeList.post_id}
+                img_urls={likeList.post_img_urls}
+                address={likeList.post_address}
+                title={likeList.post_title}
+                deposit={likeList.post_deposit}
+                rental_fee={likeList.post_rental_fee}
               />
             ))}
           </section>
