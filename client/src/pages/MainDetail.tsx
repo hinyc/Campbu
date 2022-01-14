@@ -2,6 +2,7 @@
 import {
   calCampbuIndicator,
   color,
+  config,
   flexBetween,
   flexVertical,
   host,
@@ -101,9 +102,9 @@ function DetailView({ postId }: propsType) {
   const [deposit, setDeposit] = useState(0);
   const [rentalFee, setRentalFee] = useState(0);
   const setUnableDates = useSetRecoilState(unableDate);
-  const start = useRecoilValue(startDate);
-  const end = useRecoilValue(endDate);
-  const totalRentalDates = useRecoilValue(selectDate);
+  const [start, setStart] = useRecoilState(startDate);
+  const [end, setEnd] = useRecoilState(endDate);
+  const [totalRentalDates, setTotalRentalDates] = useRecoilState(selectDate);
   const [isSelectStartState, setIsSelectStartState] =
     useRecoilState(isSelectStart);
   const [isShowCalendar, setIsShowCalendar] = useRecoilState(showCalendar);
@@ -120,8 +121,8 @@ function DetailView({ postId }: propsType) {
         'Content-Type': 'application/json',
       },
     };
-
-    // axios.get(API, config);
+    console.log(`${API} 로 요청하고 스테이트 변경 지금은 더미데이터`);
+    // axios.get(API, config).then(res=> const postinfo=res.data);
 
     //요청 결과 예시 데이터
     let dummydata = {
@@ -188,9 +189,10 @@ function DetailView({ postId }: propsType) {
       ],
     };
 
+    const postInfo = dummydata;
     let tempReviews: reviewsType = [...reviews];
 
-    dummydata.reviews.forEach((el: any) => {
+    postInfo.reviews.forEach((el: any) => {
       tempReviews[el.reviews_id - 1] = {
         ...tempReviews[el.reviews_id - 1],
         count: el.count,
@@ -199,13 +201,17 @@ function DetailView({ postId }: propsType) {
 
     console.log(1);
     setGetReviews(tempReviews);
-    setDeposit(dummydata.posts[0].deposit);
-    setRentalFee(dummydata.posts[0].rental_fee);
-    setUnableDates(dummydata.posts[0].unavailable_dates);
-    setTitle(dummydata.posts[0].title);
-    setContent(dummydata.posts[0].content);
-    setImgUrls(dummydata.posts[0].img_urls);
-    setAddress(dummydata.posts[0].address);
+    setDeposit(postInfo.posts[0].deposit);
+    setRentalFee(postInfo.posts[0].rental_fee);
+    setUnableDates(postInfo.posts[0].unavailable_dates);
+    setTitle(postInfo.posts[0].title);
+    setContent(postInfo.posts[0].content);
+    setImgUrls(postInfo.posts[0].img_urls);
+    setAddress(postInfo.posts[0].address);
+    // setStart('');
+    // setEnd('');
+    // setTotalRentalDates([]);
+    // setIsShowCalendar(false);
   }, []);
 
   const campbuIndicator = calCampbuIndicator(getReviews);
@@ -218,6 +224,21 @@ function DetailView({ postId }: propsType) {
     setIsSelectStartState(false);
     setIsShowCalendar(true);
   };
+
+  const reservationHandler = () => {
+    const API = `${host}/reservation`;
+    const data = {
+      posts_id: postId,
+      reservation_dates: totalRentalDates,
+    };
+    if (start && end) {
+      console.log('data', data);
+      axios.post(API, data, config).catch((err) => console.log(err));
+    } else {
+      console.log('대여일,반납일을 선택하세요');
+    }
+  };
+
   return (
     <div css={flexVertical}>
       <div css={flexVertical}>
@@ -434,18 +455,22 @@ function DetailView({ postId }: propsType) {
             </div>
             <div css={[flexBetween, moneyContent]}>
               <span>보증금 </span>
-              <span>{`${deposit} 원`}</span>
+              <span>{`${deposit.toLocaleString('ko-KR')} 원`}</span>
             </div>
             <div css={[flexBetween, moneyContent]}>
               <span>대여비 </span>
 
               {totalRentalDates.length > 0 ? (
                 <>
-                  <span>{`${rentalFee} × ${totalRentalDates.length}일`}</span>
-                  <span>{` ${rentalFee * totalRentalDates.length} 원`}</span>
+                  <span>{`${rentalFee.toLocaleString('ko-KR')} × ${
+                    totalRentalDates.length
+                  }일`}</span>
+                  <span>{` ${(
+                    rentalFee * totalRentalDates.length
+                  ).toLocaleString('ko-KR')} 원`}</span>
                 </>
               ) : (
-                `${rentalFee} 원`
+                `${rentalFee.toLocaleString('ko-KR')} 원`
               )}
             </div>
             <div
@@ -460,10 +485,10 @@ function DetailView({ postId }: propsType) {
               ]}
             >
               <span>총 합계 </span>
-              <span>{` ${
+              <span>{` ${(
                 rentalFee * (totalRentalDates ? totalRentalDates.length : 1) +
                 deposit
-              } 원`}</span>
+              ).toLocaleString('ko-KR')} 원`}</span>
             </div>
             <Button
               text="예약하기"
@@ -474,6 +499,7 @@ function DetailView({ postId }: propsType) {
               border="none"
               size={rem(14)}
               margin={`${rem(10)} 0`}
+              onClick={reservationHandler}
             />
           </div>
         </div>
