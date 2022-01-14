@@ -21,6 +21,8 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Navigate, useNavigate } from 'react-router-dom';
 import Calendar from '../components/CalendarForLender';
+import Here from '../assets/Here.svg';
+import { span, addressStyle, moneyTitle } from '../components/post';
 import {
   useRecoilState,
   useRecoilValue,
@@ -30,6 +32,7 @@ import {
 import {
   endDate,
   isSelectStart,
+  selectDate,
   showCalendar,
   startDate,
   unableDate,
@@ -63,7 +66,7 @@ const feeView = css`
   margin-top: ${rem(50)};
 `;
 
-const selectDate = css`
+const selectDateStyle = css`
   width: ${rem(115)};
   height: ${rem(44)};
   justify-content: space-between;
@@ -89,10 +92,6 @@ const fontSize40 = css`
   color: ${color.border};
 `;
 
-const rightLine = css`
-  border-right: 1px solid ${color.border};
-`;
-
 interface propsType {
   postId?: number;
 }
@@ -104,12 +103,14 @@ function DetailView({ postId }: propsType) {
   const setUnableDates = useSetRecoilState(unableDate);
   const start = useRecoilValue(startDate);
   const end = useRecoilValue(endDate);
-  const isSelectStartState = useSetRecoilState(isSelectStart);
+  const totalRentalDates = useRecoilValue(selectDate);
+  const [isSelectStartState, setIsSelectStartState] =
+    useRecoilState(isSelectStart);
   const [isShowCalendar, setIsShowCalendar] = useRecoilState(showCalendar);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [imgUrls, setImgUrls] = useState<any>();
-  const [rentalDates, setRentalDates] = useState<string[]>();
+  const [address, setAddress] = useState('');
   const [getReviews, setGetReviews] = useState<reviewsType>([]);
 
   useEffect(() => {
@@ -131,12 +132,12 @@ function DetailView({ postId }: propsType) {
           deposit: 30000,
           rental_fee: 20000,
           unavailable_dates: [
-            '2021-12-20',
-            '2021-12-21',
-            '2021-12-22',
-            '2022-1-23',
-            '2022-1-15',
-            '2022-1-1',
+            '2021.12.20',
+            '2021.12.21',
+            '2021.12.22',
+            '2022.01.23',
+            '2022.01.15',
+            '2022.01.01',
           ],
           title: '3~4인용 텐트 빌려드려요',
           content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
@@ -186,9 +187,10 @@ function DetailView({ postId }: propsType) {
         },
       ],
     };
+
     let tempReviews: reviewsType = [...reviews];
 
-    dummydata.reviews.forEach((el) => {
+    dummydata.reviews.forEach((el: any) => {
       tempReviews[el.reviews_id - 1] = {
         ...tempReviews[el.reviews_id - 1],
         count: el.count,
@@ -203,16 +205,17 @@ function DetailView({ postId }: propsType) {
     setTitle(dummydata.posts[0].title);
     setContent(dummydata.posts[0].content);
     setImgUrls(dummydata.posts[0].img_urls);
+    setAddress(dummydata.posts[0].address);
   }, []);
 
   const campbuIndicator = calCampbuIndicator(getReviews);
 
   const startDateHandler = () => {
-    isSelectStartState(true);
+    setIsSelectStartState(true);
     setIsShowCalendar(true);
   };
   const endDateHandler = () => {
-    isSelectStartState(false);
+    setIsSelectStartState(false);
     setIsShowCalendar(true);
   };
   return (
@@ -366,7 +369,10 @@ function DetailView({ postId }: propsType) {
               깐부지수
             </div>
           </div>
-
+          <span css={[span, moneyTitle, addressStyle]}>
+            <img src={Here} alt="위치" style={{ marginRight: '4px' }} />
+            {address}
+          </span>
           <div css={[flexVertical, feeView]}>
             <div
               css={[
@@ -390,13 +396,37 @@ function DetailView({ postId }: propsType) {
               ]}
             >
               <div
-                css={[flexVertical, selectDate, rightLine]}
+                css={[
+                  flexVertical,
+                  selectDateStyle,
+                  css`
+                    border-right: 1px solid ${color.border};
+                    background-color: ${isShowCalendar
+                      ? isSelectStartState
+                        ? color.border
+                        : null
+                      : null};
+                  `,
+                ]}
                 onClick={startDateHandler}
               >
                 <div css={fontSize9}>대여일</div>
                 <div>{start}</div>
               </div>
-              <div css={[flexVertical, selectDate]} onClick={endDateHandler}>
+              <div
+                css={[
+                  flexVertical,
+                  selectDateStyle,
+                  css`
+                    background-color: ${isShowCalendar
+                      ? isSelectStartState
+                        ? null
+                        : color.border
+                      : null};
+                  `,
+                ]}
+                onClick={endDateHandler}
+              >
                 <div css={fontSize9}>반납일</div>
                 <div>{end}</div>
               </div>
@@ -409,10 +439,10 @@ function DetailView({ postId }: propsType) {
             <div css={[flexBetween, moneyContent]}>
               <span>대여비 </span>
 
-              {rentalDates ? (
+              {totalRentalDates.length > 0 ? (
                 <>
-                  <span>{`${rentalFee} × ${rentalDates.length}일`}</span>
-                  <span>{` ${rentalFee * rentalDates.length} 원`}</span>
+                  <span>{`${rentalFee} × ${totalRentalDates.length}일`}</span>
+                  <span>{` ${rentalFee * totalRentalDates.length} 원`}</span>
                 </>
               ) : (
                 `${rentalFee} 원`
@@ -431,7 +461,8 @@ function DetailView({ postId }: propsType) {
             >
               <span>총 합계 </span>
               <span>{` ${
-                rentalFee * (rentalDates ? rentalDates.length : 1) + deposit
+                rentalFee * (totalRentalDates ? totalRentalDates.length : 1) +
+                deposit
               } 원`}</span>
             </div>
             <Button
