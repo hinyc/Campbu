@@ -1,27 +1,31 @@
 import {
   Entity,
   PrimaryGeneratedColumn,
-  Column,
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany,
+  Column,
 } from 'typeorm';
 import { users } from './users';
-import { posts } from './posts';
-import { chats } from './chats';
+import { reservation } from './reservation';
 
 @Entity()
-export class reservation {
+export class chats {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('simple-array')
-  reservation_dates: string[];
+  @Column()
+  recipient_nickname: string;
+
+  @Column({ nullable: true })
+  recipient_img: string;
 
   @Column()
-  reservation_status: number;
+  sender_nickname: string;
+
+  @Column('simple-array')
+  chat: object[];
 
   @CreateDateColumn()
   created_at: Date;
@@ -29,24 +33,19 @@ export class reservation {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne((type) => users, (users) => users.reservation, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne((type) => users, (users) => users.chats, { onDelete: 'CASCADE' })
   @JoinColumn({
     name: 'users_id',
     referencedColumnName: 'id',
   })
   users_id: users;
 
-  @ManyToOne((type) => posts, (posts) => posts.reservation, {
+  @ManyToOne((type) => reservation, (reservation) => reservation.chats, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({
-    name: 'posts_id',
+    name: 'reservation_id',
     referencedColumnName: 'id',
   })
-  posts_id: posts;
-
-  @OneToMany((type) => chats, (chats) => chats.reservation_id)
-  chats: chats[];
+  reservation_id: reservation;
 }

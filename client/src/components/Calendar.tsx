@@ -87,27 +87,31 @@ function Adate(props: AdateProps) {
   const [isSelect, setIsSelect] = useState(false);
   const [setDates, setSetDates] = useRecoilState(selectDate);
 
-  let thisYear = year;
-  let thisMonth = month;
+  let thisYear = String(year);
+  let thisMonth = String(month);
+  let thisDate = String(date);
   let isWeekend = 'black';
 
   if (idx < 6 && date - 10 > 0) {
     const preMonth = new Date(year, month - 1, 0);
-    thisYear = preMonth.getFullYear();
-    thisMonth = preMonth.getMonth() + 1;
+    thisYear = String(preMonth.getFullYear());
+    thisMonth = String(preMonth.getMonth() + 1);
   }
 
   if (idx > 20 && 10 - date > 0) {
     const preMonth = new Date(year, month + 1, 0);
-    thisYear = preMonth.getFullYear();
-    thisMonth = preMonth.getMonth() + 1;
+    thisYear = String(preMonth.getFullYear());
+    thisMonth = String(preMonth.getMonth() + 1);
   }
+
+  thisMonth = thisMonth.length === 1 ? 0 + thisMonth : thisMonth;
+  thisDate = thisDate.length === 1 ? 0 + thisDate : thisDate;
 
   const selectDateHandler = () => {
     setIsSelect(!isSelect);
 
     const alreadySelected = setDates.indexOf(
-      `${thisYear}.${thisMonth}.${date}`,
+      `${thisYear}.${thisMonth}.${thisDate}`,
     );
 
     if (isSelect) {
@@ -116,7 +120,7 @@ function Adate(props: AdateProps) {
         ...setDates.slice(alreadySelected + 1),
       ]);
     } else {
-      setSetDates([...setDates, `${thisYear}.${thisMonth}.${date}`]);
+      setSetDates([...setDates, `${thisYear}.${thisMonth}.${thisDate}`]);
     }
   };
   return (

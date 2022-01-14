@@ -48,8 +48,8 @@ export = async (req: Request, res: Response) => {
         return JSON.stringify(res);
       });
 
-    if (!nearbyProduct) {
-      res.status(500).json({ message: 'Server Error' });
+    if (JSON.parse(nearbyProduct).length === 0) {
+      res.status(200).json({ posts: [] });
     } else {
       const nearbyProductId = JSON.parse(nearbyProduct).map(
         (product: object) => {

@@ -43,9 +43,15 @@ function ProfileDropdown() {
   const logout = () => {
     setIsLogin(false);
     axios
+<<<<<<< HEAD
       .get(`${host}/user/logout`, { withCredentials: true })
       .then((res: any) => {
         console.log(res);
+=======
+      .get(`${host}/user/logout`)
+      .then((res: any) => {
+        console.log(res.status);
+>>>>>>> 031f16b9afa1727ad89a06ff3da201e807608ad9
         navigate('/');
       })
       .catch((err) => console.error(err));
@@ -65,6 +71,9 @@ function ProfileDropdown() {
         </Link>
         <Link to="/lists/resistlist" css={textDecorationNone}>
           <li css={li}>내가 쓴 글</li>
+        </Link>
+        <Link to="/lists/Chat" css={textDecorationNone}>
+          <li css={li}>채팅</li>
         </Link>
         <div css={line} />
         <Link to="mypage" css={textDecorationNone}>
