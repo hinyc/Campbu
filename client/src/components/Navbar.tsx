@@ -30,7 +30,6 @@ function Navbar() {
   const [click, setClick] = useState<boolean>(false);
   const login = useRecoilValue(isLogin);
   const [showLogin, setShowLogin] = useRecoilState(showLoginModal);
-
   const showSignup = useRecoilValue(showSignupModal);
   console.log('showLogin', showLogin);
   const onClick = () => {
@@ -72,7 +71,7 @@ function Navbar() {
               alt="logo"
             />
           </Button>
-          {click ? <ProfileDropdown /> : null}
+          {click && <ProfileDropdown />}
         </>
       ) : (
         <Button
