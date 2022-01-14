@@ -156,8 +156,6 @@ const UploadImg = () => {
     setPreViews(preViews.filter((el, idx) => idx !== target));
   };
 
-  console.log(imgfiles);
-  console.log(preViews);
   return (
     <div css={[uploadImgStyle, confirm]}>
       {imgfiles.map((el, idx) => {

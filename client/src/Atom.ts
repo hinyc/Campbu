@@ -178,7 +178,7 @@ export const startDate = atom<string>({
   default: '',
 });
 
-export const endDate = atom<String>({
+export const endDate = atom<string>({
   key: 'end',
   default: '',
 });

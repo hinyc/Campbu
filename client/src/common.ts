@@ -117,3 +117,11 @@ export const calCampbuIndicator = (reviews: reviewsType) => {
       : positive - negative;
   return (100 + cal) / 100;
 };
+
+//axios
+export const config = {
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true,
+};
