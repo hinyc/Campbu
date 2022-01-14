@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { flex, rem, color, relative } from '../../common';
+import { flex, rem, color, relative, host } from '../../common';
 import { container } from './tab';
 import ListTab from '../../components/ListTab';
 import { chat } from '../../Atom';
@@ -10,13 +10,14 @@ import PaperPlane from '../../assets/PaperPlane.svg';
 import { useRecoilValue } from 'recoil';
 import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
+import axios from 'axios';
 
 //! ------------ css -------------------
 const button = css`
   background-color: white;
   border: none;
   position: absolute;
-  right: ${rem(15)};
+  right: ${rem(80)};
   top: ${rem(12)};
   cursor: pointer;
 `;
@@ -71,6 +72,28 @@ interface List {
   posts_id: number;
   reservation_dates: string[];
   reservation_status: number;
+}
+
+interface chatRoom {
+  id: number;
+  recipient_nickname: string;
+  recipient_img: string;
+  sender_nickname: string;
+  chat: object[];
+  created_at: Date;
+  updated_at: Date;
+  reservation_id: {
+    id: number;
+    reservation_dates: string[];
+    reservation_status: number;
+    created_at: Date;
+    updated_at: Date;
+  };
+}
+
+interface chats {
+  nickName: string;
+  message: string;
 }
 
 //! ------------ infos -------------------
@@ -133,30 +156,49 @@ const chatInfos = [
 function Chat() {
   const chatPost = useRecoilValue<chatList>(chat);
   const [chatMessage, setChatMessage] = useState<string>('');
-  const [chatRoomName, setChatRoomName] = useState<string>('');
-  const [chatting, setChatting] = useState<string[]>(['']);
+  const [chatRoomId, setChatRoomId] = useState<number>();
+  const [chatting, setChatting] = useState<object[]>([]);
+  const [chatRooms, setChatRooms] = useState([]);
+  const [userNickName, setUserNickName] = useState<string>('');
   const [buttonClick, setButtonClick] = useState<boolean>(false);
   const [socket, setSocket] = useState<any>();
   const onButtonClick = () => {
     setButtonClick(true);
   };
 
+  console.log(chatting);
+
+  useEffect(() => {
+    axios
+      .get(`${host}/chatRoom`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      })
+      .then((res: any) => {
+        setChatRooms(res.data.chat);
+        setUserNickName(res.data.nickName);
+      });
+  }, []);
+
   useEffect((): any => {
     const newSocket = io('http://localhost:5050', {
-      query: { chatRoomName },
+      query: { chatRoomId },
     });
     setSocket(newSocket);
 
     return () => newSocket.close();
-  }, [chatRoomName]);
+  }, [chatRoomId]);
 
   useEffect(() => {
     if (socket == null) return;
 
     socket.on('receive-message', (message: any) => {
-      console.log(message);
+      setChatting([...chatting, message]);
     });
-  }, [socket]);
+    return () => socket.off('receive-message');
+  });
 
   const handleOnChange = (e: any) => {
     setChatMessage(e.target.value);
@@ -164,18 +206,18 @@ function Chat() {
 
   const handleKeyPress = (e: any) => {
     if (e.key === 'Enter') {
-      socket.emit('send-message', { chatRoomName, chatMessage });
+      socket.emit('send-message', { chatRoomId, chatMessage, userNickName });
       setChatMessage('');
     }
   };
 
   const handleOnClick = (e: any) => {
-    socket.emit('send-message', { chatRoomName, chatMessage });
+    socket.emit('send-message', { chatRoomId, chatMessage, userNickName });
     setChatMessage('');
   };
 
-  const handleChatRoomClick = (e: any, nickname: string) => {
-    setChatRoomName(nickname);
+  const handleChatRoomClick = (e: any, id: number) => {
+    setChatRoomId(id);
   };
 
   return (
@@ -194,32 +236,31 @@ function Chat() {
           ]}
         >
           <div css={message}>메시지</div>
-          {chatInfos.map((chatInfo) => (
+          {chatRooms.map((chatRoom: chatRoom) => (
             <div
               css={[
                 css`
-                  width: ${rem(320)};
+                  width: ${rem(318)};
                   height: ${rem(90)};
                   display: flex;
                   :hover {
                     background-color: #f0f0f0;
                   }
-                  background-color: ${chatInfo.recipient_nickname ===
-                  chatRoomName
+                  background-color: ${chatRoom.id === chatRoomId
                     ? '#f0f0f0'
                     : '#ffffff'};
                 `,
               ]}
               onClick={(e) => {
-                handleChatRoomClick(e, chatInfo.recipient_nickname);
+                handleChatRoomClick(e, chatRoom.id);
               }}
-              key={chatInfo.id}
+              key={chatRoom.id}
             >
               <div
                 css={[
                   imgStyle,
                   css`
-                    background-image: ${`url(${chatInfo.recipient_img})`};
+                    background-image: ${`url(${chatRoom.recipient_img})`};
                   `,
                 ]}
               ></div>
@@ -245,7 +286,9 @@ function Chat() {
                     `,
                   ]}
                 >
-                  {chatInfo.recipient_nickname}
+                  {chatRoom.recipient_nickname === userNickName
+                    ? chatRoom.sender_nickname
+                    : chatRoom.recipient_nickname}
                 </div>
                 <div
                   css={[
@@ -256,9 +299,9 @@ function Chat() {
                       margin-top: ${rem(-10)};
                     `,
                   ]}
-                >{`${chatInfo.reservation.reservation_dates[0]}~${
-                  chatInfo.reservation.reservation_dates[
-                    chatInfo.reservation.reservation_dates.length - 1
+                >{`${chatRoom.reservation_id.reservation_dates[0]}~${
+                  chatRoom.reservation_id.reservation_dates[
+                    chatRoom.reservation_id.reservation_dates.length - 1
                   ]
                 }`}</div>
               </div>
@@ -271,7 +314,6 @@ function Chat() {
               width: ${rem(640)};
               display: flex;
               flex-direction: column;
-              align-items: center;
               border: ${rem(1)} solid #dedede;
             `,
           ]}
@@ -280,9 +322,93 @@ function Chat() {
             css={[
               css`
                 height: ${rem(450)};
+                overflow: auto;
+                ::-webkit-scrollbar {
+                  display: none;
+                }
               `,
             ]}
-          ></div>
+          >
+            {chatting.map((chats: any) => (
+              <>
+                {chats.sender === userNickName ? (
+                  <div
+                    css={[
+                      flex,
+                      css`
+                        justify-content: right;
+                        margin: ${rem(10)};
+                      `,
+                    ]}
+                  >
+                    <div
+                      css={[
+                        css`
+                          max-width: ${rem(550)};
+                          font-size: ${rem(18)};
+                          margin-right: ${rem(5)};
+                          text-align: right;
+                          background-color: #ed662c;
+                          border-radius: ${rem(5)};
+                          padding: ${rem(2)};
+                          color: #ffffff;
+                        `,
+                      ]}
+                    >
+                      {chats.message}
+                    </div>
+                    <div
+                      css={[
+                        css`
+                          width: ${rem(50)};
+                          height: ${rem(50)};
+                          border: 2px solid ${color.point};
+                          border-radius: 50%;
+                          background-size: cover;
+                        `,
+                      ]}
+                    ></div>
+                  </div>
+                ) : (
+                  <div
+                    css={[
+                      flex,
+                      css`
+                        margin: ${rem(10)};
+                      `,
+                    ]}
+                  >
+                    <div
+                      css={[
+                        css`
+                          width: ${rem(50)};
+                          height: ${rem(50)};
+                          border: 2px solid ${color.point};
+                          border-radius: 50%;
+                          background-size: cover;
+                        `,
+                      ]}
+                    ></div>
+                    <div
+                      css={[
+                        css`
+                          max-width: ${rem(550)};
+                          font-size: ${rem(18)};
+                          margin-left: ${rem(5)};
+                          text-align: left;
+                          border: 1px solid #ed662c;
+                          border-radius: ${rem(5)};
+                          padding: ${rem(2)};
+                        `,
+                      ]}
+                    >
+                      {chats.message}
+                    </div>
+                  </div>
+                )}
+              </>
+            ))}
+          </div>
           <span css={relative}>
             <Input
               type="text"

@@ -10,6 +10,7 @@ import { likes } from './likes';
 import { posts } from './posts';
 import { reservation } from './reservation';
 import { users_reviews } from './users_reviews';
+import { chats } from './chats';
 
 @Entity()
 export class users {
@@ -52,4 +53,7 @@ export class users {
 
   @OneToMany((type) => reservation, (reservation) => reservation.users_id)
   reservation: reservation[];
+
+  @OneToMany((type) => chats, (chats) => chats.users_id)
+  chats: chats[];
 }

@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import router from './routes/index';
 import { createConnection } from 'typeorm';
 import http from 'http';
-import Socket from './controllers/socket/Socket';
+import Socket from './controllers/chats/Socket';
 
 const app = express();
 export const server = http.createServer(app);
@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
-app.use('/socket.io', Socket);
+// app.use('/socket.io', Socket);
 app.use('/', router);
 app.get('/', (req, res) => {
   res.send('Hello code!');
