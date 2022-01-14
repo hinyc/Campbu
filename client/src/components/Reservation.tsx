@@ -26,7 +26,7 @@ interface Props {
   deposit: number;
   rental_fee: number;
   reservation_dates: string[];
-  onButtonClick: any;
+  onButtonClick: () => void;
 }
 
 function Reservation(props: Props) {

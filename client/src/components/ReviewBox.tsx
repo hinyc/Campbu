@@ -9,7 +9,7 @@ const reviewStyle = css`
   background-color: ${color.white};
   width: 16.5625rem;
   height: ${rem(43)};
-  line-height: ${rem(46)};
+  line-height: ${rem(43)};
   color: ${color.mid};
   border: 1px solid ${color.mid};
   border-radius: 0.3125rem;
@@ -35,7 +35,7 @@ interface ReviewContent {
   isBad: boolean;
   isCenterText?: string;
   margin?: string;
-  onClick?: Boolean;
+  onClick?: any;
 }
 
 function ReviewBox(props: ReviewContent) {
@@ -66,13 +66,14 @@ function ReviewBox(props: ReviewContent) {
           font-size: ${fontSize ? rem(fontSize) : null};
           width: ${width ? rem(width) : null};
           height: ${height ? rem(height) : null};
+          line-height: ${height ? rem(height) : null};
           color: ${count
             ? click
               ? color.white
               : isBad
               ? color.deep
               : null
-            : color.border};
+            : color.placeholder};
           border-color: ${count ? (isBad ? color.deep : null) : color.border};
           margin: ${margin ? margin : null};
           background-color: ${click ? (isBad ? color.deep : color.mid) : null};
@@ -123,7 +124,7 @@ function ReviewBox(props: ReviewContent) {
             `,
           ]}
         >
-          -
+          ✔
         </div>
       )}
     </div>
