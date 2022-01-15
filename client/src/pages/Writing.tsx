@@ -7,13 +7,14 @@ import {
   flexVertical,
   flexBetween,
   rem,
-  addressAPI,
   relative,
   hidden,
+  config,
+  host,
 } from '../common';
 import { Button } from '../components/Button';
 import BackButton from '../components/BackButton';
-import Calendar from '../components/Calendar';
+import Calendar from '../components/CalendarForWrightingpage';
 import { useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
@@ -22,7 +23,6 @@ import {
   selectAddress,
   showAddressList,
   preView,
-  formData,
   imgFile,
 } from '../Atom';
 import axios from 'axios';
@@ -131,42 +131,72 @@ const uploadImgStyle = css`
 `;
 
 const UploadImg = () => {
-  const [imgfiles, setFiles] = useRecoilState(imgFile);
-  const [preViews, setPreViews] = useRecoilState(preView);
-  const insertImgHandler = (e: any) => {
-    const target = e.target.files[0];
+  const [imgFiles, setFiles] = useRecoilState(imgFile);
+  const [imageUrls, setImageUrls] = useRecoilState(preView);
 
-    let reader = new FileReader();
+  const insertImgHandler = async (e: any) => {
+    const file = e.target.files[0];
+    // console.log(target);
+    // const preViewUrl = URL.createObjectURL(target);
+    // setImageUrls([...imageUrls, preViewUrl]);
 
-    if (target) {
-      reader.readAsDataURL(target);
-      setFiles([...imgfiles, target]);
-    }
+    // let reader = new FileReader();
 
-    reader.onloadend = () => {
-      const preViewUrl = reader.result;
-      if (preViewUrl) {
-        setPreViews([...preViews, preViewUrl]);
-      }
-    };
+    // if (target) {
+    //   reader.readAsDataURL(target);
+    //   setFiles([...imgFiles, target]);
+    // }
+    // UploadFile(target);
+    // reader.onloadend = () => {
+    //   const preViewUrl = reader.result;
+    //   if (preViewUrl) {
+    //     setImageUrls([...imageUrls, preViewUrl]);
+    //   }
+    // };
+    const geturlAPI = `${host}/newurl`;
+    const { url } = await fetch(geturlAPI).then((res) => res.json());
+    console.log(url);
+
+    await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      body: file,
+    });
+
+    const imageUrl = url.split('?')[0];
+    // console.log(imageUrl);
+    setImageUrls([...imageUrls, imageUrl]);
+    // let url = '';
+    // axios.get(APIurl, config).then((res) => {
+    //   url = res.data.url;
+    //   console.log(url);
+    // });
+    // axios
+    //   .put(url, target, {
+    //     headers: { 'Content-Type': 'multipart/form-data' },
+    //   })
+    //   .then((res) => console.log('res', res));
+    // const url = generateUploadURL();
+    // const url2 = String(url);
+    // console.log(url);
+    // console.log(target);
+    // console.log(url2.split('?')[0]);
   };
+  // console.log(imageUrls);
 
   const deleteImg = (target: number) => {
-    setFiles(imgfiles.filter((el, idx) => idx !== target));
-    setPreViews(preViews.filter((el, idx) => idx !== target));
+    setFiles(imgFiles.filter((el, idx) => idx !== target));
+    setImageUrls(imageUrls.filter((el, idx) => idx !== target));
   };
 
   return (
     <div css={[uploadImgStyle, confirm]}>
-      {imgfiles.map((el, idx) => {
+      {imageUrls.map((el, idx) => {
         return (
           <div key={idx} css={[onLoadImgStyle, relative]}>
-            <img
-              css={imgStyle}
-              draggable="false"
-              src={preViews[idx]}
-              alt={el.name}
-            />
+            <img css={imgStyle} draggable="false" src={el} alt={el} />
             <div css={xStyle} onClick={() => deleteImg(idx)}>
               ×
             </div>
@@ -202,10 +232,9 @@ export const Writing = () => {
   const [address, setAddress] = useRecoilState(selectAddress);
   const setSerchAdress = useSetRecoilState(searchAddress);
   const [showAdress, setShowAdress] = useRecoilState(showAddressList);
-  const [imgUrls, setImgUrls] = useState<string>('');
-  const imgfiles = useRecoilValue(imgFile);
-  const [formDatas, setFormDatas] = useRecoilState(formData);
+  const imgUrls = useRecoilValue(preView);
 
+  const [reqState, setReqState] = useState<string>('ok');
   const category: string[] = [
     '카테고리를 입력하세요',
     '패키지',
@@ -216,6 +245,21 @@ export const Writing = () => {
     '취식용품',
     '기타',
   ];
+
+  interface reqMsgType {
+    [key: string]: string;
+  }
+  const reqMsg: reqMsgType = {
+    ok: '',
+    title: '제목을 입력해주세요',
+    category: '카테고리를 선택해주세요',
+    address: '주소를 선택해주세요',
+    deposit: '보증금을 입력해주세요',
+    rentalFee: '대여비를 입력해주세요',
+    content: '물품에 대한 설명을 작성해주세요',
+    imgUrls: '최소 1장의 사진을 등록해주세요',
+  };
+
   const titleHandler = (e: any) => setTitle(e.target.value);
   const depositHandler = (e: any) => setDeposit(e.target.value);
   const rentalFeeHandler = (e: any) => setRentalFee(e.target.value);
@@ -227,7 +271,7 @@ export const Writing = () => {
     if (address.length > 0) {
       axios
         .get(
-          `https://www.juso.go.kr/addrlink/addrLinkApi.do?currentPage=1&countPerPage=50&keyword=${address}&confmKey=${addressAPI}&resultType=json`,
+          `https://www.juso.go.kr/addrlink/addrLinkApi.do?currentPage=1&countPerPage=50&keyword=${address}&confmKey=${process.env.REACT_APP_ADDRESS_API}&resultType=json`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -256,42 +300,44 @@ export const Writing = () => {
   };
 
   const wrightHandler = () => {
-    interface wrightType {
+    interface postType {
       category: string;
       deposit: number;
       rental_fee: number;
       unavailable_dates: string[];
       title: string;
       content: string;
-      Address?: string;
-      img_urls?: string;
+      address: string;
+      img_urls?: string[];
     }
-    const wrigthDate: wrightType = {
+
+    const data: postType = {
       category: setCategory,
       deposit: Number(deposit),
       rental_fee: Number(rentalFee),
       unavailable_dates: unavailableDates,
       title: title,
       content: content,
-      Address: address,
+      address: address,
       img_urls: imgUrls,
     };
-    console.log(wrigthDate);
 
-    /// 사진전송
-    const fd = new FormData();
-    console.log('!!', imgfiles);
-    Object.values(imgfiles).forEach((file) => fd.append('file', file));
+    if (!title) return setReqState('title');
+    if (!setCategory) return setReqState('category');
+    if (!address) return setReqState('address');
+    if (!deposit) return setReqState('deposit');
+    if (!rentalFee) return setReqState('rentalFee');
+    if (!content) return setReqState('content');
+    if (!imgUrls.length) return setReqState('imgUrls');
 
-    const config = {
-      headers: {
-        'content-type': 'multipart/form-data',
-      },
-
-      // axios.post(API, fd, config)
-    };
-
-    console.log('??', fd);
+    const API = `${host}/post/newpost`;
+    console.log('포스트 등록요청');
+    axios
+      .post(API, data, config)
+      .then((res: any) => {
+        console.log(res.message);
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -309,7 +355,7 @@ export const Writing = () => {
             width={850}
             height={55}
             borderStyle="none none solid none"
-            borderRadius={0}
+            borderRadius={1}
             placeholder="제목을 입력해주세요"
             onChange={titleHandler}
           />
@@ -367,9 +413,9 @@ export const Writing = () => {
                 height={50}
                 borderRadius={5}
                 placeholder="보증금"
-                onChange={rentalFeeHandler}
+                onChange={depositHandler}
                 type="number"
-                value={String(rentalFee)}
+                value={String(deposit)}
               />
               <div
                 css={css`
@@ -402,9 +448,9 @@ export const Writing = () => {
                 height={50}
                 borderRadius={5}
                 placeholder="대여비"
-                onChange={depositHandler}
+                onChange={rentalFeeHandler}
                 type="number"
-                value={String(deposit)}
+                value={String(rentalFee)}
               />
               <div
                 css={css`
@@ -456,6 +502,14 @@ export const Writing = () => {
       >
         <UploadImg />
       </div>
+      <div
+        css={css`
+          height: 1rem;
+          margin: ${rem(10)};
+        `}
+      >
+        {reqMsg[reqState]}
+      </div>
       <div>
         <Button
           text="등록"
@@ -465,7 +519,6 @@ export const Writing = () => {
           color={color.white}
           border="none"
           size={rem(14)}
-          margin={`${rem(30)} 0`}
           onClick={wrightHandler}
         />
       </div>

@@ -10,7 +10,7 @@ export = async (req: Request, res: Response) => {
     category: string;
     deposit: number;
     rental_fee: number;
-    unavailable_dates: string[];
+    unavailable_dates?: string[];
     title: string;
     content: string;
     address: string;
