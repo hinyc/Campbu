@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import { css, keyframes } from '@emotion/react';
 import Product from '../components/Product';
 import WritingButton from '../components/WritingButton';
 import { rem, relative, host, addressAPI } from '../common';
@@ -15,6 +15,7 @@ import {
   selectAddress,
   showAddressList,
   searchAddress,
+  isLoading,
 } from '../Atom';
 import { useEffect, useState } from 'react';
 import AlertModal from '../components/AlertModal';
@@ -56,6 +57,29 @@ const addressListStyle = css`
   z-index: 990;
 `;
 
+const loadImg = keyframes`
+  0% {transform: rotate(30deg);}
+  8% {transform: rotate(60deg);}
+  16% {transform: rotate(90deg);}
+  24% {transform: rotate(120deg);}
+  32% {transform: rotate(150deg);}
+  40% {transform: rotate(180deg);}
+  48% {transform: rotate(210deg);}
+  56% {transform: rotate(240deg);}
+  64% {transform: rotate(270deg);}
+  72% {transform: rotate(300deg);}
+  80% {transform: rotate(330deg);}
+  88% {transform: rotate(0deg);}
+`;
+
+const load = css`
+  margin: ${rem(26)} auto;
+  animation-name: ${loadImg};
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+`;
+
 export interface Posts {
   posts: Post[];
   likes?: {
@@ -87,41 +111,41 @@ export interface Post {
 
 function Main() {
   const [products, searchAddressList] = useRecoilState<Posts>(posts);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setIsLoading] = useRecoilState(isLoading);
   const [showModal, setShowModal] = useRecoilState(showAlertModal);
   const [searchValue, setSearchValue] = useRecoilState(selectAddress);
   const [addressList, setSearchAddress] = useRecoilState(searchAddress);
   const [showAddress, setShowAddress] = useRecoilState(showAddressList);
   const setMainSearch = useSetRecoilState<Posts>(originalPosts);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 5000);
+  }, []);
+
   const onChange = (e: any) => {
     setSearchValue(e.target.value);
   };
 
+  // TODO: 로딩 컴포넌트 띄우기
   const onSearchClick = () => {
     if (searchValue.length !== 0) {
       getAddress();
       if (searchValue.length > 5) {
-        // TODO: 로딩 컴포넌트 띄우기
-        // setLoading(true);
-        // console.log('1st', loading);
         axios
           .get(`${host}/product/address/${searchValue}`)
           .then((res) => {
             if (res.status === 200) {
-              console.log(res.data);
               setMainSearch(res.data);
               searchAddressList(res.data);
             }
           })
           .catch((err) => console.error(err));
-        // TODO: 로딩 컴포넌트
         setSearchValue('');
-        // setLoading(false);
-        // console.log('2nd', loading);
         setShowAddress(false);
       }
     } else {
-      console.log('input text please');
       setShowModal(true);
     }
   };
@@ -175,9 +199,10 @@ function Main() {
       <div css={addressListStyle}>
         {showAddress && <SelectAddressList width={450} />}
       </div>
-      {/* // TODO: 로딩 컴포넌트 추가 */}
       {loading ? (
-        <img src={Loading} alt="loading..." />
+        <div css={load}>
+          <img src={Loading} alt="loading..." />
+        </div>
       ) : products['posts'].length === 0 ? (
         <div style={{ marginTop: `${rem(26)}` }}>
           <img src={emptySearchResult} alt="camping" />

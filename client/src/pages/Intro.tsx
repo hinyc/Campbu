@@ -24,6 +24,7 @@ import {
   showAlertModal,
   searchAddress,
   originalPosts,
+  isLoading,
 } from '../Atom';
 import axios from 'axios';
 import { Post, Posts } from './Main';
@@ -87,6 +88,7 @@ function Intro() {
   const [searchValue, setSearchValue] = useRecoilState(selectAddress);
   const setSearchAddress = useSetRecoilState(searchAddress);
   const [showAddress, setShowAddress] = useRecoilState(showAddressList);
+  const setIsLoading = useSetRecoilState(isLoading);
 
   const onChange = (e: any) => {
     setSearchValue(e.target.value);
@@ -96,7 +98,7 @@ function Intro() {
     if (searchValue.length !== 0) {
       getAddress();
       if (searchValue.length > 5) {
-        console.log(searchValue);
+        setIsLoading(true);
         axios
           .get(`${host}/product/address/${searchValue}`)
           .then((res) => {
@@ -107,6 +109,7 @@ function Intro() {
             }
           })
           .catch((err) => console.error('에러입니다', err));
+        // setIsLoading(false);
       }
     } else {
       setShowModal(true);
