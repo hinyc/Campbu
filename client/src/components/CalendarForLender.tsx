@@ -76,7 +76,7 @@ const pointer = css`
   }
 `;
 
-const unableStyle = css`
+export const unableStyle = css`
   text-align: center;
   width: ${rem(40)};
   height: ${rem(12)};

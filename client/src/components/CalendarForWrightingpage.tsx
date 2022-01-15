@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { selectDate } from '../Atom';
-import { flexBetween, rem, color } from '../common';
+import { flexBetween, rem, color, absolute } from '../common';
+import { unableStyle } from './CalendarForLender';
 
 const calendarContainerStyle = css`
   display: flex;
@@ -47,6 +48,14 @@ const reset = css`
   font-size: ${rem(14)};
   font-weight: 700;
   margin-top: ${rem(20)};
+  transition: 0.2s;
+  :hover {
+    background-color: ${color.border};
+    cursor: pointer;
+  }
+  :active {
+    opacity: 0.6;
+  }
 `;
 
 interface AdayProps {
@@ -107,20 +116,15 @@ function Adate(props: AdateProps) {
   thisMonth = thisMonth.length === 1 ? 0 + thisMonth : thisMonth;
   thisDate = thisDate.length === 1 ? 0 + thisDate : thisDate;
 
+  const isUnable = setDates.indexOf(`${thisYear}.${thisMonth}.${thisDate}`);
   const selectDateHandler = () => {
-    setIsSelect(!isSelect);
-
-    const alreadySelected = setDates.indexOf(
-      `${thisYear}.${thisMonth}.${thisDate}`,
-    );
-
-    if (isSelect) {
-      setSetDates([
-        ...setDates.slice(0, alreadySelected),
-        ...setDates.slice(alreadySelected + 1),
-      ]);
-    } else {
+    if (isUnable === -1) {
       setSetDates([...setDates, `${thisYear}.${thisMonth}.${thisDate}`]);
+    } else {
+      setSetDates([
+        ...setDates.slice(0, isUnable),
+        ...setDates.slice(isUnable + 1),
+      ]);
     }
   };
   return (
@@ -132,7 +136,7 @@ function Adate(props: AdateProps) {
         font-size: ${rem(14)};
         text-align: center;
         color: ${isWeekend};
-        background-color: ${isSelect ? color.light : null};
+        position: relative;
       `}
       onClick={selectDateHandler}
     >
@@ -145,11 +149,17 @@ function Adate(props: AdateProps) {
       >
         {date}
       </div>
+
+      {isUnable === -1 ? null : (
+        <div css={[absolute, unableStyle]}>대여불가</div>
+      )}
     </div>
   );
 }
 
 export default function Calendar() {
+  const setSetDates = useSetRecoilState(selectDate);
+
   const days: string[] = ['일', '월', '화', '수', '목', '금', '토'];
 
   //tagret 오늘기준
@@ -215,14 +225,14 @@ export default function Calendar() {
             css={arrow}
             onClick={() => setGetDateHandler(targetYear, targetMonth - 1)}
           >
-            ←
+            &lt;
           </button>
           <span css={thisMonth}>{`${targetYear}년 ${targetMonth}월`}</span>
           <button
             css={arrow}
             onClick={() => setGetDateHandler(targetYear, targetMonth + 1)}
           >
-            →
+            &gt;
           </button>
         </div>
         <div className="days" css={flexBetween}>
@@ -251,7 +261,7 @@ export default function Calendar() {
         </div>
 
         <div className="numDays"></div>
-        <div className="reset" css={reset}>
+        <div className="reset" css={reset} onClick={() => setSetDates([])}>
           초기화
         </div>
       </div>
