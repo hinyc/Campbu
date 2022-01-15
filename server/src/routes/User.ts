@@ -13,6 +13,7 @@ router.post('/login', loginController);
 router.get('/logout', logoutController);
 router.post('/like', likeController);
 router.post('/review', reviewController);
+router.get('/kakao/:accesstoken', kakaoController.getUserInfo);
 router.post('/kakao', kakaoController.token);
 
 export = router;

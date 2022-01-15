@@ -9,7 +9,6 @@ export default {
     const code = req.body.authorizationCode;
     const REST_API_KEY = 'b8665986f69d987ebb83449a6a9b06ba';
     const REDIRECT_URI = 'http://localhost:3000/oauth/kakao/callback';
-    console.log(code);
 
     axios
       .post(
@@ -21,5 +20,8 @@ export default {
         },
       )
       .then((response) => res.send(response.data));
+  },
+  getUserInfo: async (req: Request, res: Response) => {
+    console.log(req.params);
   },
 };
