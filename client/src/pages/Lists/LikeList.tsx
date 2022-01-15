@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, rem, flex, textDecorationNone } from '../../common';
+import { color, rem, flex, textDecorationNone, config } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Button } from '../../components/Button';
 import emptyHeart from '../../assets/pictures/emptyHeart.svg';
@@ -23,40 +23,18 @@ interface Likes {
   like: LikePost[];
 }
 
-const likes = {
-  like: [
-    {
-      id: 2,
-      category: '의자/테이블',
-      deposit: 20000,
-      rental_fee: 40000,
-      unavailable_dates: ['2022.01.11', '2022.01.12', '2022.01.13'],
-      title: '튼튼한 의자 빌려드려요',
-      content: '올라가도 안 부서집니다.',
-      longitude: '127.044484819305',
-      latitude: '37.2244311943994',
-      address: '화성시 기산동',
-      img_urls: ['s3.com', 's4.com', 's5.com'],
-      created_at: '2022-01-11T06:14:35.305Z',
-      updated_at: '2022-01-11T06:14:35.305Z',
-      likes_count: 2,
-    },
-  ],
-};
-
 function LikeList() {
-  const [likeLists, setLikeLists] = useState<Likes>(likes);
+  const [likeLists, setLikeLists] = useState<Likes>({ like: [] });
   const [modalShow, setModalShow] = useState(false);
 
-  // useEffect(() => {
-  //   axios
-  //     .get(`${host}/userinfo/product/like`)
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       setLikeLists(res.data);
-  //     })
-  //     .catch((err) => console.error(err));
-  // });
+  useEffect(() => {
+    axios
+      .get(`${host}/userinfo/product/like`, config)
+      .then((res) => {
+        setLikeLists(res.data);
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
     <>

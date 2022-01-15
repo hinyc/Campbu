@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, host, rem } from '../common';
+import { color, config, host, rem } from '../common';
 import FillHeart from '../assets/FillHeart.svg';
 import EmptyHeart from '../assets/EmptyHeart.svg';
 import { useState } from 'react';
@@ -57,26 +57,19 @@ function LikeSymbol(props: LikeProps) {
   const onHeartClick = () => {
     if (loginUser) {
       axios
-        .post(
-          `${host}/user/like`,
-          { post_id: postId },
-          { headers: { 'Content-Type': 'application/json' } },
-        )
+        .post(`${host}/user/like`, { post_id: postId }, config)
         .then((res) => {
           if (res.status === 201) {
             if (fillHeart) {
-              console.log('cancel post [liked]!');
               setCountHeart(countHeart - 1);
               setFillHeart(!fillHeart);
             } else {
-              console.log('add post [liked]!');
               setCountHeart(countHeart + 1);
               setFillHeart(!fillHeart);
             }
-          } else if (res.status === 401) {
-            console.log('Unauthorized User');
           }
-        });
+        })
+        .catch((e) => console.error(e));
     } else {
       setShowLoginModal(true);
     }

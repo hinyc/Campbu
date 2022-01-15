@@ -21,30 +21,8 @@ interface Resists {
   post: MyPost[];
 }
 
-const resists = {
-  post: [
-    {
-      id: 4,
-      category: '그릴/버너',
-      deposit: 50000,
-      rental_fee: 100000,
-      unavailable_dates: ['2022.01.11', '2022.01.12', '2022.01.13'],
-      title: '튼튼한 그릴입니다',
-      content: '절대 쓰러지지 않아요',
-      longitude: '128.638149961102',
-      latitude: '35.84398924816',
-      address: '수성구 황금동',
-      img_urls: [
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9YMpUEeAhDovNZilJp_nsjHlg77VuPq3roQ&usqp=CAU',
-      ],
-      created_at: '2022-01-11T06:17:48.489Z',
-      updated_at: '2022-01-11T06:17:48.489Z',
-    },
-  ],
-};
-
 function ResistList() {
-  const [resistLists, setResistLists] = useState<Resists>(resists);
+  const [resistLists, setResistLists] = useState<Resists>({ post: [] });
   const [modalShow, setModalShow] = useState(false);
 
   useEffect(() => {
