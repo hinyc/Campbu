@@ -51,6 +51,7 @@ function Product(props: Props) {
   const setGetPostId = useSetRecoilState(post_id);
   useEffect(() => {
     setGetPostId(postId);
+    console.log('product 클릭', postId);
   }, [postId, setGetPostId]);
 
   return (
@@ -74,7 +75,7 @@ function Product(props: Props) {
           display={display}
         />
       </div>
-      <Link to={`${postId}`} css={textDecorationNone}>
+      <Link to={`${postId}`} css={textDecorationNone} onClick={}>
         <img src={img_urls} alt="product" css={img} />
         <div css={textContainer}>
           <span css={[span, moneyTitle, addressStyle]}>
