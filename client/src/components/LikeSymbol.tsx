@@ -1,9 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, rem } from '../common';
+import { color, config, host, rem } from '../common';
 import FillHeart from '../assets/FillHeart.svg';
 import EmptyHeart from '../assets/EmptyHeart.svg';
 import { useState } from 'react';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { isLogin, showLoginModal } from '../Atom';
+import axios from 'axios';
 
 const like = css`
   color: ${color.point};
@@ -26,14 +29,13 @@ const heart = css`
 `;
 interface LikeProps {
   isFill: boolean;
-  count?: number;
+  count: number;
   width?: number | undefined;
   height?: number | undefined;
   fontSize?: number | undefined;
   borderColor?: string | undefined;
   display?: string | undefined;
-  fillHeart?: boolean;
-  countHeart?: number;
+  postId: number;
 }
 
 function LikeSymbol(props: LikeProps) {
@@ -45,19 +47,34 @@ function LikeSymbol(props: LikeProps) {
     fontSize,
     borderColor,
     display,
-    fillHeart,
-    countHeart,
+    postId,
   } = props;
-  // const [fillHeart, setFillHeart] = useState<boolean>(isFill);
-  // const [countHeart, setCountHeart] = useState<number>(count);
-  // const onHeartClick = () => {
-  // setFillHeart(!fillHeart);
-  // if (fillHeart === true) {
-  //   setCountHeart(countHeart - 1);
-  // } else {
-  //   setCountHeart(countHeart + 1);
-  // }
-  // };
+
+  const setShowLoginModal = useSetRecoilState(showLoginModal);
+  const loginUser = useRecoilValue<boolean>(isLogin);
+  const [fillHeart, setFillHeart] = useState<boolean>(isFill);
+  const [countHeart, setCountHeart] = useState<number>(count);
+  const onHeartClick = () => {
+    if (loginUser) {
+      axios
+        .post(`${host}/user/like`, { post_id: postId }, config)
+        .then((res) => {
+          if (res.status === 201) {
+            if (fillHeart) {
+              setCountHeart(countHeart - 1);
+              setFillHeart(!fillHeart);
+            } else {
+              setCountHeart(countHeart + 1);
+              setFillHeart(!fillHeart);
+            }
+          }
+        })
+        .catch((e) => console.error(e));
+    } else {
+      setShowLoginModal(true);
+    }
+  };
+
   return (
     <div
       css={[
@@ -70,7 +87,7 @@ function LikeSymbol(props: LikeProps) {
           display: ${display ? display : 'flex'};
         `,
       ]}
-      // onClick={onHeartClick}
+      onClick={onHeartClick}
     >
       <button css={heart}>
         <img
