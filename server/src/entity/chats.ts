@@ -25,7 +25,7 @@ export class chats {
   sender_nickname: string;
 
   @Column('simple-array')
-  chat: object[];
+  chat: string[];
 
   @CreateDateColumn()
   created_at: Date;
