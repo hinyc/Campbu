@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import { css, keyframes } from '@emotion/react';
 import Product from '../components/Product';
 import WritingButton from '../components/WritingButton';
 import { rem, relative, host, addressAPI } from '../common';
@@ -15,6 +15,7 @@ import {
   selectAddress,
   showAddressList,
   searchAddress,
+  isLoading,
 } from '../Atom';
 import { useEffect, useState } from 'react';
 import AlertModal from '../components/AlertModal';
@@ -56,6 +57,29 @@ const addressListStyle = css`
   z-index: 990;
 `;
 
+const loadImg = keyframes`
+  0% {transform: rotate(30deg);}
+  8% {transform: rotate(60deg);}
+  16% {transform: rotate(90deg);}
+  24% {transform: rotate(120deg);}
+  32% {transform: rotate(150deg);}
+  40% {transform: rotate(180deg);}
+  48% {transform: rotate(210deg);}
+  56% {transform: rotate(240deg);}
+  64% {transform: rotate(270deg);}
+  72% {transform: rotate(300deg);}
+  80% {transform: rotate(330deg);}
+  88% {transform: rotate(0deg);}
+`;
+
+const load = css`
+  margin: ${rem(26)} auto;
+  animation-name: ${loadImg};
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+`;
+
 export interface Posts {
   posts: Post[];
   likes?: {
@@ -87,131 +111,41 @@ export interface Post {
 
 function Main() {
   const [products, searchAddressList] = useRecoilState<Posts>(posts);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setIsLoading] = useRecoilState(isLoading);
   const [showModal, setShowModal] = useRecoilState(showAlertModal);
   const [searchValue, setSearchValue] = useRecoilState(selectAddress);
   const [addressList, setSearchAddress] = useRecoilState(searchAddress);
   const [showAddress, setShowAddress] = useRecoilState(showAddressList);
   const setMainSearch = useSetRecoilState<Posts>(originalPosts);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 5000);
+  }, []);
+
   const onChange = (e: any) => {
     setSearchValue(e.target.value);
   };
 
+  // TODO: 로딩 컴포넌트 띄우기
   const onSearchClick = () => {
     if (searchValue.length !== 0) {
       getAddress();
       if (searchValue.length > 5) {
-        // TODO: 로딩 컴포넌트 띄우기
-        // setLoading(true);
-        // console.log('1st', loading);
         axios
           .get(`${host}/product/address/${searchValue}`)
           .then((res) => {
             if (res.status === 200) {
-              setMainSearch({
-                // TODO: 검색 결과를 여기에 추가
-                // posts: [],
-                posts: [
-                  {
-                    id: 1,
-                    category: 'Etc',
-                    deposit: 30000,
-                    rental_fee: 25000,
-                    unavailable_dates: [
-                      '2021-12-20',
-                      '2021-12-21',
-                      '2021-12-22',
-                    ],
-                    title: '검색했을 때 새로 나오는거',
-                    content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
-                    longitude: 126.99597295767953,
-                    latitude: 35.97664845766847,
-                    address: '서울특별시 동작구 신대방동',
-                    img_urls:
-                      'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
-                    users_id: 1,
-                    likes_count: 15,
-                  },
-                  {
-                    id: 1,
-                    category: 'Pot',
-                    deposit: 30000,
-                    rental_fee: 25000,
-                    unavailable_dates: [
-                      '2021-12-20',
-                      '2021-12-21',
-                      '2021-12-22',
-                    ],
-                    title: '메인페이지 검색',
-                    content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
-                    longitude: 126.99597295767953,
-                    latitude: 35.97664845766847,
-                    address: '서울특별시 동작구 신대방동',
-                    img_urls:
-                      'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
-                    users_id: 1,
-                    likes_count: 15,
-                  },
-                ],
-              });
-              searchAddressList({
-                // TODO: 검색 결과를 여기에 추가
-                // posts: [],
-                posts: [
-                  {
-                    id: 1,
-                    category: 'Tent',
-                    deposit: 30000,
-                    rental_fee: 25000,
-                    unavailable_dates: [
-                      '2021-12-20',
-                      '2021-12-21',
-                      '2021-12-22',
-                    ],
-                    title: '검색했을 때 새로 나오는거',
-                    content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
-                    longitude: 126.99597295767953,
-                    latitude: 35.97664845766847,
-                    address: '서울특별시 동작구 신대방동',
-                    img_urls:
-                      'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
-                    users_id: 1,
-                    likes_count: 15,
-                  },
-                  {
-                    id: 1,
-                    category: 'Tent',
-                    deposit: 30000,
-                    rental_fee: 25000,
-                    unavailable_dates: [
-                      '2021-12-20',
-                      '2021-12-21',
-                      '2021-12-22',
-                    ],
-                    title: '메인페이지 검색',
-                    content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
-                    longitude: 126.99597295767953,
-                    latitude: 35.97664845766847,
-                    address: '서울특별시 동작구 신대방동',
-                    img_urls:
-                      'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
-                    users_id: 1,
-                    likes_count: 15,
-                  },
-                ],
-              });
+              setMainSearch(res.data);
+              searchAddressList(res.data);
             }
           })
           .catch((err) => console.error(err));
-        // TODO: 로딩 컴포넌트
         setSearchValue('');
-        // setLoading(false);
-        // console.log('2nd', loading);
         setShowAddress(false);
       }
     } else {
-      console.log('input text please');
-      // TODO: false로 초기화 시키기
       setShowModal(true);
     }
   };
@@ -265,9 +199,10 @@ function Main() {
       <div css={addressListStyle}>
         {showAddress && <SelectAddressList width={450} />}
       </div>
-      {/* // TODO: 로딩 컴포넌트 추가 */}
       {loading ? (
-        <img src={Loading} alt="loading..." />
+        <div css={load}>
+          <img src={Loading} alt="loading..." />
+        </div>
       ) : products['posts'].length === 0 ? (
         <div style={{ marginTop: `${rem(26)}` }}>
           <img src={emptySearchResult} alt="camping" />
