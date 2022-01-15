@@ -24,7 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import Calendar from '../components/CalendarForLender';
 import Here from '../assets/Here.svg';
 import { span, addressStyle, moneyTitle } from '../components/post';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   endDate,
   isSelectStart,
