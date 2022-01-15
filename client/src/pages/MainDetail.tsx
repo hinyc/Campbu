@@ -33,6 +33,7 @@ import {
 import {
   endDate,
   isSelectStart,
+  post_id,
   selectDate,
   showCalendar,
   startDate,
@@ -49,7 +50,7 @@ const moneyContent = css`
 const productImg = css`
   width: ${rem(752)};
   height: ${rem(366)};
-  background-size: cover;
+  object-fit: scale-down;
 `;
 
 const reviewAlign = css`
@@ -93,14 +94,54 @@ const fontSize40 = css`
   color: ${color.border};
 `;
 
-interface propsType {
-  postId?: number;
-}
+//요청 결과 예시 데이터
+let dummyData = {
+  posts: {
+    id: 1,
+    category: 'Tent',
+    deposit: 30000,
+    rental_fee: 20000,
+    unavailable_dates: [
+      '2021.12.20',
+      '2021.12.21',
+      '2021.12.22',
+      '2022.01.23',
+      '2022.01.15',
+      '2022.01.01',
+    ],
+    title: '3~4인용 텐트 빌려드려요',
+    content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
+    longitude: 126.99597295767953,
+    latitude: 35.97664845766847,
+    address: '서울특별시 동작구 신대방동',
+    img_urls:
+      'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
+    users_id: 1,
+    created_at: '2021-12-16T09:42:40.000Z',
+    updated_at: '2021-12-16T09:42:40.000Z',
+    likes_count: 5,
+  },
+  reviews: [
+    {
+      id: 1,
+      users_id: 1,
+      reviews_id: 2,
+      count: 15,
+      created_at: '2021-12-16T09:42:40.000Z',
+      updated_at: '2021-12-16T09:42:40.000Z',
+    },
+    {
+      id: 1,
+      users_id: 1,
+      reviews_id: 8,
+      count: 52,
+      created_at: '2021-12-16T09:42:40.000Z',
+      updated_at: '2021-12-16T09:42:40.000Z',
+    },
+  ],
+};
 
-function DetailView({ postId }: propsType) {
-  const navigate = useNavigate();
-  const [deposit, setDeposit] = useState(0);
-  const [rentalFee, setRentalFee] = useState(0);
+function DetailView() {
   const setUnableDates = useSetRecoilState(unableDate);
   const [start, setStart] = useRecoilState(startDate);
   const [end, setEnd] = useRecoilState(endDate);
@@ -108,111 +149,39 @@ function DetailView({ postId }: propsType) {
   const [isSelectStartState, setIsSelectStartState] =
     useRecoilState(isSelectStart);
   const [isShowCalendar, setIsShowCalendar] = useRecoilState(showCalendar);
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [imgUrls, setImgUrls] = useState<any>();
-  const [address, setAddress] = useState('');
   const [getReviews, setGetReviews] = useState<reviewsType>([]);
 
+  const postId = useRecoilValue(post_id);
+  const [postInfo, setPostInfo] = useState(dummyData);
+
   useEffect(() => {
-    const API = `${host}/product/post/${postId}`;
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    console.log(`${API} 로 요청하고 스테이트 변경 지금은 더미데이터`);
-    // axios.get(API, config).then(res=> const postinfo=res.data);
-
-    //요청 결과 예시 데이터
-    let dummydata = {
-      posts: [
-        {
-          id: 1,
-          category: 'Tent',
-          deposit: 30000,
-          rental_fee: 20000,
-          unavailable_dates: [
-            '2021.12.20',
-            '2021.12.21',
-            '2021.12.22',
-            '2022.01.23',
-            '2022.01.15',
-            '2022.01.01',
-          ],
-          title: '3~4인용 텐트 빌려드려요',
-          content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
-          longitude: 126.99597295767953,
-          latitude: 35.97664845766847,
-          address: '서울특별시 동작구 신대방동',
-          img_urls:
-            'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
-          users_id: 1,
-          created_at: '2021-12-16T09:42:40.000Z',
-          updated_at: '2021-12-16T09:42:40.000Z',
-          likes_count: 5,
-        },
-      ],
-      reviews: [
-        {
-          id: 1,
-          users_id: 1,
-          reviews_id: 2,
-          count: 15,
-          created_at: '2021-12-16T09:42:40.000Z',
-          updated_at: '2021-12-16T09:42:40.000Z',
-        },
-        {
-          id: 1,
-          users_id: 1,
-          reviews_id: 8,
-          count: 52,
-          created_at: '2021-12-16T09:42:40.000Z',
-          updated_at: '2021-12-16T09:42:40.000Z',
-        },
-        {
-          id: 1,
-          users_id: 1,
-          reviews_id: 4,
-          count: 5,
-          created_at: '2021-12-16T09:42:40.000Z',
-          updated_at: '2021-12-16T09:42:40.000Z',
-        },
-        {
-          id: 1,
-          users_id: 1,
-          reviews_id: 11,
-          count: 5,
-          created_at: '2021-12-16T09:42:40.000Z',
-          updated_at: '2021-12-16T09:42:40.000Z',
-        },
-      ],
-    };
-
-    const postInfo = dummydata;
-    let tempReviews: reviewsType = [...reviews];
-
-    postInfo.reviews.forEach((el: any) => {
-      tempReviews[el.reviews_id - 1] = {
-        ...tempReviews[el.reviews_id - 1],
-        count: el.count,
+    const getData = async () => {
+      console.log('postId', postId);
+      const API = `${host}/product/post/${postId}`;
+      const Config = {
+        headers: { 'Content-Type': 'application/json' },
       };
-    });
+      axios.get(API, Config).then((res) => {
+        console.log('api success', res.data);
+        setPostInfo(res.data);
+      });
 
-    console.log(1);
-    setGetReviews(tempReviews);
-    setDeposit(postInfo.posts[0].deposit);
-    setRentalFee(postInfo.posts[0].rental_fee);
-    setUnableDates(postInfo.posts[0].unavailable_dates);
-    setTitle(postInfo.posts[0].title);
-    setContent(postInfo.posts[0].content);
-    setImgUrls(postInfo.posts[0].img_urls);
-    setAddress(postInfo.posts[0].address);
-    // setStart('');
-    // setEnd('');
-    // setTotalRentalDates([]);
-    // setIsShowCalendar(false);
-  }, []);
+      let tempReviews: reviewsType = [...reviews];
+
+      postInfo.reviews.forEach((el: any) => {
+        tempReviews[el.reviews_id - 1] = {
+          ...tempReviews[el.reviews_id - 1],
+          count: el.count,
+        };
+      });
+      setGetReviews(tempReviews);
+      // setStart('');
+      // setEnd('');
+      // setTotalRentalDates([]);
+      // setIsShowCalendar(false);
+    };
+    getData();
+  }, [postId]);
 
   const campbuIndicator = calCampbuIndicator(getReviews);
 
@@ -249,13 +218,7 @@ function DetailView({ postId }: propsType) {
             margin-bottom: ${rem(32)};
           `}
         >
-          <div
-            onClick={() => {
-              navigate('/main');
-            }}
-          >
-            <BackButton />
-          </div>
+          <BackButton />
         </div>
         <div
           css={[
@@ -267,11 +230,17 @@ function DetailView({ postId }: propsType) {
             `,
           ]}
         >
-          <div>{title}</div>
+          <div>
+            <span css={[span, moneyTitle, addressStyle]}>
+              <img src={Here} alt="위치" style={{ marginRight: '4px' }} />
+              {postInfo.posts.address}
+            </span>
+            <div>{postInfo.posts.title}</div>
+          </div>
           <LikeSymbol
-            postId={1} //! 추가해야하는 props
+            postId={postId}
             isFill={false}
-            count={14}
+            count={postInfo.posts.likes_count}
             fontSize={18}
             borderColor={color.border}
           />
@@ -286,14 +255,11 @@ function DetailView({ postId }: propsType) {
           ]}
         >
           <div css={fontSize40}>{`<`}</div>
-          <div
-            css={[
-              productImg,
-              css`
-                background-image: ${`url(${imgUrls})`};
-              `,
-            ]}
-          ></div>
+          <img
+            css={productImg}
+            src={`${postInfo.posts.img_urls}`}
+            alt="detail"
+          />
           <div css={fontSize40}>{`>`}</div>
         </div>
       </div>
@@ -308,7 +274,7 @@ function DetailView({ postId }: propsType) {
               `,
             ]}
           >
-            <p>{content}</p>
+            <p>{postInfo.posts.content}</p>
           </div>
           <ReviewTitle text={'대여자에게 받은 좋은 리뷰'} width={371} />
           <div css={reviewAlign}>
@@ -391,10 +357,6 @@ function DetailView({ postId }: propsType) {
               깐부지수
             </div>
           </div>
-          <span css={[span, moneyTitle, addressStyle]}>
-            <img src={Here} alt="위치" style={{ marginRight: '4px' }} />
-            {address}
-          </span>
           <div css={[flexVertical, feeView]}>
             <div
               css={[
@@ -456,22 +418,24 @@ function DetailView({ postId }: propsType) {
             </div>
             <div css={[flexBetween, moneyContent]}>
               <span>보증금 </span>
-              <span>{`${deposit.toLocaleString('ko-KR')} 원`}</span>
+              <span>{`${postInfo.posts.deposit.toLocaleString(
+                'ko-KR',
+              )} 원`}</span>
             </div>
             <div css={[flexBetween, moneyContent]}>
               <span>대여비 </span>
 
               {totalRentalDates.length > 0 ? (
                 <>
-                  <span>{`${rentalFee.toLocaleString('ko-KR')} × ${
-                    totalRentalDates.length
-                  }일`}</span>
+                  <span>{`${postInfo.posts.rental_fee.toLocaleString(
+                    'ko-KR',
+                  )} × ${totalRentalDates.length}일`}</span>
                   <span>{` ${(
-                    rentalFee * totalRentalDates.length
+                    postInfo.posts.rental_fee * totalRentalDates.length
                   ).toLocaleString('ko-KR')} 원`}</span>
                 </>
               ) : (
-                `${rentalFee.toLocaleString('ko-KR')} 원`
+                `${postInfo.posts.rental_fee.toLocaleString('ko-KR')} 원`
               )}
             </div>
             <div
@@ -487,8 +451,9 @@ function DetailView({ postId }: propsType) {
             >
               <span>총 합계 </span>
               <span>{` ${(
-                rentalFee * (totalRentalDates ? totalRentalDates.length : 1) +
-                deposit
+                postInfo.posts.rental_fee *
+                  (totalRentalDates ? totalRentalDates.length : 1) +
+                postInfo.posts.deposit
               ).toLocaleString('ko-KR')} 원`}</span>
             </div>
             <Button

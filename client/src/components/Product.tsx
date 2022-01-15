@@ -20,8 +20,8 @@ import {
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { isLogin, showLoginModal, showSignupModal } from '../Atom';
-import { useState } from 'react';
+import { isLogin, post_id, showLoginModal, showSignupModal } from '../Atom';
+import { useEffect, useState } from 'react';
 
 interface Props {
   isFill: boolean;
@@ -47,6 +47,11 @@ function Product(props: Props) {
     count,
     postId,
   } = props;
+
+  const setGetPostId = useSetRecoilState(post_id);
+  useEffect(() => {
+    setGetPostId(postId);
+  }, [postId, setGetPostId]);
 
   return (
     <div css={post}>
