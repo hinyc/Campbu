@@ -145,7 +145,6 @@ interface AdateProps {
 
 function Adate(props: AdateProps) {
   const { date, idx, width, year, month } = props;
-  const [isSelect, setIsSelect] = useState(false);
   const [totalRentalDates, setTotalRentalDates] = useRecoilState(selectDate);
   const isSelectStartState = useRecoilValue(isSelectStart);
   const [start, setStart] = useRecoilState(startDate);
@@ -214,7 +213,9 @@ function Adate(props: AdateProps) {
       while (date <= edate) {
         totalRentalDatesArray = [
           ...totalRentalDatesArray,
-          `${syear}.${smonth}.${date}`,
+          `${syear}.${smonth < 10 ? 0 : ''}${smonth}.${
+            date < 10 ? 0 : ''
+          }${date}`,
         ];
         date++;
       }
@@ -227,7 +228,9 @@ function Adate(props: AdateProps) {
     while (date <= startMonthEedDate) {
       totalRentalDatesArray = [
         ...totalRentalDatesArray,
-        `${syear}.${smonth}.${date}`,
+        `${syear}.${smonth < 10 ? 0 : ''}${smonth}.${
+          date < 10 ? 0 : ''
+        }${date}`,
       ];
       date++;
     }
@@ -241,7 +244,7 @@ function Adate(props: AdateProps) {
         while (date <= startMonthEedDate) {
           totalRentalDatesArray = [
             ...totalRentalDatesArray,
-            `${syear}.${i}.${date}`,
+            `${syear}.${i < 10 ? 0 : ''}${i}.${date < 10 ? 0 : ''}${date}`,
           ];
           date++;
         }
@@ -249,18 +252,17 @@ function Adate(props: AdateProps) {
     } else {
       for (let j = syear; j <= eyear; j++) {
         for (
-          let i = j === syear ? smonth + 1 : smonth;
-          j === eyear ? i < emonth : i <= emonth;
+          let i = j === syear ? smonth + 1 : 1;
+          j === eyear ? i < emonth : i < 12;
           i++
         ) {
-          console.log(i);
           date = 1;
           startMonthEedDate = new Date(j, i, 0).getDate();
 
           while (date <= startMonthEedDate) {
             totalRentalDatesArray = [
               ...totalRentalDatesArray,
-              `${j}.${i}.${date}`,
+              `${j}.${i < 10 ? 0 : ''}${i}.${date < 10 ? 0 : ''}${date}`,
             ];
             date++;
           }
@@ -272,7 +274,9 @@ function Adate(props: AdateProps) {
     while (date <= edate) {
       totalRentalDatesArray = [
         ...totalRentalDatesArray,
-        `${eyear}.${emonth}.${date}`,
+        `${eyear}.${emonth < 10 ? 0 : ''}${emonth}.${
+          date < 10 ? 0 : ''
+        }${date}`,
       ];
       date++;
     }

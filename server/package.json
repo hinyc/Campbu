@@ -28,9 +28,11 @@
   },
   "dependencies": {
     "@types/jsonwebtoken": "^8.5.6",
+    "aws-sdk": "^2.1057.0",
     "axios": "^0.24.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "crypto-js": "^4.1.1",
     "dotenv": "^10.0.0",
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.14.1",
