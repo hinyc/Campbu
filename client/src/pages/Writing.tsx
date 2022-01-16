@@ -3,7 +3,6 @@ import { css } from '@emotion/react';
 import Input from '../components/Input';
 import {
   color,
-  confirm,
   flexVertical,
   flexBetween,
   rem,
@@ -16,12 +15,7 @@ import { Button } from '../components/Button';
 import BackButton from '../components/BackButton';
 import Calendar from '../components/CalendarForWrightingpage';
 import { useState, useEffect } from 'react';
-import {
-  useRecoilState,
-  useRecoilValue,
-  useResetRecoilState,
-  useSetRecoilState,
-} from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   selectDate,
   searchAddress,
@@ -34,6 +28,7 @@ import axios from 'axios';
 import SelectAddressList from '../components/SelectAddress';
 import { useNavigate } from 'react-router-dom';
 import Complete from '../components/Complete';
+import { noticeNo, reqMsgStyle } from './Mypage';
 
 const fixAddressList = css`
   position: absolute;
@@ -249,13 +244,13 @@ export const Writing = () => {
   }
   const reqMsg: reqMsgType = {
     ok: '',
-    title: '제목을 입력해주세요',
-    category: '카테고리를 선택해주세요',
-    address: '주소를 선택해주세요',
-    deposit: '보증금을 입력해주세요',
-    rentalFee: '대여비를 입력해주세요',
-    content: '물품에 대한 설명을 작성해주세요',
-    imgUrls: '최소 1장의 사진을 등록해주세요',
+    title: '* 제목을 입력해주세요',
+    category: '* 카테고리를 선택해주세요',
+    address: '* 주소를 선택해주세요',
+    deposit: '* 보증금을 입력해주세요',
+    rentalFee: '* 대여비를 입력해주세요',
+    content: '* 물품에 대한 설명을 작성해주세요',
+    imgUrls: '* 최소 1장의 사진을 등록해주세요',
   };
 
   const titleHandler = (e: any) => setTitle(e.target.value);
@@ -265,7 +260,6 @@ export const Writing = () => {
   const setCategoryHandler = (e: any) => setSetCategory(e.target.value);
   const addressHandler = (e: any) => setAddress(e.target.value);
 
-  console.log(unavailableDates);
   const getAdress = () => {
     if (address.length > 0) {
       axios
@@ -299,7 +293,6 @@ export const Writing = () => {
   };
 
   const wrightHandler = () => {
-    console.log('c');
     interface postType {
       category: string;
       deposit: number;
@@ -524,14 +517,7 @@ export const Writing = () => {
       >
         <UploadImg />
       </div>
-      <div
-        css={css`
-          height: 1rem;
-          margin: ${rem(10)};
-        `}
-      >
-        {reqMsg[reqState]}
-      </div>
+      <div css={[noticeNo, reqMsgStyle]}>{reqMsg[reqState]}</div>
       <div>
         <Button
           text="등록"
