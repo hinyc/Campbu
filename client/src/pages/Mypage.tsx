@@ -4,7 +4,6 @@ import Gage from '../components/Gage';
 import {
   color,
   rem,
-  hover,
   host,
   reviews,
   hidden,
@@ -18,8 +17,8 @@ import ReviewBox from '../components/ReviewBox';
 import ReviewTitle from '../components/ReviweTitle';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { imgFile, isLogin } from '../Atom';
-import { constSelector, useRecoilState, useSetRecoilState } from 'recoil';
+import { isLogin } from '../Atom';
+import { useSetRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
 
 const imgStyle = css`
@@ -73,9 +72,13 @@ const buttonStyle = css`
   color: ${color.white};
   background-color: ${color.point};
   font-size: ${rem(14)};
-  margin-top: ${rem(33)};
+  transition: 0.1s;
   :hover {
-    box-shadow: ${hover};
+    opacity: 0.8;
+    cursor: pointer;
+  }
+  :active {
+    opacity: 0.95;
   }
 `;
 
@@ -83,7 +86,7 @@ const noticeOk = css`
   font-size: ${rem(10)};
   color: ${color.mid};
 `;
-const noticeNo = css`
+export const noticeNo = css`
   font-size: ${rem(10)};
   color: ${color.point};
 `;
@@ -130,6 +133,12 @@ const hiddenUpload = css`
   }
 `;
 
+export const reqMsgStyle = css`
+  height: 1rem;
+  margin-top: ${rem(14)};
+  margin-bottom: ${rem(3)};
+`;
+
 const API = `${host}/userinfo/account`;
 const config = {
   headers: {
@@ -149,17 +158,11 @@ function Mypage() {
   const [userImg, setUserImg] = useState<string>('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [getReviews, setGetReviews] = useState<reviewsType>([
-    {
-      id: 0,
-      review: '',
-      count: 0,
-    },
-  ]);
-
+  const [getReviews, setGetReviews] = useState<reviewsType>([]);
   const [passwordValid, setPasswordValid] = useState(false);
   const [nickDuplicateClick, setNickDuplicateClick] = useState(false);
   const [nickDupliacte, setNickDupliacte] = useState(false);
+  const [reqState, setReqStatee] = useState<string>('ok');
   const navigate = useNavigate();
   // 유저정보요청
   useEffect(() => {
@@ -167,13 +170,10 @@ function Mypage() {
 
     axios.get(API, config).then((res) => {
       const userinfo = res.data;
-      console.log('data2', userinfo);
 
       setUserImg(userinfo.users.users_img);
       setCurrentNickName(userinfo.users.nickname);
-      setNickname(userinfo.users.nickname);
       setEmail(userinfo.users.email);
-
       //받은 review 목록
       let tempReviews: reviewsType = [...reviews];
 
@@ -187,9 +187,20 @@ function Mypage() {
     });
   }, []);
 
-  console.log(userImg);
+  interface reqMsgType {
+    [key: string]: string;
+  }
+  const reqMag: reqMsgType = {
+    ok: '',
+    nickname: '* 닉네임을 확인해주세요',
+    password: '* 비밀번호를 확인해주세요',
+  };
 
-  const nicknameHandler = (e: any) => setNickname(e.target.value);
+  const nicknameHandler = (e: any) => {
+    setNickname(e.target.value);
+    setNickDuplicateClick(false);
+    setNickDupliacte(false);
+  };
   const nicknameDuplicateCheckHandler = () => {
     if (nickname.length > 0) {
       setNickDuplicateClick(true);
@@ -200,6 +211,7 @@ function Mypage() {
           if (res.status === 200) {
             console.log(`API ${host}/user/signup?nickname=${nickname}`);
             console.log('닉네임 사용가능', setNickDupliacte(true));
+            setReqStatee('ok');
           }
         })
         .catch((err) => {
@@ -222,22 +234,32 @@ function Mypage() {
   const campbuIndicator = calCampbuIndicator(getReviews);
 
   //! 수정 탈퇴 요청 함수
-
   const modifyAccount = () => {
+    if (!!nickname && !nickDupliacte) {
+      return setReqStatee('nickname');
+    }
+
     if (passwordValid && password === confirmPassword) {
-      const modifyData: {
+      const data: {
         nickname: string;
         password: string;
         users_img: string;
       } = {
-        nickname: nickname,
+        nickname: !nickname ? currentNickName : nickname,
         password: password,
         users_img: userImg,
       };
-
-      axios.patch(API, modifyData, config).then((res: any) => console.log(res));
+      console.log(data);
+      axios.patch(API, data, config).then((res: any) => {
+        console.log('응답', res.data.users.nickname);
+        setCurrentNickName(res.data.users.nickname);
+        setUserImg(res.data.users.users_img);
+      });
+    } else {
+      return setReqStatee('password');
     }
   };
+
   const deleteAccount = () => {
     console.log('삭제요청 axios.delete', API);
 
@@ -405,7 +427,7 @@ function Mypage() {
           <input
             css={[wnr, inputStyle]}
             type="text"
-            placeholder="닉네임을 입력해주세요."
+            placeholder={currentNickName}
             onChange={nicknameHandler}
             value={nickname}
           />
@@ -457,6 +479,7 @@ function Mypage() {
             onChange={confirmPasswordHandler}
             value={confirmPassword}
           />
+          <div css={[reqMsgStyle, noticeNo]}>{reqMag[reqState]}</div>
           <button css={[wnr, buttonStyle]} onClick={modifyAccount}>
             수정완료
           </button>
