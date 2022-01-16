@@ -24,6 +24,13 @@ const arrow = css`
   border-radius: ${rem(5)};
   background-color: ${color.white};
   color: ${color.placeholder};
+  :hover {
+    opacity: 0.65;
+    cursor: pointer;
+  }
+  :active {
+    opacity: 0.95;
+  }
 `;
 const thisMonth = css`
   font-size: ${rem(20)};
@@ -89,11 +96,11 @@ interface AdateProps {
   height: number;
   year: number;
   month: number;
+  color: string | null;
 }
 
 function Adate(props: AdateProps) {
-  const { date, idx, width, year, month } = props;
-  const [isSelect, setIsSelect] = useState(false);
+  const { date, idx, width, year, month, color } = props;
   const [setDates, setSetDates] = useRecoilState(selectDate);
 
   let thisYear = String(year);
@@ -135,7 +142,7 @@ function Adate(props: AdateProps) {
         line-height: ${rem(width / 7)};
         font-size: ${rem(14)};
         text-align: center;
-        color: ${isWeekend};
+        color: ${color ? color : isWeekend};
         position: relative;
       `}
       onClick={selectDateHandler}
@@ -256,6 +263,11 @@ export default function Calendar() {
               month={targetMonth}
               width={widthPixel}
               height={heigthPixel}
+              color={
+                (idx < 6 && date > 20) || (idx > 20 && date < 8)
+                  ? color.placeholder
+                  : null
+              }
             />
           ))}
         </div>
