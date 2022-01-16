@@ -144,7 +144,6 @@ function Main() {
               const likes = res.data['likes'].map(
                 (obj: { posts_id: number }) => obj.posts_id,
               );
-              console.log('likes main', likes);
               setLikedPosts(likes);
             }
           })

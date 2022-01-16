@@ -28,6 +28,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   endDate,
   isSelectStart,
+  likedProducts,
   post_id,
   selectDate,
   showCalendar,
@@ -148,33 +149,31 @@ function DetailView() {
 
   const postId = useRecoilValue(post_id);
   const [postInfo, setPostInfo] = useState(dummyData);
+  const likedPosts = useRecoilValue<number[]>(likedProducts);
 
   useEffect(() => {
     const getData = async () => {
-      console.log('postId', postId);
       const API = `${host}/product/post/${postId}`;
       const Config = {
         headers: { 'Content-Type': 'application/json' },
       };
-      axios.get(API, Config).then((res) => {
+      await axios.get(API, Config).then((res) => {
         console.log('api success', res.data);
         setPostInfo(res.data);
       });
-
-      let tempReviews: reviewsType = [...reviews];
-
-      postInfo.reviews.forEach((el: any) => {
-        tempReviews[el.reviews_id - 1] = {
-          ...tempReviews[el.reviews_id - 1],
-          count: el.count,
-        };
-      });
-      setGetReviews(tempReviews);
-      // setStart('');
-      // setEnd('');
-      // setTotalRentalDates([]);
-      // setIsShowCalendar(false);
     };
+    let tempReviews: reviewsType = [...reviews];
+    postInfo.reviews.forEach((el: any) => {
+      tempReviews[el.reviews_id - 1] = {
+        ...tempReviews[el.reviews_id - 1],
+        count: el.count,
+      };
+    });
+    setGetReviews(tempReviews);
+    // setStart('');
+    // setEnd('');
+    // setTotalRentalDates([]);
+    // setIsShowCalendar(false);
     getData();
   }, [postId]);
 
@@ -234,7 +233,7 @@ function DetailView() {
           </div>
           <LikeSymbol
             postId={postId}
-            isFill={false}
+            isFill={likedPosts.includes(postId)}
             count={postInfo.posts.likes_count}
             fontSize={18}
             borderColor={color.border}
