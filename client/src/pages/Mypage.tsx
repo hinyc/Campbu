@@ -18,8 +18,9 @@ import ReviewBox from '../components/ReviewBox';
 import ReviewTitle from '../components/ReviweTitle';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { imgFile } from '../Atom';
-import { constSelector, useRecoilState } from 'recoil';
+import { imgFile, isLogin } from '../Atom';
+import { constSelector, useRecoilState, useSetRecoilState } from 'recoil';
+import { useNavigate } from 'react-router-dom';
 
 const imgStyle = css`
   width: ${rem(114)};
@@ -138,13 +139,16 @@ const config = {
 };
 
 function Mypage() {
+  //전역상태
+  const setIsLogin = useSetRecoilState(isLogin);
+
+  //지역상태
   const [currentNickName, setCurrentNickName] = useState('');
   const [nickname, setNickname] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [userImg, setUserImg] = useState<string>('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [imgfiles, setFiles] = useRecoilState(imgFile);
   const [getReviews, setGetReviews] = useState<reviewsType>([
     {
       id: 0,
@@ -156,99 +160,34 @@ function Mypage() {
   const [passwordValid, setPasswordValid] = useState(false);
   const [nickDuplicateClick, setNickDuplicateClick] = useState(false);
   const [nickDupliacte, setNickDupliacte] = useState(false);
-
+  const navigate = useNavigate();
   // 유저정보요청
   useEffect(() => {
-    axios.get(`${host}/userinfo/account`, config).then((res) => {
+    const API = `${host}/userinfo/account`;
+
+    axios.get(API, config).then((res) => {
       const userinfo = res.data;
-      console.log('data', userinfo);
+      console.log('data2', userinfo);
+
+      setUserImg(userinfo.users.users_img);
+      setCurrentNickName(userinfo.users.nickname);
+      setNickname(userinfo.users.nickname);
+      setEmail(userinfo.users.email);
+
+      //받은 review 목록
+      let tempReviews: reviewsType = [...reviews];
+
+      userinfo.reviews.forEach((el: any) => {
+        tempReviews[el.reviews_id - 1] = {
+          ...tempReviews[el.reviews_id - 1],
+          count: el.count,
+        };
+      });
+      setGetReviews(tempReviews);
     });
-    const userinfo = {
-      users: {
-        id: 1,
-        email: 'code@gmail.com',
-        nickname: '김코딩',
-        users_img:
-          'https://images.unsplash.com/photo-1497906539264-eb74442e37a9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80',
-        created_at: '2021-12-16T09:42:40.000Z',
-        updated_at: '2021-12-16T09:42:40.000Z',
-        reviews: [
-          {
-            id: 1,
-            users_id: 1,
-            reviews_id: 1,
-            count: 2,
-            created_at: '2021-12-16T09:42:40.000Z',
-            updated_at: '2021-12-16T09:42:40.000Z',
-          },
-          {
-            id: 1,
-            users_id: 1,
-            reviews_id: 12,
-            count: 5,
-            created_at: '2021-12-16T09:42:40.000Z',
-            updated_at: '2021-12-16T09:42:40.000Z',
-          },
-          {
-            id: 1,
-            users_id: 1,
-            reviews_id: 4,
-            count: 5,
-            created_at: '2021-12-16T09:42:40.000Z',
-            updated_at: '2021-12-16T09:42:40.000Z',
-          },
-          {
-            id: 1,
-            users_id: 1,
-            reviews_id: 7,
-            count: 5,
-            created_at: '2021-12-16T09:42:40.000Z',
-            updated_at: '2021-12-16T09:42:40.000Z',
-          },
-          {
-            id: 1,
-            users_id: 1,
-            reviews_id: 8,
-            count: 5,
-            created_at: '2021-12-16T09:42:40.000Z',
-            updated_at: '2021-12-16T09:42:40.000Z',
-          },
-          {
-            id: 1,
-            users_id: 1,
-            reviews_id: 10,
-            count: 5,
-            created_at: '2021-12-16T09:42:40.000Z',
-            updated_at: '2021-12-16T09:42:40.000Z',
-          },
-          {
-            id: 1,
-            users_id: 1,
-            reviews_id: 6,
-            count: 5,
-            created_at: '2021-12-16T09:42:40.000Z',
-            updated_at: '2021-12-16T09:42:40.000Z',
-          },
-        ],
-      },
-    };
-    setUserImg(userinfo.users.users_img);
-    setCurrentNickName(userinfo.users.nickname);
-    setEmail(userinfo.users.email);
-
-    //받은 review 목록
-    let tempReviews: reviewsType = [...reviews];
-
-    userinfo.users.reviews.forEach((el: any) => {
-      tempReviews[el.reviews_id - 1] = {
-        ...tempReviews[el.reviews_id - 1],
-        count: el.count,
-      };
-    });
-    setGetReviews(tempReviews);
-
-    // 서버로부터 받은 데이터 예시
   }, []);
+
+  console.log(userImg);
 
   const nicknameHandler = (e: any) => setNickname(e.target.value);
   const nicknameDuplicateCheckHandler = () => {
@@ -286,53 +225,59 @@ function Mypage() {
 
   const modifyAccount = () => {
     if (passwordValid && password === confirmPassword) {
-      console.log('수정요청 axios.patch', API);
       const modifyData: {
         nickname: string;
         password: string;
-        user_img: string;
+        users_img: string;
       } = {
         nickname: nickname,
         password: password,
-        user_img: userImg,
+        users_img: userImg,
       };
 
       axios.patch(API, modifyData, config).then((res: any) => console.log(res));
-
-      console.log('data', modifyData);
     }
   };
   const deleteAccount = () => {
     console.log('삭제요청 axios.delete', API);
 
-    // axios
-    //   .delete(API, config)
-    //   .then((res) => {
-    //     if (res.status === 200) {
-    //       console.log('탈퇴완료');
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log('잘못된요청');
-    //   });
+    setIsLogin(false);
+    axios
+      .get(`${host}/user/logout`)
+      .then((res: any) => {
+        console.log(res.status);
+
+        axios
+          .delete(API, config)
+          .then((res) => {
+            if (res.status === 200) {
+              console.log('탈퇴완료');
+            }
+          })
+          .catch((err) => {
+            console.log('잘못된요청');
+          });
+        navigate('/');
+      })
+      .catch((err) => console.error(err));
   };
 
-  const insertImgHandler = (e: any) => {
-    const target = e.target.files[0];
+  const insertImgHandler = async (e: any) => {
+    const file = e.target.files[0];
 
-    let reader = new FileReader();
+    const geturlAPI = `${host}/newurl`;
+    const { url } = await fetch(geturlAPI).then((res) => res.json());
 
-    if (target) {
-      reader.readAsDataURL(target);
-      setFiles([...imgfiles, target]);
-    }
+    await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      body: file,
+    });
 
-    reader.onloadend = () => {
-      const preViewUrl = reader.result;
-      if (preViewUrl) {
-        setUserImg(String(preViewUrl));
-      }
-    };
+    const imageUrl = url.split('?')[0];
+    setUserImg(imageUrl);
   };
 
   return (
@@ -520,6 +465,14 @@ function Mypage() {
               color: ${color.border};
               margin-top: ${rem(30)};
               text-decoration: underline;
+              transition: 0.1s;
+              :hover {
+                font-weight: 700;
+                cursor: pointer;
+              }
+              :active {
+                opacity: 0.75;
+              }
             `}
             onClick={deleteAccount}
           >
