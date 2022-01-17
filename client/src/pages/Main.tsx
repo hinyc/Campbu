@@ -2,7 +2,7 @@
 import { css, keyframes } from '@emotion/react';
 import Product from '../components/Product';
 import WritingButton from '../components/WritingButton';
-import { rem, relative, host, addressAPI } from '../common';
+import { rem, relative, host, addressAPI, config } from '../common';
 import SearchGreen from '../assets/SearchGreen.svg';
 import SearchInput from '../components/SearchInput';
 import Category from '../components/Category';
@@ -16,6 +16,8 @@ import {
   showAddressList,
   searchAddress,
   isLoading,
+  isLogin,
+  likedProducts,
 } from '../Atom';
 import { useEffect, useState } from 'react';
 import AlertModal from '../components/AlertModal';
@@ -82,13 +84,7 @@ const load = css`
 
 export interface Posts {
   posts: Post[];
-  likes?: {
-    id: number;
-    users_id: number;
-    posts_id: number;
-    created_at?: string;
-    updated_at?: string;
-  }[];
+  likes?: { posts_id: number }[];
 }
 
 export interface Post {
@@ -111,47 +107,63 @@ export interface Post {
 
 function Main() {
   const [products, searchAddressList] = useRecoilState<Posts>(posts);
+  const setMainSearch = useSetRecoilState<Posts>(originalPosts);
   const [loading, setIsLoading] = useRecoilState(isLoading);
   const [showModal, setShowModal] = useRecoilState(showAlertModal);
   const [searchValue, setSearchValue] = useRecoilState(selectAddress);
   const [addressList, setSearchAddress] = useRecoilState(searchAddress);
   const [showAddress, setShowAddress] = useRecoilState(showAddressList);
-  const setMainSearch = useSetRecoilState<Posts>(originalPosts);
+  const login = useRecoilValue(isLogin);
+  const [selected, setSelected] = useState<boolean>(false);
+  const [likedPosts, setLikedPosts] = useRecoilState<number[]>(likedProducts);
+
+  useEffect(() => {
+    setSearchValue('');
+  }, []);
 
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
-    }, 5000);
-  }, []);
+    }, 1000);
+  }, [selected]);
 
   const onChange = (e: any) => {
     setSearchValue(e.target.value);
   };
 
-  // TODO: 로딩 컴포넌트 띄우기
-  const onSearchClick = () => {
-    if (searchValue.length !== 0) {
-      getAddress();
-      if (searchValue.length > 5) {
-        axios
+  const onSearchClick = async () => {
+    getAddress();
+    if (!showAddress && searchValue && selected) {
+      if (login) {
+        await axios
+          .get(`${host}/product/address/${searchValue}`, config)
+          .then((res) => {
+            if (res.status === 200) {
+              searchAddressList(res.data);
+              setMainSearch(res.data);
+              const likes = res.data['likes'].map(
+                (obj: { posts_id: number }) => obj.posts_id,
+              );
+              setLikedPosts(likes);
+            }
+          })
+          .catch((err) => console.error('에러입니다', err));
+      } else {
+        await axios
           .get(`${host}/product/address/${searchValue}`)
           .then((res) => {
             if (res.status === 200) {
-              setMainSearch(res.data);
               searchAddressList(res.data);
+              setMainSearch(res.data);
             }
           })
-          .catch((err) => console.error(err));
-        setSearchValue('');
-        setShowAddress(false);
+          .catch((err) => console.error('에러입니다', err));
       }
-    } else {
-      setShowModal(true);
     }
   };
 
-  const getAddress = () => {
-    axios
+  const getAddress = async () => {
+    await axios
       .get(
         `https://www.juso.go.kr/addrlink/addrLinkApi.do?currentPage=1&countPerPage=50&keyword=${searchValue}&confmKey=${addressAPI}&resultType=json`,
         { headers: { 'Content-Type': 'application/json' } },
@@ -171,6 +183,7 @@ function Main() {
         }
         setSearchAddress(addressList);
         setShowAddress(true);
+        setSelected(true);
       });
   };
 
@@ -216,8 +229,7 @@ function Main() {
             <Product
               key={index}
               count={product.likes_count}
-              // TODO: 좋아요 눌렀는지 안눌렀는지 상태 변경
-              isFill={false}
+              isFill={likedPosts.includes(product.id)}
               postId={product.id}
               img_urls={product.img_urls}
               address={product.address}

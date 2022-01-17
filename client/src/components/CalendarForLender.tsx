@@ -44,6 +44,13 @@ const arrow = css`
   border-radius: ${rem(5)};
   background-color: ${color.white};
   color: ${color.placeholder};
+  :hover {
+    opacity: 0.65;
+    cursor: pointer;
+  }
+  :active {
+    opacity: 0.95;
+  }
 `;
 const thisMonth = css`
   font-size: ${rem(20)};
@@ -76,7 +83,7 @@ const pointer = css`
   }
 `;
 
-const unableStyle = css`
+export const unableStyle = css`
   text-align: center;
   width: ${rem(40)};
   height: ${rem(12)};
@@ -141,12 +148,14 @@ interface AdateProps {
   height: number;
   year: number;
   month: number;
+  thisColor: string | null;
 }
 
 function Adate(props: AdateProps) {
-  const { date, idx, width, year, month } = props;
+  const { date, idx, width, year, month, thisColor } = props;
   const [totalRentalDates, setTotalRentalDates] = useRecoilState(selectDate);
-  const isSelectStartState = useRecoilValue(isSelectStart);
+  const [isSelectStartState, setIsSelectStartState] =
+    useRecoilState(isSelectStart);
   const [start, setStart] = useRecoilState(startDate);
   const [end, setEnd] = useRecoilState(endDate);
   const unableDates = useRecoilValue(unableDate);
@@ -185,6 +194,7 @@ function Adate(props: AdateProps) {
           let newDates = totalRentalDatesGenerator(today, end);
           setTotalRentalDates(newDates);
         }
+        setIsSelectStartState(false);
       } else if (today > start) {
         //대여 배열생성
         setEnd(today);
@@ -296,7 +306,11 @@ function Adate(props: AdateProps) {
           font-size: ${rem(14)};
           text-align: center;
           border-radius: ${rem(10)};
-          color: ${isUnable > -1 ? color.placeholder : isWeekend};
+          color: ${thisColor
+            ? thisColor
+            : isUnable > -1
+            ? color.placeholder
+            : isWeekend};
         `,
         relative,
       ]}
@@ -304,7 +318,7 @@ function Adate(props: AdateProps) {
     >
       {isUnable === -1 ? (
         <>
-          <div css={pointer}>{date}</div>
+          <div css={[pointer]}>{date}</div>
           {start === today ? (
             <div css={[absolute, rentalStartStyle]}>대여일</div>
           ) : end === today ? (
@@ -313,7 +327,7 @@ function Adate(props: AdateProps) {
         </>
       ) : (
         <>
-          <div css={isUnable === -1 ? pointer : null}>{date}</div>
+          <div css={[isUnable === -1 ? pointer : null]}>{date}</div>
           <div css={[absolute, unableStyle]}>예약불가</div>
         </>
       )}
@@ -422,6 +436,11 @@ export default function Calendar() {
               month={targetMonth}
               width={widthPixel}
               height={heigthPixel}
+              thisColor={
+                (idx < 6 && date > 20) || (idx > 20 && date < 8)
+                  ? color.placeholder
+                  : null
+              }
             />
           ))}
         </div>
