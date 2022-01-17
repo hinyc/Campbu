@@ -14,6 +14,11 @@ export default async () => {
   });
 
   await io.on('connection', async (socket) => {
+    socket.on('open-room', async (ids) => {
+      ids.map((id: any) => {
+        socket.join(id);
+      });
+    });
     socket.on('send-message', async (info) => {
       const id: string = info.chatRoomId;
       const message: string = info.chatMessage;
@@ -30,8 +35,12 @@ export default async () => {
       const newChat = JSON.stringify(chat.concat(chatMessage));
       chatRepository.update(Number(id), { chat: newChat });
 
-      socket.join(id);
-      io.to(id).emit('receive-message', { message, sender: nickName, date });
+      io.to(id).emit('receive-message', {
+        message,
+        sender: nickName,
+        date,
+        id,
+      });
     });
   });
 };
