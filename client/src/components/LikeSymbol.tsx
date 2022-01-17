@@ -96,7 +96,7 @@ function LikeSymbol(props: LikeProps) {
           alt="fill heart"
         />
       </button>
-      <span>{countHeart}</span>
+      <span>{loginUser ? countHeart : count}</span>
     </div>
   );
 }
