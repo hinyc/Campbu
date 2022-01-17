@@ -176,7 +176,7 @@ function LoginModal() {
     console.log('네이버로그인요청');
   };
 
-  const REST_API_KEY = '743967a98f800a0d61397559fbf5ad5f';
+  const REST_API_KEY = 'b8665986f69d987ebb83449a6a9b06ba';
   const REDIRECT_URI = 'http://localhost:3000/oauth/kakao/callback';
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 

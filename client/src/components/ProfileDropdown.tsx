@@ -43,9 +43,9 @@ function ProfileDropdown() {
   const logout = () => {
     setIsLogin(false);
     axios
-      .get(`${host}/user/logout`)
+      .get(`${host}/user/logout`, { withCredentials: true })
       .then((res: any) => {
-        console.log(res.status);
+        console.log(res);
         navigate('/');
       })
       .catch((err) => console.error(err));
