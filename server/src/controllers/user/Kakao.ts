@@ -22,6 +22,12 @@ export default {
       .then((response) => res.send(response.data));
   },
   getUserInfo: async (req: Request, res: Response) => {
-    console.log(req.params);
+    const token = req.headers.authorization?.split(' ')[1];
+
+    axios
+      .get('https://kapi.kakao.com/v2/user/me', {
+        headers: { authorization: `Bearer ${token} ` },
+      })
+      .then((res) => console.log(res.data));
   },
 };

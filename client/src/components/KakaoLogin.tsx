@@ -47,9 +47,11 @@ export default function KakaoLogin() {
     console.log('location');
     if (accessToken !== '') {
       await axios
-        .get(`http://localhost:5050/user/kakao/${accessToken}`)
+        .get(`http://localhost:5050/user/kakao/`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        })
         .then((res) => {
-          console.log(res);
+          console.log('res');
         });
     }
   };
