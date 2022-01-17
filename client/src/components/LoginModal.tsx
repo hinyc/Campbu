@@ -100,7 +100,7 @@ const floatingText = css`
   top: ${rem(-5)};
 `;
 
-const reqMsg = css`
+const reqMsgStyle = css`
   height: ${rem(18)};
   line-height: ${rem(18)};
   font-size: ${rem(10)};
@@ -115,9 +115,7 @@ function LoginModal() {
   const setShowSignup = useSetRecoilState(showSignupModal);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [emailReqMsg, setEmailReqMsg] = useState(false);
-  const [passwordReqMsg, setPasswordReqMsg] = useState(false);
-
+  const [reqMsgState, setReqMsgState] = useState('ok');
   const navigate = useNavigate();
 
   const emailHandler = (e: any) => {
@@ -126,6 +124,16 @@ function LoginModal() {
 
   const passwordHandler = (e: any) => {
     setPassword(e.target.value);
+  };
+
+  interface reqMsgType {
+    [key: string]: string;
+  }
+  const reqMsg: reqMsgType = {
+    ok: '',
+    email: '* 이메일을 입력해주세요.',
+    password: '* 비밀번호를 입력해주세요.',
+    conflict: '* 아이디와 비밀번호를 확인해주세요',
   };
 
   const loginHandler = () => {
@@ -139,11 +147,11 @@ function LoginModal() {
       password,
     };
 
-    if (!email) return setEmailReqMsg(true);
+    if (!email) return setReqMsgState('email');
     if (!password) {
-      setEmailReqMsg(false);
-      setPasswordReqMsg(true);
-      return;
+      return setReqMsgState('password');
+    } else {
+      setReqMsgState('ok');
     }
 
     axios
@@ -155,13 +163,12 @@ function LoginModal() {
           setShowLogin(false);
           setIsLogin(true);
           navigate('/');
-          return;
+          localStorage.setItem('isLogin', 'true');
         }
       })
       .catch((res) => {
         console.log(res);
-        setPasswordReqMsg(false);
-        console.log(passwordReqMsg);
+        setReqMsgState('conflict');
       });
   };
 
@@ -176,7 +183,7 @@ function LoginModal() {
     console.log('네이버로그인요청');
   };
 
-  const REST_API_KEY = '743967a98f800a0d61397559fbf5ad5f';
+  const REST_API_KEY = 'b8665986f69d987ebb83449a6a9b06ba';
   const REDIRECT_URI = 'http://localhost:3000/oauth/kakao/callback';
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
@@ -210,9 +217,8 @@ function LoginModal() {
               type="password"
             />
           </div>
-          <div css={reqMsg}>
-            {emailReqMsg ? <div>* 이메일을 입력해주세요.</div> : null}
-            {passwordReqMsg ? <div>* 비밀번호를 입력해주세요.</div> : null}
+          <div css={reqMsgStyle}>
+            <div>{reqMsg[reqMsgState]}</div>
           </div>
 
           <div>

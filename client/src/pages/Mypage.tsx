@@ -163,6 +163,7 @@ function Mypage() {
   const [nickDuplicateClick, setNickDuplicateClick] = useState(false);
   const [nickDupliacte, setNickDupliacte] = useState(false);
   const [reqState, setReqStatee] = useState<string>('ok');
+
   const navigate = useNavigate();
   // 유저정보요청
   useEffect(() => {
@@ -268,7 +269,7 @@ function Mypage() {
       .get(`${host}/user/logout`)
       .then((res: any) => {
         console.log(res.status);
-
+        localStorage.removeItem('isLogin');
         axios
           .delete(API, config)
           .then((res) => {
@@ -368,6 +369,8 @@ function Mypage() {
                 isBad={false}
                 width={180}
                 margin={`${rem(5)} 0`}
+                fontColor={`${color.mid}`}
+                borderColor={`${color.mid}`}
               />
             ) : null;
           })}
@@ -383,6 +386,8 @@ function Mypage() {
                 isBad={true}
                 width={180}
                 margin={`${rem(5)} 0`}
+                fontColor={`${color.deep}`}
+                borderColor={`${color.deep}`}
               />
             );
           })}
