@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import Reservation from '../../components/Reservation';
 import { css } from '@emotion/react';
-import { color, rem, flex, textDecorationNone, host } from '../../common';
+import { color, rem, flex, host, config } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Link } from 'react-router-dom';
 import { link, visit } from './tab';
@@ -30,7 +30,7 @@ const borrows = {
   borrow: [
     {
       reservation_id: 1,
-      reservation_reservation_dates: '2022.01.15,2022.01.16,2022.01.17',
+      reservation_reservation_dates: ['2022.01.15', '2022.01.16', '2022.01.17'],
       reservation_reservation_status: 1,
       reservation_users_id: 2,
       reservation_posts_id: 2,
@@ -38,67 +38,7 @@ const borrows = {
       posts_category: '의자/테이블',
       posts_deposit: 20000,
       posts_rental_fee: 40000,
-      posts_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
-      posts_title: '튼튼한 의자 빌려드려요',
-      posts_content: '올라가도 안 부서집니다.',
-      posts_longitude: '127.044484819305',
-      posts_latitude: '37.2244311943994',
-      posts_address: '화성시 기산동',
-      posts_img_urls:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ98OT7JgUOpLY1IN0cPBLYfEDTisFUCKLrZw&usqp=CAU',
-      posts_users_id: 1,
-    },
-    {
-      reservation_id: 2,
-      reservation_reservation_dates: '2022.01.15,2022.01.16,2022.01.17',
-      reservation_reservation_status: 2,
-      reservation_users_id: 1,
-      reservation_posts_id: 1,
-      posts_id: 3,
-      posts_category: '의자/테이블',
-      posts_deposit: 20000,
-      posts_rental_fee: 40000,
-      posts_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
-      posts_title: '튼튼한 의자 빌려드려요',
-      posts_content: '올라가도 안 부서집니다.',
-      posts_longitude: '127.044484819305',
-      posts_latitude: '37.2244311943994',
-      posts_address: '화성시 기산동',
-      posts_img_urls:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ98OT7JgUOpLY1IN0cPBLYfEDTisFUCKLrZw&usqp=CAU',
-      posts_users_id: 1,
-    },
-    {
-      reservation_id: 3,
-      reservation_reservation_dates: '2022.01.15,2022.01.16,2022.01.17',
-      reservation_reservation_status: 3,
-      reservation_users_id: 2,
-      reservation_posts_id: 2,
-      posts_id: 2,
-      posts_category: '의자/테이블',
-      posts_deposit: 20000,
-      posts_rental_fee: 40000,
-      posts_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
-      posts_title: '튼튼한 의자 빌려드려요',
-      posts_content: '올라가도 안 부서집니다.',
-      posts_longitude: '127.044484819305',
-      posts_latitude: '37.2244311943994',
-      posts_address: '화성시 기산동',
-      posts_img_urls:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ98OT7JgUOpLY1IN0cPBLYfEDTisFUCKLrZw&usqp=CAU',
-      posts_users_id: 1,
-    },
-    {
-      reservation_id: 4,
-      reservation_reservation_dates: '2022.01.15,2022.01.16,2022.01.17',
-      reservation_reservation_status: 4,
-      reservation_users_id: 2,
-      reservation_posts_id: 2,
-      posts_id: 2,
-      posts_category: '의자/테이블',
-      posts_deposit: 20000,
-      posts_rental_fee: 40000,
-      posts_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
+      posts_unavailable_dates: ['2022.01.11', '2022.01.12', '2022.01.13'],
       posts_title: '튼튼한 의자 빌려드려요',
       posts_content: '올라가도 안 부서집니다.',
       posts_longitude: '127.044484819305',
@@ -141,15 +81,17 @@ function BorrowList() {
     setSubmit(false);
   };
 
-  // useEffect(() => {
-  //   axios
-  //     .get(`${host}/userinfo/product/borrow`)
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       setBorrowLists(res.data);
-  //     })
-  //     .catch((err) => console.error(err));
-  // },[]);
+  useEffect(() => {
+    axios
+      .get(`${host}/userinfo/product/borrow`, config)
+      .then((res) => {
+        const sortedData = res.data['borrow'].sort(
+          (a: any, b: any) => b.reservation_id - a.reservation_id,
+        );
+        setBorrowLists({ borrow: sortedData });
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
     <>

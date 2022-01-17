@@ -6,6 +6,7 @@ import { useSetRecoilState } from 'recoil';
 import { showCompleteModal, showReviewModal, showSubmitModal } from '../Atom';
 import {
   color,
+  config,
   host,
   modalBackgroundStyle,
   rem,
@@ -55,14 +56,14 @@ function ReviewModal({ userId }: Props) {
   const setSubmit = useSetRecoilState(showSubmitModal);
   const [reviewId, setReviewId] = useState<number[]>([]);
   const onReviewSubmitClick = () => {
-    // axios
-    //   .post(
-    //     `${host}/user/review`,
-    //     { user_id: userId, review_id: reviewId },
-    //     { headers: { 'Content-Type': 'application/json' } },
-    //   )
-    //   .then((res) => console.log(res.data))
-    //   .catch((err) => console.error(err));
+    axios
+      .post(
+        `${host}/user/review`,
+        { user_id: userId, review_id: reviewId },
+        config,
+      )
+      .then((res) => console.log(res.data))
+      .catch((err) => console.error(err));
     setReview(false);
     setSubmit(true);
   };
@@ -70,13 +71,11 @@ function ReviewModal({ userId }: Props) {
   const onGoodReviewClick = (id: number) => {
     const selectedId = reviewId.concat(id);
     setReviewId(selectedId);
-    console.log('good', selectedId);
   };
 
   const onBadReviewClick = (id: number) => {
     const selectedId = reviewId.concat(id);
     setReviewId(selectedId);
-    console.log('bad', selectedId);
   };
 
   return (
@@ -87,17 +86,21 @@ function ReviewModal({ userId }: Props) {
         <div>
           <div css={reviewAlign}>
             {reviews.map((review, idx) => {
-              return review.id < 7 ? (
-                <ReviewBox
-                  key={idx}
-                  content={review.review}
-                  isBad={false}
-                  width={180}
-                  isCenterText="center"
-                  margin={`0.5rem 0`}
-                  onClick={true}
-                />
-              ) : null;
+              return (
+                review.id < 7 && (
+                  <ReviewBox
+                    key={idx}
+                    content={review.review}
+                    isBad={false}
+                    width={180}
+                    isCenterText="center"
+                    margin={`0.5rem 0`}
+                    fontColor={`${color.placeholder}`}
+                    borderColor={`${color.placeholder}`}
+                    onClick={() => onGoodReviewClick(review.id)}
+                  />
+                )
+              );
             })}
           </div>
           <div
@@ -117,7 +120,9 @@ function ReviewModal({ userId }: Props) {
                   width={180}
                   isCenterText="center"
                   margin={`0.5rem 0`}
-                  onClick={true}
+                  fontColor={`${color.placeholder}`}
+                  borderColor={`${color.placeholder}`}
+                  onClick={() => onBadReviewClick(review.id)}
                 />
               );
             })}

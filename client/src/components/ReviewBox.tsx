@@ -35,6 +35,8 @@ interface ReviewContent {
   isBad: boolean;
   isCenterText?: string;
   margin?: string;
+  fontColor: string;
+  borderColor: string;
   onClick?: any;
 }
 
@@ -49,17 +51,21 @@ function ReviewBox(props: ReviewContent) {
     isBad,
     isCenterText,
     margin,
+    fontColor,
+    borderColor,
     onClick,
   } = props;
 
-  function clickHandler() {
+  const clickHandler = () => {
     setClick(!click);
-    console.log(click);
-  }
+  };
 
   return (
     <div
-      onClick={onClick ? clickHandler : undefined}
+      onClick={() => {
+        clickHandler();
+        onClick();
+      }}
       css={[
         reviewStyle,
         css`
@@ -67,21 +73,15 @@ function ReviewBox(props: ReviewContent) {
           width: ${width ? rem(width) : null};
           height: ${height ? rem(height) : null};
           line-height: ${height ? rem(height) : null};
-          color: ${count
-            ? click
-              ? color.white
-              : isBad
-              ? color.deep
-              : null
-            : color.placeholder};
-          border-color: ${count ? (isBad ? color.deep : null) : color.border};
+          color: ${click ? color.white : count ? fontColor : color.placeholder};
+          border-color: ${count ? borderColor : color.border};
           margin: ${margin ? margin : null};
           background-color: ${click ? (isBad ? color.deep : color.mid) : null};
           :hover {
-            cursor: ${onClick ? 'pointer' : null};
+            cursor: pointer;
           }
           :active {
-            opacity: ${onClick ? '80%' : null};
+            opacity: '80%';
           }
         `,
       ]}
@@ -121,10 +121,11 @@ function ReviewBox(props: ReviewContent) {
             countStyle,
             css`
               margin-right: ${width ? rem(width * 0.075) : null};
+              font-size: ${rem(20)};
             `,
           ]}
         >
-          ✔
+          {/* ✔ */}✓
         </div>
       )}
     </div>

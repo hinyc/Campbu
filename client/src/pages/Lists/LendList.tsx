@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, rem, flex } from '../../common';
+import { color, rem, flex, config } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Button } from '../../components/Button';
 import emptyLend from '../../assets/pictures/emptyLend.svg';
@@ -32,7 +32,7 @@ const lends = {
   lend: [
     {
       reservation_id: 3,
-      reservation_reservation_dates: '2022.01.12,2022.01.13,2022.01.14',
+      reservation_reservation_dates: ['2022.01.12', '2022.01.13', '2022.01.14'],
       reservation_reservation_status: 1,
       reservation_created_at: '2022-01-12T06:54:09.862Z',
       reservation_updated_at: '2022-01-12T06:54:09.862Z',
@@ -42,7 +42,7 @@ const lends = {
       posts_category: '그릴/버너',
       posts_deposit: 50000,
       posts_rental_fee: 100000,
-      posts_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
+      posts_unavailable_dates: ['2022.01.11', '2022.01.12', '2022.01.13'],
       posts_title: '튼튼한 그릴입니다',
       posts_content: '절대 쓰러지지 않아요',
       posts_longitude: '128.638149961102',
@@ -50,78 +50,6 @@ const lends = {
       posts_address: '수성구 황금동',
       posts_img_urls:
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfS8nqLKyNTIEtZkMcjSOwGyopmHw8M1HllQ&usqp=CAU',
-      posts_created_at: '2022-01-11T06:17:48.489Z',
-      posts_updated_at: '2022-01-11T06:17:48.489Z',
-      posts_users_id: 2,
-    },
-    {
-      reservation_id: 3,
-      reservation_reservation_dates: '2022.01.12,2022.01.13,2022.01.14',
-      reservation_reservation_status: 2,
-      reservation_created_at: '2022-01-12T06:54:09.862Z',
-      reservation_updated_at: '2022-01-12T06:54:09.862Z',
-      reservation_users_id: 1,
-      reservation_posts_id: 4,
-      posts_id: 4,
-      posts_category: '그릴/버너',
-      posts_deposit: 50000,
-      posts_rental_fee: 100000,
-      posts_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
-      posts_title: '튼튼한 그릴입니다',
-      posts_content: '절대 쓰러지지 않아요',
-      posts_longitude: '128.638149961102',
-      posts_latitude: '35.84398924816',
-      posts_address: '수성구 황금동',
-      posts_img_urls:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2OotEOvgBKM9h-bF7OuGh2tmHbYHidO-bhw&usqp=CAU',
-      posts_created_at: '2022-01-11T06:17:48.489Z',
-      posts_updated_at: '2022-01-11T06:17:48.489Z',
-      posts_users_id: 2,
-    },
-    {
-      reservation_id: 3,
-      reservation_reservation_dates: '2022.01.12,2022.01.13,2022.01.14',
-      reservation_reservation_status: 3,
-      reservation_created_at: '2022-01-12T06:54:09.862Z',
-      reservation_updated_at: '2022-01-12T06:54:09.862Z',
-      reservation_users_id: 1,
-      reservation_posts_id: 4,
-      posts_id: 4,
-      posts_category: '그릴/버너',
-      posts_deposit: 50000,
-      posts_rental_fee: 100000,
-      posts_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
-      posts_title: '튼튼한 그릴입니다',
-      posts_content: '절대 쓰러지지 않아요',
-      posts_longitude: '128.638149961102',
-      posts_latitude: '35.84398924816',
-      posts_address: '수성구 황금동',
-      posts_img_urls:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy1CkRFNJxeSB-hmmrnEQp7T7onntg4NO4YA&usqp=CAU',
-      posts_created_at: '2022-01-11T06:17:48.489Z',
-      posts_updated_at: '2022-01-11T06:17:48.489Z',
-      posts_users_id: 2,
-    },
-    {
-      reservation_id: 3,
-      reservation_reservation_dates: '2022.01.12,2022.01.13,2022.01.14',
-      reservation_reservation_status: 4,
-      reservation_created_at: '2022-01-12T06:54:09.862Z',
-      reservation_updated_at: '2022-01-12T06:54:09.862Z',
-      reservation_users_id: 1,
-      reservation_posts_id: 4,
-      posts_id: 4,
-      posts_category: '그릴/버너',
-      posts_deposit: 50000,
-      posts_rental_fee: 100000,
-      posts_unavailable_dates: '2022.01.11,2022.01.12,2022.01.13',
-      posts_title: '튼튼한 그릴입니다',
-      posts_content: '절대 쓰러지지 않아요',
-      posts_longitude: '128.638149961102',
-      posts_latitude: '35.84398924816',
-      posts_address: '수성구 황금동',
-      posts_img_urls:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdxiI2CQOzIDKDwjdwbxKkIsO8dlcx4Vf_mQ&usqp=CAU',
       posts_created_at: '2022-01-11T06:17:48.489Z',
       posts_updated_at: '2022-01-11T06:17:48.489Z',
       posts_users_id: 2,
@@ -158,15 +86,17 @@ function LendList() {
     setSubmit(false);
   };
 
-  // useEffect(() => {
-  //   axios
-  //     .get(`${host}/userinfo/product/lend`)
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       setLendLists(res.data);
-  //     })
-  //     .catch((err) => console.error(err));
-  // });
+  useEffect(() => {
+    axios
+      .get(`${host}/userinfo/product/lend`, config)
+      .then((res) => {
+        const sortedData = res.data['lend'].sort(
+          (a: any, b: any) => b.reservation_id - a.reservation_id,
+        );
+        setLendLists({ lend: sortedData });
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
     <>

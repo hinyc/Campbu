@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { rem, color, hover, shadow, host } from '../common';
+import { rem, color, hover, shadow, host, config } from '../common';
 import { Button } from './Button';
 import { useState } from 'react';
 import Complete from './Complete';
@@ -51,21 +51,21 @@ function YesOrNo({
   const setConfirm = useSetRecoilState(showConfirmModal);
   const setComplete = useSetRecoilState(showCompleteModal);
   const onOkClick = () => {
-    // if (reservation_status === 1) {
-    //   axios.delete(`${host}/reservation/:${reservationId}`).then((res) => {
-    //     console.log(res.data);
-    //   });
-    // } else {
-    //   axios
-    //     .patch(
-    //       `${host}/reservation/:${reservationId}`,
-    //       { reservation_status },
-    //       { headers: { 'Content-Type': 'application/json' } },
-    //     )
-    //     .then((res) => {
-    //       console.log(res.data);
-    //     });
-    // }
+    if (reservation_status === 1) {
+      axios
+        .delete(`${host}/reservation/${reservationId}`, config)
+        .then((res) => console.log(res.data.message))
+        .catch((err) => console.error(err));
+    } else {
+      axios
+        .patch(
+          `${host}/reservation/${reservationId}`,
+          { reservation_status: reservation_status + 1 },
+          config,
+        )
+        .then((res) => console.log(res.data.message))
+        .catch((err) => console.error(err));
+    }
     setComplete(true);
     setConfirm(false);
   };

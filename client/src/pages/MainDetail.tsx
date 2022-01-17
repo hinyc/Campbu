@@ -27,12 +27,14 @@ import { span, addressStyle, moneyTitle } from '../components/post';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   endDate,
+  isLogin,
   isSelectStart,
   likedProducts,
   post_id,
   profileImgUrl,
   selectDate,
   showCalendar,
+  showLoginModal,
   startDate,
   unableDate,
 } from '../Atom';
@@ -205,7 +207,9 @@ function DetailView() {
     useRecoilState(isSelectStart);
   const [isShowCalendar, setIsShowCalendar] = useRecoilState(showCalendar);
   const postId = useRecoilValue(post_id);
-  const likedPosts = useRecoilValue(likedProducts);
+  const likedPosts = useRecoilValue<number[]>(likedProducts);
+  const login = useRecoilValue(isLogin);
+  const setShowLoginModal = useSetRecoilState(showLoginModal);
   const profileImg = useRecoilValue(profileImgUrl);
 
   //지역
@@ -255,16 +259,23 @@ function DetailView() {
   };
 
   const reservationHandler = () => {
-    const API = `${host}/reservation`;
-    const data = {
-      posts_id: postId,
-      reservation_dates: totalRentalDates,
-    };
-    if (start && end) {
-      console.log('data', data);
-      axios.post(API, data, config).catch((err) => console.log(err));
+    if (login) {
+      const API = `${host}/reservation`;
+      const data = {
+        posts_id: postId,
+        reservation_dates: totalRentalDates,
+      };
+      if (start && end) {
+        console.log('reservation data', data);
+        axios
+          .post(API, data, config)
+          .then((res) => console.log(res.data))
+          .catch((err) => console.log(err));
+      } else {
+        console.log('대여일,반납일을 선택하세요');
+      }
     } else {
-      console.log('대여일,반납일을 선택하세요');
+      setShowLoginModal(true);
     }
   };
 
@@ -392,6 +403,8 @@ function DetailView() {
                   width={180}
                   height={37}
                   margin={`${rem(4)} 0`}
+                  fontColor={`${color.mid}`}
+                  borderColor={`${color.mid}`}
                 />
               ) : null;
             })}
@@ -408,6 +421,8 @@ function DetailView() {
                   width={180}
                   height={37}
                   margin={`${rem(4)} 0`}
+                  fontColor={`${color.deep}`}
+                  borderColor={`${color.deep}`}
                 />
               );
             })}
