@@ -152,7 +152,6 @@ const UploadImg = () => {
   };
 
   const deleteImg = (target: number) => {
-    setFiles(imgFiles.filter((el, idx) => idx !== target));
     setImageUrls(imageUrls.filter((el, idx) => idx !== target));
   };
   return (
@@ -219,13 +218,14 @@ export const Writing = () => {
   const [content, setContent] = useState<string>('');
   const [reqState, setReqState] = useState<string>('ok');
   const [isComplete, setIsComplete] = useState(false);
-
+  const setImageUrls = useSetRecoilState(preView);
   const navigate = useNavigate();
 
   useEffect(() => {
     setAddress('');
     setSerchAdress([]);
     setShowAdress(false);
+    setImageUrls([]);
   }, []);
 
   const category: string[] = [
