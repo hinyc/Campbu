@@ -24,7 +24,6 @@ export = async (req: Request, res: Response) => {
     .leftJoinAndSelect('reservation.posts_id', 'posts_id')
     .where('reservation.id = :id', { id: chat.reservation_id })
     .getOne();
-  console.log(post);
 
-  res.status(200).json({ chat, post });
+  res.status(200).json({ chat: chat.chat, post });
 };

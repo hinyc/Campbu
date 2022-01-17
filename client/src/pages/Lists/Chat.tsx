@@ -1,10 +1,30 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { flex, rem, color, relative, host } from '../../common';
+import { Link } from 'react-router-dom';
+import {
+  flex,
+  rem,
+  color,
+  relative,
+  host,
+  textDecorationNone,
+  flexBetween,
+} from '../../common';
 import { container } from './tab';
 import ListTab from '../../components/ListTab';
 import Input from '../../components/Input';
+import { Button } from '../../components/Button';
+import Reservation from '../../components/Reservation';
+import {
+  post,
+  img,
+  textContainer,
+  span,
+  addressStyle,
+  moneyTitle,
+} from '../../components/post';
 import PaperPlane from '../../assets/PaperPlane.svg';
+import Here from '../../assets/Here.svg';
 import { useRecoilValue } from 'recoil';
 import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
@@ -93,7 +113,7 @@ function Chat() {
   const [chatting, setChatting] = useState<object[]>([]);
   const [chatRooms, setChatRooms] = useState([]);
   const [userNickName, setUserNickName] = useState<string>('');
-  const [posts, setPosts] = useState<object>({});
+  const [posts, setPosts] = useState<any>({});
   const [buttonClick, setButtonClick] = useState<boolean>(false);
   const [socket, setSocket] = useState<any>();
   const onButtonClick = () => {
@@ -160,13 +180,25 @@ function Chat() {
           withCredentials: true,
         })
         .then((res: any) => {
-          setChatting([res.data.chat.chat]);
+          setChatting(res.data.chat);
           setPosts(res.data.post);
         });
     } else {
       setChatRoomId(0);
       setChatNickName('');
       setChatting([]);
+      setPosts({});
+    }
+  };
+
+  const getTime = (inDate: any) => {
+    const date = new Date(inDate);
+    const hour = date.getHours();
+    const min = date.getMinutes();
+    if (hour > 12) {
+      return `오후 ${hour - 12}시 ${min}분`;
+    } else {
+      return `오전 ${hour}시 ${min}분`;
     }
   };
 
@@ -322,7 +354,7 @@ function Chat() {
               `,
             ]}
           >
-            {chatting.map((chats: any) => (
+            {chatting.map((chats: any, index: number) => (
               <>
                 {chats.sender === userNickName ? (
                   <div
@@ -333,16 +365,39 @@ function Chat() {
                         margin: ${rem(10)};
                       `,
                     ]}
+                    key={chats.date}
                   >
+                    <div
+                      css={[
+                        css`
+                          width: ${rem(70)};
+                          position: relative;
+                        `,
+                      ]}
+                    >
+                      <div
+                        css={[
+                          css`
+                            font-size: ${rem(10)};
+                            text-align: left;
+                            color: #7d7d7d;
+                            position: absolute;
+                            bottom: ${rem(10)};
+                          `,
+                        ]}
+                      >
+                        {getTime(chats.date)}
+                      </div>
+                    </div>
                     <div>
                       <div
                         css={[
                           css`
-                            max-width: ${rem(550)};
+                            max-width: ${rem(250)};
                             font-size: ${rem(16)};
                             margin-right: ${rem(5)};
                             margin-top: ${rem(5)};
-                            text-align: right;
+                            text-align: left;
                             background-color: #ed662c;
                             border-radius: ${rem(5)};
                             padding: ${rem(5)};
@@ -373,6 +428,7 @@ function Chat() {
                         margin: ${rem(10)};
                       `,
                     ]}
+                    key={chats.date}
                   >
                     <div
                       css={[
@@ -389,11 +445,11 @@ function Chat() {
                       <div
                         css={[
                           css`
-                            max-width: ${rem(550)};
+                            max-width: ${rem(250)};
                             font-size: ${rem(18)};
                             margin-left: ${rem(5)};
                             margin-top: ${rem(5)};
-                            text-align: left;
+                            text-align: right;
                             border: 1px solid #ed662c;
                             border-radius: ${rem(5)};
                             padding: ${rem(2)};
@@ -401,6 +457,29 @@ function Chat() {
                         ]}
                       >
                         {chats.message}
+                      </div>
+                    </div>
+                    <div
+                      css={[
+                        css`
+                          width: ${rem(70)};
+                          position: relative;
+                        `,
+                      ]}
+                    >
+                      <div
+                        css={[
+                          css`
+                            font-size: ${rem(10)};
+                            text-align: right;
+                            color: #7d7d7d;
+                            position: absolute;
+                            bottom: ${rem(10)};
+                            margin-left: ${rem(5)};
+                          `,
+                        ]}
+                      >
+                        {getTime(chats.date)}
                       </div>
                     </div>
                   </div>
@@ -436,21 +515,48 @@ function Chat() {
             `,
           ]}
         >
-          {/* <Reservation
-            text="예약 취소"
-            background={`${color.point}`}
-            color="white"
-            cursor="pointer"
-            hover="80%"
-            postId={chatPost.Post.id}
-            img_urls={chatPost.Post.img_urls}
-            address={chatPost.Post.address}
-            title={chatPost.Post.title}
-            deposit={chatPost.Post.deposit}
-            rental_fee={chatPost.Post.rental_fee}
-            reservation_dates={chatPost.Post.reservation.reservation_dates}
-            onButtonClick={onButtonClick}
-          /> */}
+          {'id' in posts ? (
+            <div css={post}>
+              <Link to={`${posts.posts_id.id}`} css={textDecorationNone}>
+                <img src={posts.posts_id.img_urls} alt="product" css={img} />
+                <div css={textContainer}>
+                  <span css={[span, moneyTitle, addressStyle]}>
+                    <img src={Here} alt="위치" style={{ marginRight: '4px' }} />
+                    {posts.posts_id.address}
+                  </span>
+                  <span css={span}>{posts.posts_id.title}</span>
+                  <div css={flexBetween}>
+                    <span>
+                      <div css={[span, moneyTitle]}>보증금</div>
+                      <div css={span}>{posts.posts_id.deposit}원</div>
+                    </span>
+                    <span>
+                      <div css={[span, moneyTitle]}>대여비</div>
+                      <div css={span}>{posts.posts_id.rental_fee}원</div>
+                    </span>
+                  </div>
+                  <div css={[span, moneyTitle]}>대여날짜</div>
+                  <div css={span}>{`${posts.reservation_dates[0]} ~ ${
+                    posts.reservation_dates[posts.reservation_dates.length - 1]
+                  }`}</div>
+                </div>
+              </Link>
+              <Button
+                text={'캠핑'}
+                width={`${rem(205)}`}
+                height={`${rem(40)}`}
+                background={'white'}
+                color={color.mid}
+                border={`1px solid ${color.mid}`}
+                size={`${rem(14)}`}
+                cursor={'pointer'}
+                hover={'80%'}
+                onClick={onButtonClick}
+              />
+            </div>
+          ) : (
+            <div></div>
+          )}
         </div>
       </div>
     </>
