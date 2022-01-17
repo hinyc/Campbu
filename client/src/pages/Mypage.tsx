@@ -368,6 +368,8 @@ function Mypage() {
                 isBad={false}
                 width={180}
                 margin={`${rem(5)} 0`}
+                fontColor={`${color.mid}`}
+                borderColor={`${color.mid}`}
               />
             ) : null;
           })}
@@ -383,6 +385,8 @@ function Mypage() {
                 isBad={true}
                 width={180}
                 margin={`${rem(5)} 0`}
+                fontColor={`${color.deep}`}
+                borderColor={`${color.deep}`}
               />
             );
           })}
