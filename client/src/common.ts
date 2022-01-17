@@ -72,6 +72,9 @@ export const inactive = css`
   :focus {
     outline: none;
   }
+  :hover {
+    cursor: not-allowed;
+  }
 `;
 
 export const reviews: { id: number; review: string }[] = [

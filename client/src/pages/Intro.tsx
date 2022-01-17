@@ -9,6 +9,7 @@ import {
   host,
   addressAPI,
   absolute,
+  config,
 } from '../common';
 import { Link, useNavigate } from 'react-router-dom';
 import background from '../assets/pictures/background.png';
@@ -16,7 +17,7 @@ import Search from '../assets/Search.svg';
 
 import SearchInput from '../components/SearchInput';
 import { useEffect, useState } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   posts,
   selectAddress,
@@ -25,6 +26,8 @@ import {
   searchAddress,
   originalPosts,
   isLoading,
+  isLogin,
+  likedProducts,
 } from '../Atom';
 import axios from 'axios';
 import { Post, Posts } from './Main';
@@ -89,35 +92,61 @@ function Intro() {
   const setSearchAddress = useSetRecoilState(searchAddress);
   const [showAddress, setShowAddress] = useRecoilState(showAddressList);
   const setIsLoading = useSetRecoilState(isLoading);
+  const login = useRecoilValue(isLogin);
+  const [selected, setSelected] = useState<boolean>(false);
+  const setLikedPosts = useSetRecoilState(likedProducts);
+
+  useEffect(() => {
+    setSearchValue('');
+    setShowAddress(false);
+  }, []);
 
   const onChange = (e: any) => {
     setSearchValue(e.target.value);
   };
 
-  const onSearchClick = () => {
+  const onSearchClick = async () => {
     if (searchValue.length !== 0) {
       getAddress();
-      if (searchValue.length > 5) {
+      if (!showAddress && searchValue && selected) {
         setIsLoading(true);
-        axios
-          .get(`${host}/product/address/${searchValue}`)
-          .then((res) => {
-            if (res.status === 200) {
-              searchAddressList(res.data);
-              setMainSearch(res.data);
-              navigation('/main');
-            }
-          })
-          .catch((err) => console.error('에러입니다', err));
-        // setIsLoading(false);
+        if (login) {
+          await axios
+            .get(`${host}/product/address/${searchValue}`, config)
+            .then((res) => {
+              if (res.status === 200) {
+                searchAddressList(res.data);
+                setMainSearch(res.data);
+                const likes = res.data['likes'].map(
+                  (obj: { posts_id: number }) => obj.posts_id,
+                );
+                setLikedPosts(likes);
+                navigation('/main');
+              }
+            })
+            .catch((err) => console.error('에러입니다', err));
+        } else {
+          await axios
+            .get(`${host}/product/address/${searchValue}`)
+            .then((res) => {
+              if (res.status === 200) {
+                searchAddressList(res.data);
+                setMainSearch(res.data);
+                navigation('/main');
+              }
+            })
+            .catch((err) => console.error('에러입니다', err));
+        }
+        setSearchAddress([]);
+        setShowAddress(false);
       }
     } else {
       setShowModal(true);
     }
   };
 
-  const getAddress = () => {
-    axios
+  const getAddress = async () => {
+    await axios
       .get(
         `https://www.juso.go.kr/addrlink/addrLinkApi.do?currentPage=1&countPerPage=50&keyword=${searchValue}&confmKey=${addressAPI}&resultType=json`,
         { headers: { 'Content-Type': 'application/json' } },
@@ -137,6 +166,7 @@ function Intro() {
         }
         setSearchAddress(addressList);
         setShowAddress(true);
+        setSelected(true);
       });
   };
 

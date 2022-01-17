@@ -238,3 +238,9 @@ export const post_id = atom<number>({
   key: 'post_id',
   default: 0,
 });
+
+//? 로그인 했을 때 좋아요 누른 포스트 아이디만 모아둔 배열
+export const likedProducts = atom<number[]>({
+  key: 'likedProducts',
+  default: [],
+});
