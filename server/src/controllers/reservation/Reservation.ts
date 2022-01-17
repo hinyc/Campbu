@@ -54,16 +54,19 @@ export default async (req: Request, res: Response) => {
       const postUserInfo = await userRepository.findOne({ id: postUserId });
 
       const chatRepository = getRepository(chats);
+      const date = Date();
+      const chat = JSON.stringify([
+        {
+          sender: user.nickname,
+          message: `${user.nickname}님이 물품을 예약했어요. 확인해주세요.`,
+          date,
+        },
+      ]);
       chatRepository.insert({
         recipient_nickname: postUserInfo?.nickname,
         recipient_img: postUserInfo?.users_img,
         sender_nickname: user?.nickname,
-        chat: [
-          {
-            sender: user.nickname,
-            message: `${user.nickname}님이 물품을 예약했어요. 확인해주세요.`,
-          },
-        ],
+        chat: chat,
         users_id: user,
         reservation_id: reservationInfo,
       });

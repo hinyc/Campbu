@@ -14,12 +14,24 @@ export default async () => {
   });
 
   await io.on('connection', async (socket) => {
-    socket.on('send-message', (info) => {
+    socket.on('send-message', async (info) => {
       const id: string = info.chatRoomId;
       const message: string = info.chatMessage;
       const nickName: string = info.userNickName;
+      const date = Date();
+
+      const chatMessage = { message, sender: nickName, date };
+      const chatRepository = getRepository(chats);
+      const chat = await chatRepository
+        .findOne({ id: Number(id) })
+        .then((res: any) => {
+          return JSON.parse(res.chat);
+        });
+      const newChat = JSON.stringify(chat.concat(chatMessage));
+      chatRepository.update(Number(id), { chat: newChat });
+
       socket.join(id);
-      io.to(id).emit('receive-message', { message, sender: nickName });
+      io.to(id).emit('receive-message', { message, sender: nickName, date });
     });
   });
 };

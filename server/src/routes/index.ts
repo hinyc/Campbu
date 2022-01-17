@@ -15,7 +15,7 @@ router.use('/post', PostRouter);
 router.use('/product', ProductRouter);
 router.use('/reservation', ReservationRouter);
 router.use('/socket.io', Socket);
-router.use('/chatRoom', Chat);
+router.use('/chat', Chat);
 router.use('/newurl', newurl);
 
 export = router;
