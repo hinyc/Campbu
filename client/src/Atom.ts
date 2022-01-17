@@ -130,6 +130,12 @@ export const showCompleteModal = atom({
   default: false,
 });
 
+//? 로딩 컴포넌트
+export const isLoading = atom({
+  key: 'isLoading',
+  default: false,
+});
+
 export const chat = atom({
   key: 'chat',
   default: {
@@ -158,7 +164,6 @@ export const chat = atom({
     },
   },
 });
-
 
 //? 달력 컴포넌트용 전역 상태
 
@@ -226,4 +231,10 @@ export const isSelectStart = atom<boolean>({
 export const showCalendar = atom<boolean>({
   key: 'showCalendar',
   default: false,
+});
+
+//? 포스트 클릭 시 포스트 아이디 전달
+export const post_id = atom<number>({
+  key: 'post_id',
+  default: 0,
 });

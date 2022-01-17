@@ -24,19 +24,35 @@ export interface List {
 }
 
 //? atom LikeList, ResistsList에서 반복되는 interface
-export interface UserPost {
-  post_id: number;
-  post_category: string;
-  post_deposit: number;
-  post_rental_fee: number;
-  post_unavailable_dates: string;
-  post_title: string;
-  post_content: string;
-  post_longitude: string;
-  post_latitude: string;
-  post_address: string;
-  post_img_urls: string;
-  posts_created_at?: string;
-  posts_updated_at?: string;
-  post_users_id: number;
+export interface LikePost {
+  id: number;
+  category: string;
+  deposit: number;
+  rental_fee: number;
+  unavailable_dates: string[];
+  title: string;
+  content: string;
+  longitude: string;
+  latitude: string;
+  address: string;
+  img_urls: string[];
+  created_at?: string;
+  updated_at?: string;
+  likes_count: number;
+}
+
+export interface MyPost {
+  id: number;
+  category: string;
+  deposit: number;
+  rental_fee: number;
+  unavailable_dates: string[];
+  title: string;
+  content: string;
+  longitude: string;
+  latitude: string;
+  address: string;
+  img_urls: string[];
+  created_at?: string;
+  updated_at?: string;
 }

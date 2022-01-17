@@ -435,7 +435,23 @@ function Chat() {
               padding: ${rem(30)};
             `,
           ]}
-        ></div>
+        >
+          {/* <Reservation
+            text="예약 취소"
+            background={`${color.point}`}
+            color="white"
+            cursor="pointer"
+            hover="80%"
+            postId={chatPost.Post.id}
+            img_urls={chatPost.Post.img_urls}
+            address={chatPost.Post.address}
+            title={chatPost.Post.title}
+            deposit={chatPost.Post.deposit}
+            rental_fee={chatPost.Post.rental_fee}
+            reservation_dates={chatPost.Post.reservation.reservation_dates}
+            onButtonClick={onButtonClick}
+          /> */}
+        </div>
       </div>
     </>
   );

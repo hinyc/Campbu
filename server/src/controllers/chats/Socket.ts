@@ -18,6 +18,7 @@ export default async () => {
       const id: string = info.chatRoomId;
       const message: string = info.chatMessage;
       const nickName: string = info.userNickName;
+
       socket.join(id);
       io.to(id).emit('receive-message', { message, sender: nickName });
     });
