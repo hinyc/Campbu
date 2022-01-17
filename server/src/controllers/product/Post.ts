@@ -33,7 +33,11 @@ export default {
       .where('users_reviews.users_id = :users_id', { users_id: userId })
       .getRawMany();
 
-    res.status(200).json({ posts: post, reviews });
+    if (reviews === undefined || reviews === null) {
+      res.status(200).json({ posts: post, reviews: [] });
+    } else {
+      res.status(200).json({ posts: post, reviews });
+    }
   },
   delete: async (req: Request, res: Response) => {
     const decoded = await authorizeToken(req, res);
