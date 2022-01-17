@@ -14,7 +14,6 @@ import { container } from './tab';
 import ListTab from '../../components/ListTab';
 import Input from '../../components/Input';
 import { Button } from '../../components/Button';
-import Reservation from '../../components/Reservation';
 import {
   post,
   img,
@@ -25,7 +24,8 @@ import {
 } from '../../components/post';
 import PaperPlane from '../../assets/PaperPlane.svg';
 import Here from '../../assets/Here.svg';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import { chatsTotalNum } from '../../Atom';
 import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
@@ -64,31 +64,6 @@ const imgStyle = css`
 
 //! ------------ interface -------------------
 
-interface post {
-  text: string;
-  background: string;
-  color: string;
-  opacity?: string;
-  cursor: string;
-  hover?: string;
-  postId: number;
-  img_urls: string;
-  address: string;
-  title: string;
-  deposit: number;
-  rental_fee: number;
-  reservation_dates: string[];
-  onButtonClick: () => void;
-}
-
-interface List {
-  id: number;
-  users_id: number;
-  posts_id: number;
-  reservation_dates: string[];
-  reservation_status: number;
-}
-
 interface chatRoom {
   id: number;
   recipient_nickname: string;
@@ -106,6 +81,10 @@ interface chatRoom {
   };
 }
 
+interface chatNum {
+  [key: string]: number;
+}
+
 function Chat() {
   const [chatMessage, setChatMessage] = useState<string>('');
   const [chatRoomId, setChatRoomId] = useState<number>();
@@ -114,8 +93,10 @@ function Chat() {
   const [chatRooms, setChatRooms] = useState([]);
   const [userNickName, setUserNickName] = useState<string>('');
   const [posts, setPosts] = useState<any>({});
-  const [buttonClick, setButtonClick] = useState<boolean>(false);
   const [socket, setSocket] = useState<any>();
+  const [chatTotalCount, setChatTotalCount] = useRecoilState(chatsTotalNum);
+  const [chatsMesNum, setChatsMesNum] = useState<chatNum>({});
+  const [buttonClick, setButtonClick] = useState<boolean>(false);
   const onButtonClick = () => {
     setButtonClick(true);
   };
@@ -129,22 +110,38 @@ function Chat() {
         withCredentials: true,
       })
       .then((res: any) => {
+        const chatIds = res.data.chat.map((chat: any) => {
+          const id = 'Room' + String(chat.id);
+          if (!(id in chatsMesNum)) {
+            setChatsMesNum({ [id]: 0 });
+          }
+          return chat.id;
+        });
+        const newSocket = io('http://localhost:5050');
+        newSocket.emit('open-room', chatIds);
+        setSocket(newSocket);
         setChatRooms(res.data.chat);
         setUserNickName(res.data.nickName);
       });
   }, []);
 
-  useEffect((): any => {
-    const newSocket = io('http://localhost:5050', {
-      query: { chatRoomId },
-    });
-    setSocket(newSocket);
-  }, [chatRoomId]);
+  // useEffect((): any => {
+  //   const newSocket = io('http://localhost:5050', {
+  //     query: { chatRoomId },
+  //   });
+  //   setSocket(newSocket);
+  // }, [chatRoomId]);
 
   useEffect(() => {
     if (socket == null) return;
 
     socket.on('receive-message', (message: any) => {
+      if (message.id !== chatRoomId) {
+        const nowId = 'Room' + String(message.id);
+        // setChatsMesNum((chatsMesNum) => {
+        //   return { nowId: chatsMesNum + 1 };
+        // });
+      }
       setChatting([...chatting, message]);
     });
     return () => socket.off('receive-message');
@@ -156,8 +153,6 @@ function Chat() {
 
   const handleKeyPress = (e: any) => {
     if (e.key === 'Enter') {
-      const date = new Date();
-      console.log(date);
       socket.emit('send-message', { chatRoomId, chatMessage, userNickName });
       setChatMessage('');
     }
@@ -290,12 +285,26 @@ function Chat() {
                         font-size: ${rem(20)};
                         margin-left: ${rem(10)};
                         margin-top: ${rem(10)};
+                        position: relative;
                       `,
                     ]}
                   >
                     {chatRoom.recipient_nickname === userNickName
                       ? chatRoom.sender_nickname
                       : chatRoom.recipient_nickname}
+                    <div
+                      css={[
+                        css`
+                          position: absolute;
+                          right: ${rem(10)};
+                          top: ${rem(0)};
+                          border: ${rem(2)} solid #ed662c;
+                          border-radius: 50%;
+                        `,
+                      ]}
+                    >
+                      {}
+                    </div>
                   </div>
                   <div
                     css={[
