@@ -13,6 +13,9 @@ const box = css`
   box-shadow: ${hover};
   z-index: 999;
   left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   transform: translate(-50%, 0);
 `;
 

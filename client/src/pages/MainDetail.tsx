@@ -31,6 +31,7 @@ import {
   isSelectStart,
   likedProducts,
   post_id,
+  profileImgUrl,
   selectDate,
   showCalendar,
   showLoginModal,
@@ -92,6 +93,46 @@ const fontSize40 = css`
   color: ${color.border};
 `;
 
+const showSelectImgContainerStyle = css`
+  height: 1rem;
+  border: 1px solid ${color.placeholder};
+  background-color: ${color.white};
+  border-radius: 0.5rem;
+  padding: 0 0.5rem;
+  display: flex;
+  align-items: center;
+  opacity: 0.65;
+  position: absolute;
+  bottom: 0.5rem;
+`;
+
+const showSelectImgCircleStyle = css`
+  width: 0.6rem;
+  height: 0.6rem;
+  border: 1px solid ${color.point};
+  border-radius: 50%;
+  margin: 0 0.2rem;
+  transition: 0.3s;
+`;
+
+const profileBoxStyle = css`
+  width: ${rem(48)};
+  height: ${rem(48)};
+  border-radius: 50%;
+  border: 2px solid ${color.point};
+  margin-left: ${rem(10)};
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const profileImgStyle = css`
+  display: block;
+  width: 100%;
+  height: auto;
+`;
+
 //요청 결과 예시 데이터
 let dummyData = {
   posts: {
@@ -112,8 +153,9 @@ let dummyData = {
     longitude: 126.99597295767953,
     latitude: 35.97664845766847,
     address: '서울특별시 동작구 신대방동',
-    img_urls:
+    img_urls: [
       'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
+    ],
     users_id: 1,
     created_at: '2021-12-16T09:42:40.000Z',
     updated_at: '2021-12-16T09:42:40.000Z',
@@ -121,25 +163,42 @@ let dummyData = {
   },
   reviews: [
     {
-      id: 1,
-      users_id: 1,
-      reviews_id: 2,
       count: 15,
-      created_at: '2021-12-16T09:42:40.000Z',
-      updated_at: '2021-12-16T09:42:40.000Z',
+      reviews_id: 2,
     },
     {
-      id: 1,
-      users_id: 1,
-      reviews_id: 8,
       count: 52,
-      created_at: '2021-12-16T09:42:40.000Z',
-      updated_at: '2021-12-16T09:42:40.000Z',
+      reviews_id: 8,
     },
   ],
 };
 
+interface postInfoType {
+  posts: {
+    id: number;
+    category: string;
+    deposit: number;
+    rental_fee: number;
+    unavailable_dates: string[];
+    title: string;
+    content: string;
+    longitude: number;
+    latitude: number;
+    address: string;
+    img_urls: string[];
+    users_id: number;
+    likes_count: number;
+  };
+  reviews:
+    | {
+        count: number;
+        reviews_id: number;
+      }[]
+    | [];
+}
+
 function DetailView() {
+  //전역
   const setUnableDates = useSetRecoilState(unableDate);
   const [start, setStart] = useRecoilState(startDate);
   const [end, setEnd] = useRecoilState(endDate);
@@ -147,13 +206,16 @@ function DetailView() {
   const [isSelectStartState, setIsSelectStartState] =
     useRecoilState(isSelectStart);
   const [isShowCalendar, setIsShowCalendar] = useRecoilState(showCalendar);
-  const [getReviews, setGetReviews] = useState<reviewsType>([]);
-
   const postId = useRecoilValue(post_id);
-  const [postInfo, setPostInfo] = useState(dummyData);
   const likedPosts = useRecoilValue<number[]>(likedProducts);
   const login = useRecoilValue(isLogin);
   const setShowLoginModal = useSetRecoilState(showLoginModal);
+  const profileImg = useRecoilValue(profileImgUrl);
+
+  //지역
+  const [getReviews, setGetReviews] = useState<reviewsType>([]);
+  const [postInfo, setPostInfo] = useState<postInfoType>(dummyData);
+  const [selectImgNum, setSelectImgNum] = useState<number>(0);
 
   useEffect(() => {
     const getData = async () => {
@@ -161,28 +223,32 @@ function DetailView() {
       const Config = {
         headers: { 'Content-Type': 'application/json' },
       };
-      await axios.get(API, Config).then((res) => {
-        console.log('api success', res.data);
-        setPostInfo(res.data);
-      });
+
+      await axios
+        .get(API, Config)
+        .then((res) => {
+          const postInfo = res.data;
+          setPostInfo(postInfo);
+
+          setUnableDates(postInfo.posts.unavailable_dates.sort());
+
+          let tempReviews: reviewsType = [...reviews];
+          postInfo.reviews.forEach((el: any) => {
+            tempReviews[el.reviews_id - 1] = {
+              ...tempReviews[el.reviews_id - 1],
+              count: el.count,
+            };
+          });
+          setGetReviews(tempReviews);
+        })
+        .catch((err) => console.log(err));
     };
-    let tempReviews: reviewsType = [...reviews];
-    postInfo.reviews.forEach((el: any) => {
-      tempReviews[el.reviews_id - 1] = {
-        ...tempReviews[el.reviews_id - 1],
-        count: el.count,
-      };
-    });
-    setGetReviews(tempReviews);
-    // setStart('');
-    // setEnd('');
-    // setTotalRentalDates([]);
-    // setIsShowCalendar(false);
+
     getData();
   }, [postId]);
 
+  console.log(new Date(), postInfo);
   const campbuIndicator = calCampbuIndicator(getReviews);
-
   const startDateHandler = () => {
     setIsSelectStartState(true);
     setIsShowCalendar(true);
@@ -210,6 +276,24 @@ function DetailView() {
       }
     } else {
       setShowLoginModal(true);
+    }
+  };
+
+  const urlnums = postInfo.posts.img_urls.length;
+
+  const selectImgHandler = (prenext: string) => {
+    if (prenext === 'pre') {
+      if (selectImgNum === 0) {
+        setSelectImgNum(urlnums - 1);
+      } else {
+        setSelectImgNum(selectImgNum - 1);
+      }
+    } else if (prenext === 'next') {
+      if (selectImgNum === urlnums - 1) {
+        setSelectImgNum(0);
+      } else {
+        setSelectImgNum(selectImgNum + 1);
+      }
     }
   };
 
@@ -259,13 +343,39 @@ function DetailView() {
             `,
           ]}
         >
-          <div css={fontSize40}>{`<`}</div>
-          <img
-            css={productImg}
-            src={`${postInfo.posts.img_urls}`}
-            alt="detail"
-          />
-          <div css={fontSize40}>{`>`}</div>
+          <div
+            css={fontSize40}
+            onClick={() => {
+              selectImgHandler('pre');
+            }}
+          >{`<`}</div>
+          <div css={[flexVertical, relative]}>
+            <img
+              css={[productImg]}
+              src={`${postInfo.posts.img_urls[selectImgNum]}`}
+              alt="detail"
+            />
+            <div css={showSelectImgContainerStyle}>
+              {postInfo.posts.img_urls.map((el, idx) => (
+                <div
+                  css={[
+                    showSelectImgCircleStyle,
+                    css`
+                      background-color: ${idx === selectImgNum
+                        ? color.point
+                        : null};
+                    `,
+                  ]}
+                ></div>
+              ))}
+            </div>
+          </div>
+          <div
+            css={fontSize40}
+            onClick={() => {
+              selectImgHandler('next');
+            }}
+          >{`>`}</div>
         </div>
       </div>
       <div css={[flexBetween, width]}>
@@ -347,15 +457,9 @@ function DetailView() {
                 </div>
                 <Gage ratio={campbuIndicator} width={153} />
               </div>
-              <div
-                css={css`
-                  width: ${rem(48)};
-                  height: ${rem(48)};
-                  border-radius: 50%;
-                  border: 2px solid ${color.point};
-                  margin-left: ${rem(10)};
-                `}
-              ></div>
+              <div css={profileBoxStyle}>
+                <img css={profileImgStyle} src={profileImg} alt="profileImg" />
+              </div>
             </div>
             <div
               css={css`
@@ -375,7 +479,7 @@ function DetailView() {
                 `,
               ]}
             >
-              날짜를 입력하고 대여 비용을 확인해보세요
+              날짜를 입력하고 대여 비용을 확인해보세요.
             </div>
             <div
               css={[

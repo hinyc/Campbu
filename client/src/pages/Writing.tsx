@@ -137,7 +137,6 @@ const UploadImg = () => {
     // 파일이 이미지파일이아니면 등록못하게
     const geturlAPI = `${host}/newurl`;
     const { url } = await fetch(geturlAPI).then((res) => res.json());
-    console.log(url);
 
     await fetch(url, {
       method: 'PUT',
@@ -148,11 +147,11 @@ const UploadImg = () => {
     });
 
     const imageUrl = url.split('?')[0];
+    console.log(imageUrl);
     setImageUrls([...imageUrls, imageUrl]);
   };
 
   const deleteImg = (target: number) => {
-    setFiles(imgFiles.filter((el, idx) => idx !== target));
     setImageUrls(imageUrls.filter((el, idx) => idx !== target));
   };
   return (
@@ -219,13 +218,14 @@ export const Writing = () => {
   const [content, setContent] = useState<string>('');
   const [reqState, setReqState] = useState<string>('ok');
   const [isComplete, setIsComplete] = useState(false);
-
+  const setImageUrls = useSetRecoilState(preView);
   const navigate = useNavigate();
 
   useEffect(() => {
     setAddress('');
     setSerchAdress([]);
     setShowAdress(false);
+    setImageUrls([]);
   }, []);
 
   const category: string[] = [

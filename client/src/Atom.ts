@@ -6,6 +6,12 @@ export const isLogin = atom({
   default: false,
 });
 
+export const profileImgUrl = atom({
+  key: 'profileImgUrl',
+  default:
+    'https://image-upload-storage-test.s3.ap-northeast-2.amazonaws.com/6d5b91f175a2a4ccb9221cb1c49730ef',
+});
+
 //? 주소 검색 결과 원본
 export const originalPosts = atom({
   key: 'originalPosts',

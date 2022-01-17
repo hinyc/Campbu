@@ -66,15 +66,22 @@ const datesStyle = css`
 `;
 
 const reset = css`
-  width: ${rem(60)};
+  width: ${rem(80)};
   height: ${rem(30)};
   line-height: ${rem(30)};
-  border: 1px solid ${color.border};
+  border: 1px solid ${color.point};
+  color: ${color.point};
   border-radius: ${rem(5)};
   text-align: center;
   font-size: ${rem(14)};
-  font-weight: 700;
   margin-top: ${rem(20)};
+  :hover {
+    font-weight: 700;
+    cursor: pointer;
+  }
+  :active {
+    opacity: 0.65;
+  }
 `;
 
 const pointer = css`
@@ -115,6 +122,12 @@ const rentalEndStyle = css`
   font-size: ${rem(10)};
   background-color: ${color.deep};
   color: ${color.white};
+`;
+
+const alignCenter = css`
+  width: 100%;
+  display: flex;
+  justify-content: center;
 `;
 
 interface AdayProps {
@@ -183,6 +196,7 @@ function Adate(props: AdateProps) {
 
   const today = `${thisYear}.${thisMonth}.${thisDate}`;
   const selectDateHandler = () => {
+    const unableSelectEnd = unableDates.find((el) => el > start);
     if (isUnable === -1) {
       if (isSelectStartState) {
         if (today >= end) {
@@ -196,10 +210,18 @@ function Adate(props: AdateProps) {
         }
         setIsSelectStartState(false);
       } else if (today > start) {
+        if (!unableSelectEnd) {
+          setEnd(today);
+          let newDates = totalRentalDatesGenerator(start, today);
+          setTotalRentalDates(newDates);
+        } else {
+          if (today < unableSelectEnd) {
+            setEnd(today);
+            let newDates = totalRentalDatesGenerator(start, today);
+            setTotalRentalDates(newDates);
+          }
+        }
         //대여 배열생성
-        setEnd(today);
-        let newDates = totalRentalDatesGenerator(start, today);
-        setTotalRentalDates(newDates);
       }
     }
   };
@@ -247,7 +269,6 @@ function Adate(props: AdateProps) {
 
     if (syear === eyear) {
       for (let i = smonth + 1; i < emonth; i++) {
-        console.log(i);
         date = 1;
         startMonthEedDate = new Date(syear, i, 0).getDate();
 
@@ -293,7 +314,6 @@ function Adate(props: AdateProps) {
 
     return totalRentalDatesArray;
   };
-  console.log(totalRentalDates);
 
   return (
     <div
@@ -444,9 +464,10 @@ export default function Calendar() {
             />
           ))}
         </div>
-
-        <div className="reset" css={reset} onClick={confirmHandler}>
-          확인
+        <div css={alignCenter}>
+          <div className="reset" css={reset} onClick={confirmHandler}>
+            확인
+          </div>
         </div>
       </div>
     </div>
