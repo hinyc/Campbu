@@ -137,7 +137,6 @@ const UploadImg = () => {
     // 파일이 이미지파일이아니면 등록못하게
     const geturlAPI = `${host}/newurl`;
     const { url } = await fetch(geturlAPI).then((res) => res.json());
-    console.log(url);
 
     await fetch(url, {
       method: 'PUT',
@@ -148,6 +147,7 @@ const UploadImg = () => {
     });
 
     const imageUrl = url.split('?')[0];
+    console.log(imageUrl);
     setImageUrls([...imageUrls, imageUrl]);
   };
 
