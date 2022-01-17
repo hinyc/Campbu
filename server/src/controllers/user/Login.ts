@@ -26,7 +26,7 @@ export default async (req: Request, res: Response) => {
       return res
         .status(200)
         .cookie('jwt', token, { httpOnly: true })
-        .json({ message: 'Login Successfully' });
+        .json({ user: userInfo });
     } else {
       return res.status(404).json({ message: 'User not exists' });
     }
