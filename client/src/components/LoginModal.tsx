@@ -163,7 +163,7 @@ function LoginModal() {
           setShowLogin(false);
           setIsLogin(true);
           navigate('/');
-          return;
+          localStorage.setItem('isLogin', 'true');
         }
       })
       .catch((res) => {

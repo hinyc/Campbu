@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import Logo from '../assets/Logo.svg';
@@ -28,13 +28,19 @@ const headerStyle = css`
 
 function Navbar() {
   const [click, setClick] = useState<boolean>(false);
-  const login = useRecoilValue(isLogin);
+  const [login, setIsLogin] = useRecoilState(isLogin);
   const [showLogin, setShowLogin] = useRecoilState(showLoginModal);
   const showSignup = useRecoilValue(showSignupModal);
   console.log('showLogin', showLogin);
   const onClick = () => {
     setClick(!click);
   };
+
+  useEffect(() => {
+    if (localStorage.getItem('isLogin')) {
+      setIsLogin(true);
+    }
+  }, [setIsLogin]);
 
   return (
     <header css={headerStyle}>
