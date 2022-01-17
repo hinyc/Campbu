@@ -24,11 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import Calendar from '../components/CalendarForLender';
 import Here from '../assets/Here.svg';
 import { span, addressStyle, moneyTitle } from '../components/post';
-<<<<<<< HEAD
-import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
-=======
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
->>>>>>> b743660dd78361de57b41e7c63270e325f9af9e5
 import {
   endDate,
   isSelectStart,

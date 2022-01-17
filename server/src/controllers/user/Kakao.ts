@@ -28,6 +28,40 @@ export default {
       .get('https://kapi.kakao.com/v2/user/me', {
         headers: { authorization: `Bearer ${token} ` },
       })
-      .then((res) => console.log(res.data));
+      .then(async (response) => {
+        const usersRepository = getRepository(users);
+        const email = response.data.kakao_account.email;
+        const nickname = response.data.kakao_account.profile.nickname;
+        const users_img =
+          response.data.kakao_account.profile.thumbnail_image_url;
+
+        const userInfo = await usersRepository.findOne({
+          email: email,
+        });
+        if (!userInfo) {
+          await usersRepository.insert({
+            email: email,
+            nickname: nickname,
+            users_img: users_img,
+          });
+          const accessToken = await generateToken(email);
+          return res
+            .status(201)
+            .cookie('jwt', accessToken, { httpOnly: true })
+            .json({ message: 'Successfully Signup by Kakao Id' });
+        } else {
+          await usersRepository.update(
+            {
+              email: email,
+            },
+            { nickname: nickname, users_img: users_img },
+          );
+          const accessToken = await generateToken(email);
+          return res
+            .status(200)
+            .cookie('jwt', accessToken, { httpOnly: true })
+            .json({ message: 'Successfully Signin by Kakao Id' });
+        }
+      });
   },
 };
