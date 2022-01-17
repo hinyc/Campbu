@@ -59,8 +59,8 @@ export default function SelectAddressList({ width }: Style) {
           검색 결과가 없습니다.
         </div>
       )}
-      {addressList.map((el) => (
-        <div css={contentStyle} onClick={selectAddressHandler}>
+      {addressList.map((el, idx) => (
+        <div key={idx} css={contentStyle} onClick={selectAddressHandler}>
           {el}
         </div>
       ))}
