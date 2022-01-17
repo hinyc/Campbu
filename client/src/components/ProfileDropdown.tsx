@@ -47,6 +47,7 @@ function ProfileDropdown() {
       .then((res: any) => {
         console.log(res);
         navigate('/');
+        localStorage.removeItem('isLogin');
       })
       .catch((err) => console.error(err));
   };
