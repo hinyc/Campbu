@@ -25,7 +25,7 @@ interface Props {
   title: string;
   deposit: number;
   rental_fee: number;
-  reservation_dates: string;
+  reservation_dates: string[];
   onButtonClick: () => void;
 }
 
@@ -47,8 +47,7 @@ function Reservation(props: Props) {
     onButtonClick,
   } = props;
 
-  const reservationDates = reservation_dates.split(',');
-  const length = reservationDates.length;
+  const length = reservation_dates.length;
 
   return (
     <div css={post}>
@@ -71,8 +70,8 @@ function Reservation(props: Props) {
             </span>
           </div>
           <div css={[span, moneyTitle]}>대여날짜</div>
-          <div css={span}>{`${reservationDates[0]} ~ ${
-            reservationDates[length - 1]
+          <div css={span}>{`${reservation_dates[0]} ~ ${
+            reservation_dates[length - 1]
           }`}</div>
         </div>
       </Link>

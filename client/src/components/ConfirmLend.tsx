@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { rem, color, hover, shadow, host } from '../common';
+import { rem, color, hover, shadow, host, config } from '../common';
 import { Button } from './Button';
 import { useState } from 'react';
 import Complete from './Complete';
@@ -51,17 +51,18 @@ function YesOrNo({
   const setConfirm = useSetRecoilState(showConfirmModal);
   const setComplete = useSetRecoilState(showCompleteModal);
   const onOkClick = () => {
-    // axios
-    //   .patch(
-    //     `${host}/reservation/:${reservationId}`,
-    //     { reservation_status },
-    //     { headers: { 'Content-Type': 'application/json' } },
-    //   )
-    //   .then((res) => {
-    //     console.log(res);
-    setComplete(true);
-    setConfirm(false);
-    // });
+    axios
+      .patch(
+        `${host}/reservation/${reservationId}`,
+        { reservation_status: reservation_status + 1 },
+        config,
+      )
+      .then((res) => {
+        console.log(res.data.message);
+        setComplete(true);
+        setConfirm(false);
+      })
+      .catch((err) => console.error(err));
   };
   const onNoClick = () => {
     setConfirm(false);
