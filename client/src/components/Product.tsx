@@ -74,7 +74,11 @@ function Product(props: Props) {
           display={display}
         />
       </div>
-      <Link to={`${postId}`} css={textDecorationNone} onClick={onPostClick}>
+      <Link
+        to={`/main/${postId}`}
+        css={textDecorationNone}
+        onClick={onPostClick}
+      >
         <img src={img_urls} alt="product" css={img} />
         <div css={textContainer}>
           <span css={[span, moneyTitle, addressStyle]}>

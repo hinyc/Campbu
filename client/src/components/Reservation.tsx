@@ -51,7 +51,7 @@ function Reservation(props: Props) {
 
   return (
     <div css={post}>
-      <Link to={`${postId}`} css={textDecorationNone}>
+      <Link to={`/main/${postId}`} css={textDecorationNone}>
         <img src={img_urls} alt="product" css={img} />
         <div css={textContainer}>
           <span css={[span, moneyTitle, addressStyle]}>
