@@ -263,7 +263,7 @@ function DetailView() {
     }
     setStart('');
     setEnd('');
-  }, []);
+  }, [postId, setEnd, setStart, setUnableDates]);
 
   const campbuIndicator = calCampbuIndicator(getReviews);
   const startDateHandler = () => {

@@ -214,3 +214,9 @@ export const showModal = atom<boolean>({
   key: 'showModal',
   default: false,
 });
+
+//? 강제 랜더를위한 상태
+export const forceRender = atom<boolean>({
+  key: 'forceRender',
+  default: false,
+});

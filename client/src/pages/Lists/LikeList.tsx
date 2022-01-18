@@ -61,17 +61,19 @@ function LikeList() {
               찜한 목록이 없어요! <br />
               마음에 드는 캠핑용품을 찜하고 캠핑을 떠나보세요!
             </p>
-            <Button
-              text="캠핑 용품 보러 가기"
-              width={`${rem(180)}`}
-              height={`${rem(43)}`}
-              background="white"
-              color={`${color.mid}`}
-              border={`1px solid ${color.mid}`}
-              size={`${rem(14)}`}
-              cursor={'pointer'}
-              hover="80%"
-            />
+            <Link to={'/main'}>
+              <Button
+                text="캠핑 용품 보러 가기"
+                width={`${rem(180)}`}
+                height={`${rem(43)}`}
+                background="white"
+                color={`${color.mid}`}
+                border={`1px solid ${color.mid}`}
+                size={`${rem(14)}`}
+                cursor={'pointer'}
+                hover="80%"
+              />
+            </Link>
           </div>
         ) : (
           <section css={section}>
