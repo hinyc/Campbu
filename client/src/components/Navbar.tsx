@@ -51,7 +51,7 @@ function Navbar() {
     if (localStorage.getItem('userInfo')) {
       const userInfo = localStorage.getItem('userInfo');
       if (userInfo) {
-        setLoginUserInfo(JSON.parse(userInfo));
+        setLoginUserInfo(JSON.parse(userInfo).user);
       }
     }
   }, [setIsLogin, setLoginUserInfo]);
