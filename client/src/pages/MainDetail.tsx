@@ -149,7 +149,7 @@ const profileImgStyle = css`
 //요청 결과 예시 데이터
 let dummyData = {
   posts: {
-    id: 1,
+    id: 0,
     category: 'Tent',
     deposit: 30000,
     rental_fee: 20000,
@@ -160,7 +160,7 @@ let dummyData = {
     latitude: 35.97664845766847,
     address: '',
     img_urls: [],
-    users_id: 1,
+    users_id: 0,
     created_at: '',
     updated_at: '',
     likes_count: 99,
@@ -239,17 +239,18 @@ function DetailView() {
   const [postInfo, setPostInfo] = useState<postInfoType>(dummyData);
   const [selectImgNum, setSelectImgNum] = useState<number>(0);
 
+  console.log('글쓴이', postInfo.user.id);
+  console.log('유저', userInfo.id);
   useEffect(() => {
     if (postId) {
       const API = `${host}/product/post/${postId}`;
 
+      console.log(1);
       axios
         .get(API, config)
         .then((res) => {
           const postInfo = res.data;
-
           setPostInfo(postInfo);
-
           setUnableDates(postInfo.posts.unavailable_dates.sort());
 
           let tempReviews: reviewsType = [...reviews];
@@ -263,7 +264,9 @@ function DetailView() {
         })
         .catch((err) => console.log(err));
     }
-  }, [postId]);
+    setStart('');
+    setEnd('');
+  }, []);
 
   const campbuIndicator = calCampbuIndicator(getReviews);
   const startDateHandler = () => {
@@ -276,6 +279,10 @@ function DetailView() {
   };
 
   const reservationHandler = () => {
+    if (start && end) {
+      setIsShowCalendar(false);
+    }
+
     if (login) {
       const API = `${host}/reservation`;
       const data = {
@@ -628,11 +635,20 @@ function DetailView() {
                 postInfo.posts.deposit
               ).toLocaleString('ko-KR')} 원`}</span>
             </div>
+            <div
+              css={css`
+                color: ${color.point};
+                height: 0.8rem;
+                font-size: 0.8rem;
+              `}
+            >
+              {start && end ? null : '대여일, 반납일을 지정해주세요.'}
+            </div>
             <Button
               text="예약하기"
               width={rem(240)}
               height={rem(40)}
-              background={color.point}
+              background={start && end ? color.point : color.border}
               color={color.white}
               border="none"
               size={rem(14)}
