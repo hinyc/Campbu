@@ -24,9 +24,9 @@ import {
 } from '../../components/post';
 import PaperPlane from '../../assets/PaperPlane.svg';
 import Here from '../../assets/Here.svg';
-import { useRecoilValue, useRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { chatsNum } from '../../Atom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
 
@@ -118,7 +118,6 @@ function Chat() {
               [roomId]: 0,
             }));
           }
-          console.log(chatCount);
           return chat.id;
         });
         const newSocket = io('http://localhost:5050');
@@ -189,6 +188,7 @@ function Chat() {
         .then((res: any) => {
           setChatting(res.data.chat);
           setPosts(res.data.post);
+          console.log(res.data);
         });
     } else {
       setChatRoomId(0);
@@ -208,6 +208,15 @@ function Chat() {
       return `오전 ${hour}시 ${min}분`;
     }
   };
+
+  const scrollLastMessage: any = useRef(null);
+  useEffect(() => {
+    scrollLastMessage.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'start',
+    });
+  }, [chatting]);
 
   return (
     <>
@@ -513,6 +522,7 @@ function Chat() {
                 )}
               </>
             ))}
+            <div ref={scrollLastMessage}></div>
           </div>
           <span css={[relative]}>
             <Input
