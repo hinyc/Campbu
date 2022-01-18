@@ -190,6 +190,12 @@ function LoginModal() {
       });
   };
 
+  const onLoginPress = (e: any) => {
+    if (e.key === 'Enter') {
+      loginHandler();
+    }
+  };
+
   const kakaoLogin = () => {
     console.log('카카오 로그인요청');
     //   window.Kakao.Auth.login({
@@ -233,6 +239,7 @@ function LoginModal() {
               onChange={passwordHandler}
               value={password}
               type="password"
+              onKeyPress={onLoginPress}
             />
           </div>
           <div css={reqMsgStyle}>
