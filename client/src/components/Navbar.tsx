@@ -2,12 +2,18 @@
 import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import Logo from '../assets/Logo.svg';
 import Menu from '../assets/Menu.svg';
 import Profile from '../assets/Profile.svg';
 
-import { isLogin, showLoginModal, showSignupModal } from '../Atom';
+import {
+  isLogin,
+  loginUserInfo,
+  post_id,
+  showLoginModal,
+  showSignupModal,
+} from '../Atom';
 import { color, hover, rem, shadow, host } from '../common';
 
 import { Button } from './Button';
@@ -35,6 +41,9 @@ function Navbar() {
   const [showLogin, setShowLogin] = useRecoilState(showLoginModal);
   const [chatNum, setChatNum] = useRecoilState(chatsNum);
   const [socket, setSocket] = useState<any>();
+  const setLoginUserInfo = useSetRecoilState(loginUserInfo);
+  const setPostId = useSetRecoilState(post_id);
+
   const showSignup = useRecoilValue(showSignupModal);
   console.log('showLogin', showLogin);
   const onClick = () => {
@@ -45,7 +54,20 @@ function Navbar() {
     if (localStorage.getItem('isLogin')) {
       setIsLogin(true);
     }
-  }, [setIsLogin]);
+    if (localStorage.getItem('userInfo')) {
+      const userInfo = localStorage.getItem('userInfo');
+      if (userInfo) {
+        setLoginUserInfo(JSON.parse(userInfo).user);
+      }
+    }
+  }, [setIsLogin, setLoginUserInfo]);
+
+  useEffect(() => {
+    if (localStorage.getItem('postId')) {
+      const postId = localStorage.getItem('postId');
+      setPostId(Number(postId));
+    }
+  }, [setPostId]);
 
   // useEffect(() => {
   //   if (localStorage.getItem('isLogin')) {

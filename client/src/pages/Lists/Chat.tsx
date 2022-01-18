@@ -24,11 +24,18 @@ import {
 } from '../../components/post';
 import PaperPlane from '../../assets/PaperPlane.svg';
 import Here from '../../assets/Here.svg';
-import { useRecoilState } from 'recoil';
-import { chatsNum } from '../../Atom';
 import { useState, useEffect, useRef } from 'react';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import {
+  chatsNum,
+  showCompleteModal,
+  showConfirmModal,
+  showReviewModal,
+  showSubmitModal,
+} from '../../Atom';
 import io from 'socket.io-client';
 import axios from 'axios';
+import Reservation from '../../components/Reservation';
 
 //! ------------ css -------------------
 const button = css`
@@ -52,14 +59,12 @@ const message = css`
 `;
 
 const imgStyle = css`
-  width: ${rem(70)};
-  height: ${rem(70)};
+  width: ${rem(40)};
+  height: ${rem(40)};
   border: 2px solid ${color.point};
   border-radius: 50%;
   background-size: cover;
-  margin-top: ${rem(10)};
-  margin-left: ${rem(10)};
-  margin-right: ${rem(10)};
+  margin: ${rem(10)} ${rem(12)} 0 ${rem(12)};
 `;
 
 //! ------------ interface -------------------
@@ -95,11 +100,44 @@ function Chat() {
   const [posts, setPosts] = useState<any>({});
   const [socket, setSocket] = useState<any>();
   const [chatCount, setChatCount] = useRecoilState<chatNum>(chatsNum);
-  const [buttonClick, setButtonClick] = useState<boolean>(false);
-  const onButtonClick = () => {
-    setButtonClick(true);
-  };
-  console.log(socket);
+
+  // ? 예약 관리 상태들 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+  // const [buttonClick, setButtonClick] = useState<boolean>(false);
+  // const [reservationId, setReservationId] = useState(0);
+  // const [reservationStatus, setReservationStatus] = useState(0);
+  // const [userId, setUserId] = useState(0);
+  // const borrowButton = ['예약 취소', '반납하기', '반납 확인 대기 중', '반납 완료'];
+  // const lendButton = ['예약 수락', '반납 대기 중', '반납 확인', '회수 완료'];
+  // const [confirm, setConfirm] = useRecoilState(showConfirmModal);
+  // const [complete, setComplete] = useRecoilState(showCompleteModal);
+  // const [review, setReview] = useRecoilState(showReviewModal);
+  // const [submit, setSubmit] = useRecoilState(showSubmitModal);
+  // const printStatusText = (status: number) => {
+  // return 유저 아이디 === 포스트 유저 아이디 ? lendButton[status - 1] : borrowButton[status - 1]
+  // };
+  // const onButtonClick = (id: number, status: number, userId: number) => {
+  //   setReservationId(id);
+  //   setReservationStatus(status);
+  //   setUserId(userId);
+  //   setConfirm(true);
+  //   setButtonClick(true);
+  // };
+
+  // const onCompleteClick = () => {
+  //   setComplete(false);
+  //   if (reservationStatus === 3) { // && 유저 아이디 === 포스트 유저 아이디
+  //     setReview(true);
+  //   }
+  // else if
+  // reservationStatus === 2 && 유저 아이디 !== 포스트 유저 아이디
+  // setReview(true);
+  // };
+
+  // const onReviewCompleteClick = () => {
+  //   setSubmit(false);
+  // };
+  // ? * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
   useEffect(() => {
     axios
       .get(`${host}/chat/chatRoom`, {
@@ -188,6 +226,7 @@ function Chat() {
           setChatting(res.data.chat);
           setPosts(res.data.post);
           console.log(res.data);
+          console.log(res.data.post);
         });
     } else {
       setChatRoomId(0);
@@ -241,7 +280,69 @@ function Chat() {
 
   return (
     <>
-      <ListTab></ListTab>
+      {/* {confirm &&
+        ((reservationStatus === 1 && ( // user id !== post user id
+          <YesOrNo
+            reservationId={reservationId}
+            reservation_status={1}
+            text={'예약 취소'}
+            title={'예약 취소'}
+            text1={`예약을 취소하시겠습니까?`}
+            text2={`대여자가 예약을 수락하기 전까지 취소할 수 있습니다.`}
+          />
+        )) ||
+          (reservationStatus === 2 && (
+            <YesOrNo
+              reservationId={reservationId}
+              reservation_status={2}
+              text={'반납하기'}
+              title={'반납하기'}
+              text1={`반납하시겠습니까?`}
+              text2={`대여자가 상품 회수 후 반납 확인 시 최종 반납 처리가 됩니다.`}
+            />
+          )))}
+          {confirm &&
+          ((reservationStatus === 1 && (  // user id === post user id
+            <YesOrNo
+              reservationId={reservationId}
+              reservation_status={1}
+              text={'예약 수락'}
+              title={'예약 수락'}
+              text1={`예약을 수락하시겠습니까?`}
+              text2={`예약 일정 확인 후 수락 버튼을 눌러주세요.`}
+            />
+          )) ||
+            (reservationStatus === 3 && (
+              <YesOrNo
+                reservationId={reservationId}
+                reservation_status={3}
+                text={'반납 확인'}
+                title={'반납 확인'}
+                text1={`대여자에게서 물품을 잘 받으셨나요?`}
+                text2={`반납 확인 시 회수 처리가 완료됩니다.`}
+              />
+            )))}
+      {complete &&
+        (reservationStatus === 1 ? ( // user id !== post user id
+          <Complete text="예약이 취소되었습니다" onClick={onCompleteClick} />
+        ) : (
+          <Complete text="반납이 완료되었습니다" onClick={onCompleteClick} />
+        ))}
+        {complete &&
+          (reservationStatus === 1 ? ( // user id === post user id
+            <Complete text="예약이 수락되었습니다" onClick={onCompleteClick} />
+          ) : (
+            <Complete text="반납이 확인되었습니다" onClick={onCompleteClick} />
+          ))}
+      {review && <ReviewModal userId={userId} />} 
+      // user id === post user id ? 예약한 사람의 아이디 : 포스트 쓴 사람 아이디
+      {submit && (
+        <Complete
+          text="리뷰가 등록되었습니다."
+          onClick={onReviewCompleteClick}
+        />
+      )} */}
+      <ListTab />
       <div
         css={[
           container,
@@ -452,12 +553,12 @@ function Chat() {
                           css`
                             max-width: ${rem(250)};
                             font-size: ${rem(16)};
-                            margin-right: ${rem(5)};
+                            margin-right: ${rem(12)};
                             margin-top: ${rem(5)};
                             text-align: left;
                             background-color: #ed662c;
                             border-radius: ${rem(5)};
-                            padding: ${rem(5)};
+                            padding: ${rem(13)};
                             color: #ffffff;
                           `,
                         ]}
@@ -503,13 +604,13 @@ function Chat() {
                         css={[
                           css`
                             max-width: ${rem(250)};
-                            font-size: ${rem(18)};
-                            margin-left: ${rem(5)};
+                            font-size: ${rem(16)};
+                            margin-left: ${rem(12)};
                             margin-top: ${rem(5)};
                             text-align: right;
                             border: 1px solid #ed662c;
                             border-radius: ${rem(5)};
-                            padding: ${rem(2)};
+                            padding: ${rem(13)};
                           `,
                         ]}
                       >
@@ -573,9 +674,21 @@ function Chat() {
             `,
           ]}
         >
-          {'id' in posts ? (
+          {'id' in posts && (
+            // <Reservation
+            //   postId={posts.posts_id.id}
+            //   img_urls={posts.posts_id.img_urls}
+            //   address={posts.posts_id.address}
+            //   title={posts.posts_id.title}
+            //   deposit={posts.posts_id.deposit}
+            //   rental_fee={posts.posts_id.rental_fee}
+            //   reservation_dates={posts.reservation_dates}
+            //   onButtonClick={() => {
+            //     onButtonClick(posts.id, posts.reservation_status) //? 예약 아이디, 예약 상태
+            //   }}
+            // />
             <div css={post}>
-              <Link to={`${posts.posts_id.id}`} css={textDecorationNone}>
+              <Link to={`/main/${posts.posts_id.id}`} css={textDecorationNone}>
                 <img src={posts.posts_id.img_urls} alt="product" css={img} />
                 <div css={textContainer}>
                   <span css={[span, moneyTitle, addressStyle]}>
@@ -609,11 +722,9 @@ function Chat() {
                 size={`${rem(14)}`}
                 cursor={'pointer'}
                 hover={'80%'}
-                onClick={onButtonClick}
+                // onClick={onButtonClick}
               />
             </div>
-          ) : (
-            <div></div>
           )}
         </div>
       </div>

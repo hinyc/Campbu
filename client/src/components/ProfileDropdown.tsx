@@ -50,6 +50,7 @@ function ProfileDropdown() {
       .then((res: any) => {
         console.log(res);
         localStorage.removeItem('isLogin');
+        localStorage.removeItem('userInfo');
         resetLoginUserInfo();
         navigate('/');
       })
@@ -59,7 +60,7 @@ function ProfileDropdown() {
   return (
     <div css={box}>
       <ul css={ulStyle}>
-        <Link to="/lists/Chat" css={textDecorationNone}>
+        <Link to="/lists/chat" css={textDecorationNone}>
           <li
             css={[
               li,
