@@ -28,6 +28,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import {
   chatsNum,
+  loginUserInfo,
   showCompleteModal,
   showConfirmModal,
   showReviewModal,
@@ -36,6 +37,10 @@ import {
 import io from 'socket.io-client';
 import axios from 'axios';
 import Reservation from '../../components/Reservation';
+import ConfirmBorrow from '../../components/ConfirmBorrow';
+import ConfirmLend from '../../components/ConfirmLend';
+import Complete from '../../components/Complete';
+import ReviewModal from '../../components/ReviewModal';
 
 //! ------------ css -------------------
 const button = css`
@@ -101,42 +106,63 @@ function Chat() {
   const [socket, setSocket] = useState<any>();
   const [chatCount, setChatCount] = useRecoilState<chatNum>(chatsNum);
 
-  // ? 예약 관리 상태들 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  // const [buttonClick, setButtonClick] = useState<boolean>(false);
-  // const [reservationId, setReservationId] = useState(0);
-  // const [reservationStatus, setReservationStatus] = useState(0);
-  // const [userId, setUserId] = useState(0);
-  // const borrowButton = ['예약 취소', '반납하기', '반납 확인 대기 중', '반납 완료'];
-  // const lendButton = ['예약 수락', '반납 대기 중', '반납 확인', '회수 완료'];
-  // const [confirm, setConfirm] = useRecoilState(showConfirmModal);
-  // const [complete, setComplete] = useRecoilState(showCompleteModal);
-  // const [review, setReview] = useRecoilState(showReviewModal);
-  // const [submit, setSubmit] = useRecoilState(showSubmitModal);
-  // const printStatusText = (status: number) => {
-  // return 유저 아이디 === 포스트 유저 아이디 ? lendButton[status - 1] : borrowButton[status - 1]
-  // };
-  // const onButtonClick = (id: number, status: number, userId: number) => {
-  //   setReservationId(id);
-  //   setReservationStatus(status);
-  //   setUserId(userId);
-  //   setConfirm(true);
-  //   setButtonClick(true);
-  // };
+  const loginUser = useRecoilValue(loginUserInfo);
+  const [postUserId, setPostUserId] = useState(0);
+  const [reservationUserId, setReservationUserId] = useState(0);
+  const borrowButton = [
+    '예약 취소',
+    '반납하기',
+    '반납 확인 대기 중',
+    '반납 완료',
+  ];
+  const lendButton = ['예약 수락', '반납 대기 중', '반납 확인', '회수 완료'];
+  const [confirm, setConfirm] = useRecoilState(showConfirmModal);
+  const [complete, setComplete] = useRecoilState(showCompleteModal);
+  const [review, setReview] = useRecoilState(showReviewModal);
+  const [submit, setSubmit] = useRecoilState(showSubmitModal);
 
-  // const onCompleteClick = () => {
-  //   setComplete(false);
-  //   if (reservationStatus === 3) { // && 유저 아이디 === 포스트 유저 아이디
-  //     setReview(true);
-  //   }
-  // else if
-  // reservationStatus === 2 && 유저 아이디 !== 포스트 유저 아이디
-  // setReview(true);
-  // };
+  //? 유저 아이디 === 포스트 유저 아이디 (빌려준 사람)
+  const userLend =
+    loginUser.id !== reservationUserId && loginUser.id === postUserId;
+  //? 1 : 예약 수락 => 80
+  //? 2 : 반납 대기 중 => opacity, not allowed 50
+  //? 3 : 반납 확인 => 리뷰 (예약 아이디, 예약한 유저 아이디) 80
+  //? 4 : 회수 완료 => not allowed 100
 
-  // const onReviewCompleteClick = () => {
-  //   setSubmit(false);
-  // };
-  // ? * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+  //? 유저 아이디 === 예약자 아이디 && 유저 아이디 !== 포스트 유저 아이디 (빌린 사람)
+  const userBorrow =
+    loginUser.id === reservationUserId && loginUser.id !== postUserId;
+  //? 1 : 예약 취소 => delete 80
+  //? 2 : 반납하기 => 리뷰 (예약 아이디, 포스트 유저 아이디) 80
+  //? 3 : 반납 확인 대기 중 => opacity, not allowed 50
+  //? 4 : 반납 완료 => not allowed 100
+
+  const printStatusText = (status: number) => {
+    if (userLend) {
+      return lendButton[status - 1];
+    } else {
+      return borrowButton[status - 1];
+    }
+  };
+
+  const onButtonClick = () => {
+    console.log('버튼 클릭');
+    setConfirm(true);
+  };
+
+  const onCompleteClick = () => {
+    setComplete(false);
+    if (
+      (userLend && posts.reservation_status === 3) ||
+      (userBorrow && posts.reservation_status === 2)
+    ) {
+      setReview(true);
+    }
+  };
+
+  const onReviewCompleteClick = () => {
+    setSubmit(false);
+  };
 
   useEffect(() => {
     axios
@@ -160,7 +186,8 @@ function Chat() {
         const newSocket = io('http://localhost:5050');
         newSocket.emit('open-room', chatIds);
         setSocket(newSocket);
-        setChatRooms(res.data.chat);
+        const sortedData = res.data.chat.sort((a: any, b: any) => b.id - a.id);
+        setChatRooms(sortedData);
         setUserNickName(res.data.nickName);
       });
   }, []);
@@ -225,8 +252,10 @@ function Chat() {
         .then((res: any) => {
           setChatting(res.data.chat);
           setPosts(res.data.post);
-          console.log(res.data);
-          console.log(res.data.post);
+          setPostUserId(res.data.userId.users_id);
+          setReservationUserId(res.data.post.users_id.id);
+          console.log('받아오는 데이터', res.data);
+          console.log('로그인한 사람', loginUser);
         });
     } else {
       setChatRoomId(0);
@@ -280,68 +309,69 @@ function Chat() {
 
   return (
     <>
-      {/* {confirm &&
-        ((reservationStatus === 1 && ( // user id !== post user id
-          <YesOrNo
-            reservationId={reservationId}
-            reservation_status={1}
-            text={'예약 취소'}
-            title={'예약 취소'}
-            text1={`예약을 취소하시겠습니까?`}
-            text2={`대여자가 예약을 수락하기 전까지 취소할 수 있습니다.`}
-          />
-        )) ||
-          (reservationStatus === 2 && (
-            <YesOrNo
-              reservationId={reservationId}
-              reservation_status={2}
-              text={'반납하기'}
-              title={'반납하기'}
-              text1={`반납하시겠습니까?`}
-              text2={`대여자가 상품 회수 후 반납 확인 시 최종 반납 처리가 됩니다.`}
-            />
-          )))}
-          {confirm &&
-          ((reservationStatus === 1 && (  // user id === post user id
-            <YesOrNo
-              reservationId={reservationId}
-              reservation_status={1}
-              text={'예약 수락'}
-              title={'예약 수락'}
-              text1={`예약을 수락하시겠습니까?`}
-              text2={`예약 일정 확인 후 수락 버튼을 눌러주세요.`}
-            />
-          )) ||
-            (reservationStatus === 3 && (
-              <YesOrNo
-                reservationId={reservationId}
-                reservation_status={3}
-                text={'반납 확인'}
-                title={'반납 확인'}
-                text1={`대여자에게서 물품을 잘 받으셨나요?`}
-                text2={`반납 확인 시 회수 처리가 완료됩니다.`}
-              />
-            )))}
+      {confirm && userLend && posts.reservation_status === 1 && (
+        <ConfirmLend
+          reservationId={posts.id}
+          reservation_status={1}
+          text={'예약 수락'}
+          title={'예약 수락'}
+          text1={`예약을 수락하시겠습니까?`}
+          text2={`예약 일정 확인 후 수락 버튼을 눌러주세요.`}
+        />
+      )}
+      {confirm && userLend && posts.reservation_status === 3 && (
+        <ConfirmLend
+          reservationId={posts.id}
+          reservation_status={3}
+          text={'반납 확인'}
+          title={'반납 확인'}
+          text1={`대여자에게서 물품을 잘 받으셨나요?`}
+          text2={`반납 확인 시 회수 처리가 완료됩니다.`}
+        />
+      )}
       {complete &&
-        (reservationStatus === 1 ? ( // user id !== post user id
+        userLend &&
+        (posts.reservation_status === 1 ? (
+          <Complete text="예약이 수락되었습니다" onClick={onCompleteClick} />
+        ) : (
+          <Complete text="반납이 확인되었습니다" onClick={onCompleteClick} />
+        ))}
+      {confirm && userBorrow && posts.reservation_status === 1 && (
+        <ConfirmBorrow
+          reservationId={posts.id}
+          reservation_status={1}
+          text={'예약 취소'}
+          title={'예약 취소'}
+          text1={`예약을 취소하시겠습니까?`}
+          text2={`대여자가 예약을 수락하기 전까지 취소할 수 있습니다.`}
+        />
+      )}
+      {confirm && userBorrow && posts.reservation_status === 2 && (
+        <ConfirmBorrow
+          reservationId={posts.id}
+          reservation_status={2}
+          text={'반납하기'}
+          title={'반납하기'}
+          text1={`반납하시겠습니까?`}
+          text2={`대여자가 상품 회수 후 반납 확인 시 최종 반납 처리가 됩니다.`}
+        />
+      )}
+      {complete &&
+        userBorrow &&
+        (posts.reservation_status === 1 ? (
           <Complete text="예약이 취소되었습니다" onClick={onCompleteClick} />
         ) : (
           <Complete text="반납이 완료되었습니다" onClick={onCompleteClick} />
         ))}
-        {complete &&
-          (reservationStatus === 1 ? ( // user id === post user id
-            <Complete text="예약이 수락되었습니다" onClick={onCompleteClick} />
-          ) : (
-            <Complete text="반납이 확인되었습니다" onClick={onCompleteClick} />
-          ))}
-      {review && <ReviewModal userId={userId} />} 
-      // user id === post user id ? 예약한 사람의 아이디 : 포스트 쓴 사람 아이디
+
+      {review && userLend && <ReviewModal userId={reservationUserId} />}
+      {review && userBorrow && <ReviewModal userId={postUserId} />}
       {submit && (
         <Complete
           text="리뷰가 등록되었습니다."
           onClick={onReviewCompleteClick}
         />
-      )} */}
+      )}
       <ListTab />
       <div
         css={[
@@ -675,56 +705,42 @@ function Chat() {
           ]}
         >
           {'id' in posts && (
-            // <Reservation
-            //   postId={posts.posts_id.id}
-            //   img_urls={posts.posts_id.img_urls}
-            //   address={posts.posts_id.address}
-            //   title={posts.posts_id.title}
-            //   deposit={posts.posts_id.deposit}
-            //   rental_fee={posts.posts_id.rental_fee}
-            //   reservation_dates={posts.reservation_dates}
-            //   onButtonClick={() => {
-            //     onButtonClick(posts.id, posts.reservation_status) //? 예약 아이디, 예약 상태
-            //   }}
-            // />
-            <div css={post}>
-              <Link to={`/main/${posts.posts_id.id}`} css={textDecorationNone}>
-                <img src={posts.posts_id.img_urls} alt="product" css={img} />
-                <div css={textContainer}>
-                  <span css={[span, moneyTitle, addressStyle]}>
-                    <img src={Here} alt="위치" style={{ marginRight: '4px' }} />
-                    {posts.posts_id.address}
-                  </span>
-                  <span css={span}>{posts.posts_id.title}</span>
-                  <div css={flexBetween}>
-                    <span>
-                      <div css={[span, moneyTitle]}>보증금</div>
-                      <div css={span}>{posts.posts_id.deposit}원</div>
-                    </span>
-                    <span>
-                      <div css={[span, moneyTitle]}>대여비</div>
-                      <div css={span}>{posts.posts_id.rental_fee}원</div>
-                    </span>
-                  </div>
-                  <div css={[span, moneyTitle]}>대여날짜</div>
-                  <div css={span}>{`${posts.reservation_dates[0]} ~ ${
-                    posts.reservation_dates[posts.reservation_dates.length - 1]
-                  }`}</div>
-                </div>
-              </Link>
-              <Button
-                text={'캠핑'}
-                width={`${rem(205)}`}
-                height={`${rem(40)}`}
-                background={'white'}
-                color={color.mid}
-                border={`1px solid ${color.mid}`}
-                size={`${rem(14)}`}
-                cursor={'pointer'}
-                hover={'80%'}
-                // onClick={onButtonClick}
-              />
-            </div>
+            <Reservation
+              postId={posts.posts_id.id}
+              img_urls={posts.posts_id.img_urls}
+              address={posts.posts_id.address}
+              title={posts.posts_id.title}
+              deposit={posts.posts_id.deposit}
+              rental_fee={posts.posts_id.rental_fee}
+              reservation_dates={posts.reservation_dates}
+              onButtonClick={onButtonClick}
+              text={printStatusText(posts.reservation_status)}
+              background={
+                posts.reservation_status !== 4 ? color.point : color.mid
+              }
+              color="white"
+              opacity={
+                (userLend && posts.reservation_status === 2) ||
+                (userBorrow && posts.reservation_status === 3)
+                  ? '50%'
+                  : '100%'
+              }
+              cursor={
+                posts.reservation_status === 4 ||
+                (userLend && posts.reservation_status === 2) ||
+                (userBorrow && posts.reservation_status === 3)
+                  ? 'not-allowed'
+                  : 'pointer'
+              }
+              hover={
+                posts.reservation_status === 4
+                  ? '100%'
+                  : (userLend && posts.reservation_status === 2) ||
+                    (userBorrow && posts.reservation_status === 3)
+                  ? '50%'
+                  : '80%'
+              }
+            />
           )}
         </div>
       </div>
