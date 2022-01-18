@@ -6,6 +6,11 @@ export const isLogin = atom({
   default: false,
 });
 
+export const loginUserInfo = atom({
+  key: 'loginUserInfo',
+  default: {},
+});
+
 export const profileImgUrl = atom({
   key: 'profileImgUrl',
   default:
