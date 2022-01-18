@@ -24,6 +24,7 @@ import AlertModal from '../components/AlertModal';
 import axios from 'axios';
 import Load from '../assets/Load.svg';
 import emptySearchResult from '../assets/pictures/emptySearchResult.svg';
+import Geolocation from '../assets/pictures/Geolocation.svg';
 import { message } from './Lists/tab';
 import SelectAddressList from '../components/SelectAddress';
 
@@ -31,7 +32,7 @@ const container = css`
   width: ${rem(1280)};
   margin: 0 auto;
   margin-top: ${rem(36)};
-  margin-bottom: ${rem(16)};
+  margin-bottom: ${rem(100)};
   text-align: center;
 `;
 
@@ -219,6 +220,13 @@ function Main() {
           <img src={emptySearchResult} alt="camping" />
           <p css={[message, `font-weight: 700`]}>
             검색 결과가 없어요! 다시 검색해주세요.
+          </p>
+        </div>
+      ) : products.posts[0].title === '' ? (
+        <div style={{ margin: `${rem(80)} 0 ${rem(150)} 0` }}>
+          <img src={Geolocation} alt="please search" />
+          <p css={[message, `font-weight: 700`]}>
+            검색된 게 없어요, 지역을 검색해주세요!
           </p>
         </div>
       ) : (

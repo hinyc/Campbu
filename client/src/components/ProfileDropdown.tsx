@@ -58,7 +58,7 @@ function ProfileDropdown() {
   return (
     <div css={box}>
       <ul css={ulStyle}>
-        <Link to="/lists/Chat" css={textDecorationNone}>
+        <Link to="/lists/chat" css={textDecorationNone}>
           <li css={li}>메시지</li>
         </Link>
         <Link to="/lists/borrowlist" css={textDecorationNone}>
