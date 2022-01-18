@@ -4,6 +4,7 @@ import Logo from '../assets/Logo.svg';
 import { color, rem, textDecorationNone } from '../common';
 
 const footerStyle = css`
+  width: 100vw;
   background-color: #eeefcb;
   margin-top: ${rem(60)};
 `;

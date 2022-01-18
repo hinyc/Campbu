@@ -1,4 +1,3 @@
-import { decode } from 'punycode';
 import { atom } from 'recoil';
 
 export const isLogin = atom({
