@@ -8,13 +8,15 @@ import Menu from '../assets/Menu.svg';
 import Profile from '../assets/Profile.svg';
 
 import { isLogin, showLoginModal, showSignupModal } from '../Atom';
-import { color, hover, rem, shadow } from '../common';
+import { color, hover, rem, shadow, host } from '../common';
 
 import { Button } from './Button';
 import LoginModal from './LoginModal';
 import ProfileDropdown from './ProfileDropdown';
 import Signup from './Signup';
 import { chatsNum } from '../Atom';
+import io from 'socket.io-client';
+import axios from 'axios';
 
 const headerStyle = css`
   height: ${rem(99)};
@@ -32,6 +34,7 @@ function Navbar() {
   const [login, setIsLogin] = useRecoilState(isLogin);
   const [showLogin, setShowLogin] = useRecoilState(showLoginModal);
   const [chatNum, setChatNum] = useRecoilState(chatsNum);
+  const [socket, setSocket] = useState<any>();
   const showSignup = useRecoilValue(showSignupModal);
   console.log('showLogin', showLogin);
   const onClick = () => {
@@ -43,6 +46,44 @@ function Navbar() {
       setIsLogin(true);
     }
   }, [setIsLogin]);
+
+  // useEffect(() => {
+  //   if (localStorage.getItem('isLogin')) {
+  //     axios
+  //       .get(`${host}/chat/chatRoom`, {
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         withCredentials: true,
+  //       })
+  //       .then((res: any) => {
+  //         console.log(res.data);
+  //         const chatIds = res.data.chat.map((chat: any) => {
+  //           const roomId = 'Room' + String(chat.id);
+  //           if (!(roomId in chatNum)) {
+  //             setChatNum((chatNum) => ({
+  //               ...chatNum,
+  //               [roomId]: 0,
+  //             }));
+  //           }
+  //           return chat.id;
+  //         });
+  //         const newSocket = io('http://localhost:5050');
+  //         console.log(chatIds);
+  //         newSocket.emit('open-room', chatIds);
+  //         setSocket(newSocket);
+  //       });
+  //   }
+  // }, [login]);
+
+  // socket?.on('receive-message', (message: any) => {
+  //   const roomId = 'Room' + String(message.id);
+  //   setChatNum((chatNum) => ({
+  //     ...chatNum,
+  //     total: chatNum.total + 1,
+  //     [roomId]: chatNum[roomId] + 1,
+  //   }));
+  // });
 
   return (
     <header css={headerStyle}>
