@@ -52,6 +52,7 @@ function Product(props: Props) {
   const navigation = useNavigate();
   const onPostClick = () => {
     setGetPostId(postId);
+    localStorage.setItem('postId', `${postId}`);
     navigation(`/main/${postId}`);
   };
 

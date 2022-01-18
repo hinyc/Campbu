@@ -2,12 +2,18 @@
 import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import Logo from '../assets/Logo.svg';
 import Menu from '../assets/Menu.svg';
 import Profile from '../assets/Profile.svg';
 
-import { isLogin, showLoginModal, showSignupModal } from '../Atom';
+import {
+  isLogin,
+  loginUserInfo,
+  post_id,
+  showLoginModal,
+  showSignupModal,
+} from '../Atom';
 import { color, hover, rem, shadow } from '../common';
 
 import { Button } from './Button';
@@ -30,6 +36,8 @@ function Navbar() {
   const [click, setClick] = useState<boolean>(false);
   const [login, setIsLogin] = useRecoilState(isLogin);
   const [showLogin, setShowLogin] = useRecoilState(showLoginModal);
+  const setLoginUserInfo = useSetRecoilState(loginUserInfo);
+  const setPostId = useSetRecoilState(post_id);
   const showSignup = useRecoilValue(showSignupModal);
   console.log('showLogin', showLogin);
   const onClick = () => {
@@ -40,7 +48,20 @@ function Navbar() {
     if (localStorage.getItem('isLogin')) {
       setIsLogin(true);
     }
-  }, [setIsLogin]);
+    if (localStorage.getItem('userInfo')) {
+      const userInfo = localStorage.getItem('userInfo');
+      if (userInfo) {
+        setLoginUserInfo(JSON.parse(userInfo));
+      }
+    }
+  }, [setIsLogin, setLoginUserInfo]);
+
+  useEffect(() => {
+    if (localStorage.getItem('postId')) {
+      const postId = localStorage.getItem('postId');
+      setPostId(Number(postId));
+    }
+  }, [setPostId]);
 
   return (
     <header css={headerStyle}>

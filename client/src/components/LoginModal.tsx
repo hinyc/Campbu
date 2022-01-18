@@ -182,6 +182,7 @@ function LoginModal() {
           setLoginUserInfo(userinfo);
 
           localStorage.setItem('isLogin', 'true');
+          localStorage.setItem('userInfo', JSON.stringify(userinfo));
         }
       })
       .catch((res) => {
