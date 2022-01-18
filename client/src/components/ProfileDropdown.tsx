@@ -69,22 +69,26 @@ function ProfileDropdown() {
             ]}
           >
             메시지
-            <div
-              css={[
-                css`
-                  width: ${rem(25)};
-                  height: ${rem(25)};
-                  border-radius: 50%;
-                  border: ${rem(2)} solid #ed662c;
-                  text-align: center;
-                  margin-left: ${rem(10)};
-                  font-size: ${rem(15)};
-                  line-height: ${rem(20)};
-                `,
-              ]}
-            >
-              {chatNum.total}
-            </div>
+            {chatNum.total !== 0 ? (
+              <div
+                css={[
+                  css`
+                    width: ${rem(25)};
+                    height: ${rem(25)};
+                    border-radius: 50%;
+                    border: ${rem(2)} solid #ed662c;
+                    text-align: center;
+                    margin-left: ${rem(10)};
+                    font-size: ${rem(15)};
+                    line-height: ${rem(20)};
+                  `,
+                ]}
+              >
+                {chatNum.total}
+              </div>
+            ) : (
+              <div></div>
+            )}
           </li>
         </Link>
         <Link to="/lists/borrowlist" css={textDecorationNone}>

@@ -95,12 +95,11 @@ function Chat() {
   const [posts, setPosts] = useState<any>({});
   const [socket, setSocket] = useState<any>();
   const [chatCount, setChatCount] = useRecoilState<chatNum>(chatsNum);
-  // const [chatsMesNum, setChatsMesNum] = useState<chatNum>({});
   const [buttonClick, setButtonClick] = useState<boolean>(false);
   const onButtonClick = () => {
     setButtonClick(true);
   };
-
+  console.log(socket);
   useEffect(() => {
     axios
       .get(`${host}/chat/chatRoom`, {
@@ -208,6 +207,28 @@ function Chat() {
       return `오전 ${hour}시 ${min}분`;
     }
   };
+
+  const checkDate = (date: Date, lastDate: Date) => {
+    const currentDate = new Date(date);
+    const pastDate = new Date(lastDate);
+    const nowYear = currentDate.getFullYear();
+    const lastYear = pastDate.getFullYear();
+    const nowMonth = currentDate.getMonth();
+    const lastMonth = pastDate.getMonth();
+    const nowDay = currentDate.getDay();
+    const lastDay = pastDate.getDay();
+    if (nowDay > lastDay) {
+      return true;
+    } else if (nowMonth > lastMonth) {
+      return true;
+    } else if (nowYear > lastYear) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const getDayLine = (inDate: any) => {};
 
   const scrollLastMessage: any = useRef(null);
   useEffect(() => {
