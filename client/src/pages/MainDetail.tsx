@@ -90,10 +90,19 @@ const fontSize9 = css`
   font-size: ${rem(9)};
   font-weight: 700;
 `;
-const fontSize40 = css`
+const arrowStyle = css`
+  width: ${rem(60)};
   font-size: ${rem(40)};
-  margin: 0 ${rem(20)};
+  text-align: center;
+  padding: auto;
   color: ${color.border};
+  :hover {
+    font-size: ${rem(50)};
+    cursor: pointer;
+  }
+  :active {
+    opacity: 0.6;
+  }
 `;
 
 const showSelectImgContainerStyle = css`
@@ -153,7 +162,7 @@ let dummyData = {
     users_id: 1,
     created_at: '',
     updated_at: '',
-    likes_count: 5,
+    likes_count: 99,
   },
   reviews: [
     {
@@ -165,6 +174,12 @@ let dummyData = {
       reviews_id: 8,
     },
   ],
+  user: {
+    email: 'string',
+    id: 0,
+    nicknamge: 'string',
+    users_img: 'string',
+  },
 };
 
 interface postInfoType {
@@ -189,6 +204,12 @@ interface postInfoType {
         reviews_id: number;
       }[]
     | [];
+  user: {
+    email: string;
+    id: number;
+    nicknamge: string;
+    users_img: string;
+  };
 }
 
 // interface DetailviewType {
@@ -207,7 +228,6 @@ function DetailView() {
   const likedPosts = useRecoilValue<number[]>(likedProducts);
   const login = useRecoilValue(isLogin);
   const setShowLoginModal = useSetRecoilState(showLoginModal);
-  const profileImg = useRecoilValue(profileImgUrl);
   const userInfo = useRecoilValue(loginUserInfo);
 
   const [completeModal, setCompleteModal] = useRecoilState(showCompleteModal);
@@ -216,11 +236,7 @@ function DetailView() {
   const [postInfo, setPostInfo] = useState<postInfoType>(dummyData);
   const [selectImgNum, setSelectImgNum] = useState<number>(0);
 
-  console.log('userinfo', userInfo);
-  console.log('postinfo', postInfo);
   useEffect(() => {
-    console.log('postId', postId);
-
     if (postId) {
       const API = `${host}/product/post/${postId}`;
 
@@ -228,6 +244,7 @@ function DetailView() {
         .get(API, config)
         .then((res) => {
           const postInfo = res.data;
+
           setPostInfo(postInfo);
 
           setUnableDates(postInfo.posts.unavailable_dates.sort());
@@ -245,7 +262,6 @@ function DetailView() {
     }
   }, [postId]);
 
-  console.log(new Date(), postInfo);
   const campbuIndicator = calCampbuIndicator(getReviews);
   const startDateHandler = () => {
     setIsSelectStartState(true);
@@ -300,7 +316,6 @@ function DetailView() {
   const reservationComplete = () => {
     setCompleteModal(false);
   };
-
   return (
     <div css={flexVertical}>
       {completeModal && (
@@ -333,26 +348,28 @@ function DetailView() {
             </span>
             <div>{postInfo.posts.title}</div>
           </div>
-          <div
-            css={css`
-              padding-left: 20rem;
-            `}
-          >
-            <Link to={`/writing/${postId}`}>
-              <Button
-                text="수정하기 / 삭제하기"
-                width={rem(150)}
-                height={`none`}
-                background={color.white}
-                color={color.placeholder}
-                border="none"
-                size={rem(18)}
-                margin={`none`}
-                hover="0.65"
-                cursor="pointer"
-              />
-            </Link>
-          </div>
+          {userInfo.id === postInfo.user.id ? (
+            <div
+              css={css`
+                padding-left: 20rem;
+              `}
+            >
+              <Link to={`/writing/${postId}`}>
+                <Button
+                  text="수정하기 / 삭제하기"
+                  width={rem(150)}
+                  height={`none`}
+                  background={color.white}
+                  color={color.placeholder}
+                  border="none"
+                  size={rem(18)}
+                  margin={`none`}
+                  hover="0.65"
+                  cursor="pointer"
+                />
+              </Link>
+            </div>
+          ) : null}
           <LikeSymbol
             postId={postId}
             isFill={likedPosts.includes(postId)}
@@ -371,7 +388,7 @@ function DetailView() {
           ]}
         >
           <div
-            css={fontSize40}
+            css={arrowStyle}
             onClick={() => {
               selectImgHandler('pre');
             }}
@@ -385,6 +402,7 @@ function DetailView() {
             <div css={showSelectImgContainerStyle}>
               {postInfo.posts.img_urls.map((el, idx) => (
                 <div
+                  key={idx}
                   css={[
                     showSelectImgCircleStyle,
                     css`
@@ -398,7 +416,7 @@ function DetailView() {
             </div>
           </div>
           <div
-            css={fontSize40}
+            css={arrowStyle}
             onClick={() => {
               selectImgHandler('next');
             }}
@@ -487,7 +505,11 @@ function DetailView() {
                 <Gage ratio={campbuIndicator} width={153} />
               </div>
               <div css={profileBoxStyle}>
-                <img css={profileImgStyle} src={profileImg} alt="profileImg" />
+                <img
+                  css={profileImgStyle}
+                  src={postInfo.user.users_img}
+                  alt="profileImg"
+                />
               </div>
             </div>
             <div
