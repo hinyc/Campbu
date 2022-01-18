@@ -40,7 +40,7 @@ interface Props {
   reservation_status: number;
 }
 
-function YesOrNo({
+function ConfirmLend({
   text1,
   text2,
   title,
@@ -105,4 +105,4 @@ function YesOrNo({
   );
 }
 
-export default YesOrNo;
+export default ConfirmLend;

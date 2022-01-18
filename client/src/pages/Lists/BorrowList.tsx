@@ -17,7 +17,7 @@ import {
   showSubmitModal,
 } from '../../Atom';
 import { useEffect, useState } from 'react';
-import YesOrNo from '../../components/ConfirmBorrow';
+import ConfirmBorrow from '../../components/ConfirmBorrow';
 import axios from 'axios';
 import Complete from '../../components/Complete';
 import ReviewModal from '../../components/ReviewModal';
@@ -129,7 +129,7 @@ function BorrowList() {
       <div css={container}>
         {confirm &&
           ((reservationStatus === 1 && (
-            <YesOrNo
+            <ConfirmBorrow
               reservationId={reservationId}
               reservation_status={1}
               text={'예약 취소'}
@@ -139,7 +139,7 @@ function BorrowList() {
             />
           )) ||
             (reservationStatus === 2 && (
-              <YesOrNo
+              <ConfirmBorrow
                 reservationId={reservationId}
                 reservation_status={2}
                 text={'반납하기'}
@@ -194,8 +194,8 @@ function BorrowList() {
                 )}
                 background={
                   borrowList.reservation_reservation_status !== 4
-                    ? `${color.point}`
-                    : `${color.mid}`
+                    ? color.point
+                    : color.mid
                 }
                 color="white"
                 cursor={
@@ -217,7 +217,7 @@ function BorrowList() {
                     : '100%'
                 }
                 postId={borrowList.posts_id}
-                img_urls={borrowList.posts_img_urls}
+                img_urls={borrowList.posts_img_urls.split(',')}
                 address={borrowList.posts_address}
                 title={borrowList.posts_title}
                 deposit={borrowList.posts_deposit}
