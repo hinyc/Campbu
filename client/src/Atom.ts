@@ -208,3 +208,9 @@ export const chatsNum = atom<chats>({
     total: 0,
   },
 });
+
+//? 드롭다운메뉴 온오프
+export const showModal = atom<boolean>({
+  key: 'showModal',
+  default: false,
+});
