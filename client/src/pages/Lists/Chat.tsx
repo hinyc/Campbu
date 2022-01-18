@@ -28,7 +28,6 @@ import { useState, useEffect, useRef } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import {
   chatsNum,
-  chatsTotalNum,
   showCompleteModal,
   showConfirmModal,
   showReviewModal,

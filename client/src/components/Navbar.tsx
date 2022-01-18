@@ -42,7 +42,6 @@ function Navbar() {
   const setPostId = useSetRecoilState(post_id);
 
   const showSignup = useRecoilValue(showSignupModal);
-  console.log('showLogin', showLogin);
   const onClick = () => {
     setClick(!click);
   };

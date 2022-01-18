@@ -230,6 +230,7 @@ function DetailView() {
   const login = useRecoilValue(isLogin);
   const setShowLoginModal = useSetRecoilState(showLoginModal);
 
+  const userInfo = useRecoilValue(loginUserInfo);
   const profileImg = useRecoilValue(profileImgUrl);
 
   const [completeModal, setCompleteModal] = useRecoilState(showCompleteModal);
