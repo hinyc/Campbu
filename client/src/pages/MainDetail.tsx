@@ -239,13 +239,10 @@ function DetailView() {
   const [postInfo, setPostInfo] = useState<postInfoType>(dummyData);
   const [selectImgNum, setSelectImgNum] = useState<number>(0);
 
-  console.log('글쓴이', postInfo.user.id);
-  console.log('유저', userInfo.id);
   useEffect(() => {
     if (postId) {
       const API = `${host}/product/post/${postId}`;
 
-      console.log(1);
       axios
         .get(API, config)
         .then((res) => {
