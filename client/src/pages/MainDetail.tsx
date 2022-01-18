@@ -232,8 +232,6 @@ function DetailView() {
 
   const profileImg = useRecoilValue(profileImgUrl);
 
-  const userInfo = useRecoilValue(loginUserInfo);
-
   const [completeModal, setCompleteModal] = useRecoilState(showCompleteModal);
   const navigation = useNavigate();
   const [getReviews, setGetReviews] = useState<reviewsType>([]);

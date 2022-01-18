@@ -24,15 +24,16 @@ import {
 } from '../../components/post';
 import PaperPlane from '../../assets/PaperPlane.svg';
 import Here from '../../assets/Here.svg';
+import { useState, useEffect, useRef } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import {
+  chatsNum,
   chatsTotalNum,
   showCompleteModal,
   showConfirmModal,
   showReviewModal,
   showSubmitModal,
 } from '../../Atom';
-import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
 import Reservation from '../../components/Reservation';
@@ -99,8 +100,7 @@ function Chat() {
   const [userNickName, setUserNickName] = useState<string>('');
   const [posts, setPosts] = useState<any>({});
   const [socket, setSocket] = useState<any>();
-  const [chatTotalCount, setChatTotalCount] = useRecoilState(chatsTotalNum);
-  const [chatsMesNum, setChatsMesNum] = useState<chatNum>({});
+  const [chatCount, setChatCount] = useRecoilState<chatNum>(chatsNum);
 
   // ? 예약 관리 상태들 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   // const [buttonClick, setButtonClick] = useState<boolean>(false);
@@ -149,9 +149,12 @@ function Chat() {
       })
       .then((res: any) => {
         const chatIds = res.data.chat.map((chat: any) => {
-          const id = 'Room' + String(chat.id);
-          if (!(id in chatsMesNum)) {
-            setChatsMesNum({ [id]: 0 });
+          const roomId = 'Room' + String(chat.id);
+          if (!(roomId in chatCount)) {
+            setChatCount((chatCount) => ({
+              ...chatCount,
+              [roomId]: 0,
+            }));
           }
           return chat.id;
         });
@@ -175,12 +178,15 @@ function Chat() {
 
     socket.on('receive-message', (message: any) => {
       if (message.id !== chatRoomId) {
-        const nowId = 'Room' + String(message.id);
-        // setChatsMesNum((chatsMesNum) => {
-        //   return { nowId: chatsMesNum + 1 };
-        // });
+        const roomId = 'Room' + String(message.id);
+        setChatCount((chatCount) => ({
+          ...chatCount,
+          total: chatCount.total + 1,
+          [roomId]: chatCount[roomId] + 1,
+        }));
+      } else if (message.id === chatRoomId) {
+        setChatting([...chatting, message]);
       }
-      setChatting([...chatting, message]);
     });
     return () => socket.off('receive-message');
   });
@@ -203,6 +209,11 @@ function Chat() {
 
   const handleChatRoomClick = (e: any, id: number, nickName: string) => {
     if (chatRoomId !== id) {
+      setChatCount((chatCount) => ({
+        ...chatCount,
+        total: chatCount.total - chatCount[`Room${id}`],
+        [`Room${id}`]: 0,
+      }));
       setChatRoomId(id);
       setChatNickName(nickName);
       axios
@@ -215,6 +226,7 @@ function Chat() {
         .then((res: any) => {
           setChatting(res.data.chat);
           setPosts(res.data.post);
+          console.log(res.data);
           console.log(res.data.post);
         });
     } else {
@@ -235,6 +247,37 @@ function Chat() {
       return `오전 ${hour}시 ${min}분`;
     }
   };
+
+  const checkDate = (date: Date, lastDate: Date) => {
+    const currentDate = new Date(date);
+    const pastDate = new Date(lastDate);
+    const nowYear = currentDate.getFullYear();
+    const lastYear = pastDate.getFullYear();
+    const nowMonth = currentDate.getMonth();
+    const lastMonth = pastDate.getMonth();
+    const nowDay = currentDate.getDay();
+    const lastDay = pastDate.getDay();
+    if (nowDay > lastDay) {
+      return true;
+    } else if (nowMonth > lastMonth) {
+      return true;
+    } else if (nowYear > lastYear) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const getDayLine = (inDate: any) => {};
+
+  const scrollLastMessage: any = useRef(null);
+  useEffect(() => {
+    scrollLastMessage.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'start',
+    });
+  }, [chatting]);
 
   return (
     <>
@@ -393,19 +436,25 @@ function Chat() {
                     {chatRoom.recipient_nickname === userNickName
                       ? chatRoom.sender_nickname
                       : chatRoom.recipient_nickname}
-                    <div
-                      css={[
-                        css`
-                          position: absolute;
-                          right: ${rem(10)};
-                          top: ${rem(0)};
-                          border: ${rem(2)} solid #ed662c;
-                          border-radius: 50%;
-                        `,
-                      ]}
-                    >
-                      {}
-                    </div>
+                    {chatCount[`Room${chatRoom.id}`] === 0 ? (
+                      <div></div>
+                    ) : (
+                      <div
+                        css={[
+                          css`
+                            position: absolute;
+                            right: ${rem(10)};
+                            width: ${rem(30)};
+                            top: ${rem(0)};
+                            border: ${rem(2)} solid #ed662c;
+                            text-align: center;
+                            border-radius: 50%;
+                          `,
+                        ]}
+                      >
+                        {chatCount[`Room${chatRoom.id}`]}
+                      </div>
+                    )}
                   </div>
                   <div
                     css={[
@@ -596,6 +645,7 @@ function Chat() {
                 )}
               </>
             ))}
+            <div ref={scrollLastMessage}></div>
           </div>
           <span css={[relative]}>
             <Input

@@ -199,7 +199,13 @@ export const likedProducts = atom<number[]>({
 });
 
 //? 부재 중 온 채팅 개수 객체
-export const chatsTotalNum = atom<number>({
-  key: 'chatsTotalNum',
-  default: 0,
+interface chats {
+  [key: string]: number;
+}
+
+export const chatsNum = atom<chats>({
+  key: 'chatsNum',
+  default: {
+    total: 0,
+  },
 });
