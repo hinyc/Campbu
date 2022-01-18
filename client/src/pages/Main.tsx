@@ -105,56 +105,59 @@ function Main() {
   const [selected, setSelected] = useState<boolean>(false);
   const [likedPosts, setLikedPosts] = useRecoilState<number[]>(likedProducts);
 
-  useEffect(() => {
-    setSearchValue('');
-  }, []);
+  const [address, setAddress] = useState('');
 
   useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  }, [products]);
-
-  const onChange = (e: any) => {
-    setSearchValue(e.target.value);
-  };
-
-  const onSearchClick = async () => {
-    getAddress();
-    if (!showAddress && searchValue && selected) {
+    if (searchValue) {
       setIsLoading(true);
       if (login) {
-        await axios
+        axios
           .get(`${host}/product/address/${searchValue}`, config)
           .then((res) => {
             if (res.status === 200) {
+              console.log(`${host}/product/address/${searchValue}`, res.data);
               searchAddressList(res.data);
               setMainSearch(res.data);
               const likes = res.data['likes'].map(
                 (obj: { posts_id: number }) => obj.posts_id,
               );
               setLikedPosts(likes);
+              setIsLoading(false);
             }
           })
-          .catch((err) => console.error('에러입니다', err));
+          .catch((err) => {
+            console.error('검색결과가 없습니다.', err);
+            setIsLoading(false);
+          });
       } else {
-        await axios
+        axios
           .get(`${host}/product/address/${searchValue}`)
           .then((res) => {
             if (res.status === 200) {
               searchAddressList(res.data);
               setMainSearch(res.data);
+              setIsLoading(false);
             }
           })
-          .catch((err) => console.error('에러입니다', err));
+          .catch((err) => {
+            console.error('검색결과가 없습니다.', err);
+            setIsLoading(false);
+          });
       }
     }
+    if (searchValue) {
+      setAddress(searchValue);
+    }
+  }, [searchValue]);
+
+  const onChange = (e: any) => {
+    setAddress(e.target.value);
   };
 
-  const getAddress = async () => {
+  const onSearchClick = async () => {
     await axios
       .get(
-        `https://www.juso.go.kr/addrlink/addrLinkApi.do?currentPage=1&countPerPage=50&keyword=${searchValue}&confmKey=${addressAPI}&resultType=json`,
+        `https://www.juso.go.kr/addrlink/addrLinkApi.do?currentPage=1&countPerPage=50&keyword=${address}&confmKey=${addressAPI}&resultType=json`,
         { headers: { 'Content-Type': 'application/json' } },
       )
       .then((res) => {
@@ -172,7 +175,7 @@ function Main() {
         }
         setSearchAddress(addressList);
         setShowAddress(true);
-        setSelected(true);
+        setSearchValue('');
       });
   };
 
@@ -198,7 +201,7 @@ function Main() {
           padding={`${rem(18)}`}
           margin={`${rem(26)} 0 0 0`}
           onChange={onChange}
-          value={searchValue}
+          value={address}
           onKeyPress={onSearchPress}
         />
         <button css={button} onClick={onSearchClick}>

@@ -48,6 +48,7 @@ function ProfileDropdown() {
       .then((res: any) => {
         console.log(res);
         localStorage.removeItem('isLogin');
+        localStorage.removeItem('userInfo');
         resetLoginUserInfo();
         navigate('/');
       })
