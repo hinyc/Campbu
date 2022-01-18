@@ -8,41 +8,30 @@ dotenv.config();
 
 export default {
   token: async (req: Request, res: Response) => {
+    const URL = 'https://oauth2.googleapis.com/token';
     const code = req.body.authorizationCode;
-    const REST_API_KEY = process.env.KAKAO_API_KEY;
-    const REDIRECT_URI = process.env.KAKAO_REDIRECT_URI;
+    const client_id = process.env.GOOGLE_CLIENT_ID;
+    const client_secret = process.env.GOOGLE_CLIENT_SECRET;
+    const redirect_uri = process.env.GOOGLE_REDIRECT_URI;
+    const grant_type = 'authorization_code';
 
-    axios
-      .post(
-        `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&code=${code}`,
-        {
-          headers: {
-            'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
-          },
-        },
-      )
+    await axios
+      .post(URL, { code, client_id, client_secret, redirect_uri, grant_type })
       .then((response) => res.send(response.data));
   },
   getUserInfo: async (req: Request, res: Response) => {
     const token = req.headers.authorization?.split(' ')[1];
-
-    axios
-      .get('https://kapi.kakao.com/v2/user/me', {
-        headers: {
-          authorization: `Bearer ${token} `,
-          'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
-        },
+    await axios
+      .get('https://www.googleapis.com/oauth2/v2/userinfo', {
+        headers: { authorization: `Bearer ${token} ` },
       })
       .then(async (response) => {
         const usersRepository = getRepository(users);
-        const email = response.data.kakao_account.email;
-        const nickname = response.data.kakao_account.profile.nickname;
-        const users_img =
-          response.data.kakao_account.profile.thumbnail_image_url;
+        const email = response.data.email;
+        const nickname = response.data.name;
+        const users_img = response.data.picture;
 
-        const userInfo = await usersRepository.findOne({
-          email: email,
-        });
+        const userInfo = await usersRepository.findOne({ email: email });
         if (!userInfo) {
           await usersRepository.insert({
             email: email,
