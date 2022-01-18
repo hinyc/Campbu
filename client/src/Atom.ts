@@ -1,4 +1,3 @@
-import { NumberOfTopicsInteger } from 'aws-sdk/clients/comprehend';
 import { decode } from 'punycode';
 import { atom } from 'recoil';
 
