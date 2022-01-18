@@ -14,6 +14,7 @@ import { Button } from './Button';
 import LoginModal from './LoginModal';
 import ProfileDropdown from './ProfileDropdown';
 import Signup from './Signup';
+import { chatsNum } from '../Atom';
 
 const headerStyle = css`
   height: ${rem(99)};
@@ -30,6 +31,7 @@ function Navbar() {
   const [click, setClick] = useState<boolean>(false);
   const [login, setIsLogin] = useRecoilState(isLogin);
   const [showLogin, setShowLogin] = useRecoilState(showLoginModal);
+  const [chatNum, setChatNum] = useRecoilState(chatsNum);
   const showSignup = useRecoilValue(showSignupModal);
   console.log('showLogin', showLogin);
   const onClick = () => {
@@ -76,6 +78,7 @@ function Navbar() {
               className="CampBu-logo"
               alt="logo"
             />
+            <div>{chatNum.total}</div>
           </Button>
           {click && <ProfileDropdown />}
         </>
