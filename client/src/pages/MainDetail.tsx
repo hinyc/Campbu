@@ -35,10 +35,12 @@ import {
   profileImgUrl,
   selectDate,
   showCalendar,
+  showCompleteModal,
   showLoginModal,
   startDate,
   unableDate,
 } from '../Atom';
+import Complete from '../components/Complete';
 
 const width = css`
   width: ${rem(752)};
@@ -206,9 +208,12 @@ function DetailView() {
   const login = useRecoilValue(isLogin);
   const setShowLoginModal = useSetRecoilState(showLoginModal);
   const profileImg = useRecoilValue(profileImgUrl);
+
   const userInfo = useRecoilValue(loginUserInfo);
 
-  //지역
+
+  const [completeModal, setCompleteModal] = useRecoilState(showCompleteModal);
+
   const [getReviews, setGetReviews] = useState<reviewsType>([]);
   const [postInfo, setPostInfo] = useState<postInfoType>(dummyData);
   const [selectImgNum, setSelectImgNum] = useState<number>(0);
@@ -261,10 +266,12 @@ function DetailView() {
         reservation_dates: totalRentalDates,
       };
       if (start && end) {
-        console.log('reservation data', data);
         axios
           .post(API, data, config)
-          .then((res) => console.log(res.data))
+          .then((res) => {
+            console.log(res.data);
+            setCompleteModal(true);
+          })
           .catch((err) => console.log(err));
       } else {
         console.log('대여일,반납일을 선택하세요');
@@ -292,8 +299,15 @@ function DetailView() {
     }
   };
 
+  const reservationComplete = () => {
+    setCompleteModal(false);
+  };
+
   return (
     <div css={flexVertical}>
+      {completeModal && (
+        <Complete text="예약이 완료되었습니다" onClick={reservationComplete} />
+      )}
       <div css={flexVertical}>
         <div
           css={css`
