@@ -174,6 +174,7 @@ function Chat() {
     if (chatRoomId !== id) {
       setChatCount((chatCount) => ({
         ...chatCount,
+        total: chatCount.total - chatCount[`Room${id}`],
         [`Room${id}`]: 0,
       }));
       setChatRoomId(id);

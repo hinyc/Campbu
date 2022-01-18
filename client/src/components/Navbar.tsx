@@ -65,20 +65,57 @@ function Navbar() {
             shadow={`${shadow}`}
             hoverBackground="#F18556"
           >
-            <img
-              src={Menu}
-              className="CampBu-logo"
-              alt="logo"
-              style={{ margin: `0 ${rem(14)} ${rem(2)} 0` }}
-            />
             {/* //TODO: 프로필 사진이 들어가야 함 */}
-            <img
-              style={{ marginTop: rem(2) }}
-              src={Profile}
-              className="CampBu-logo"
-              alt="logo"
-            />
-            <div>{chatNum.total}</div>
+            {click || chatNum.total === 0 ? (
+              <>
+                <img
+                  src={Menu}
+                  className="CampBu-logo"
+                  alt="logo"
+                  style={{ margin: `0 ${rem(14)} ${rem(2)} 0` }}
+                />
+                <img
+                  style={{ marginTop: rem(2) }}
+                  src={Profile}
+                  className="CampBu-logo"
+                  alt="logo"
+                />
+              </>
+            ) : (
+              <div
+                css={[
+                  css`
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    margin-top: ${rem(3)};
+                  `,
+                ]}
+              >
+                <img
+                  src={Menu}
+                  className="CampBu-logo"
+                  alt="logo"
+                  style={{ margin: `0 ${rem(14)} ${rem(2)} 0` }}
+                />
+                <div
+                  css={[
+                    css`
+                      background-color: white;
+                      width: ${rem(20)};
+                      height: ${rem(20)};
+                      color: #ed662c;
+                      border-radius: 50%;
+                      font-size: ${rem(15)};
+                      line-height: ${rem(20)};
+                      margin-bottom: ${rem(4)};
+                    `,
+                  ]}
+                >
+                  {chatNum.total}
+                </div>
+              </div>
+            )}
           </Button>
           {click && <ProfileDropdown />}
         </>
