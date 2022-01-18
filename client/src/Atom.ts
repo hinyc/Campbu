@@ -1,3 +1,4 @@
+import { NumberOfTopicsInteger } from 'aws-sdk/clients/comprehend';
 import { decode } from 'punycode';
 import { atom } from 'recoil';
 
@@ -6,9 +7,14 @@ export const isLogin = atom({
   default: false,
 });
 
-export const loginUserInfo = atom({
+export const loginUserInfo = atom<{
+  email: string;
+  id: number;
+  nickname: string;
+  users_img: string;
+}>({
   key: 'loginUserInfo',
-  default: {},
+  default: { email: 'string', id: 0, nickname: 'string', users_img: 'string' },
 });
 
 export const profileImgUrl = atom({
