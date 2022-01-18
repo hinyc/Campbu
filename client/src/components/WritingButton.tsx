@@ -30,7 +30,7 @@ function WritingButton() {
   const navigation = useNavigate();
   const goWritingPage = () => {
     if (login) {
-      navigation('/wrighting');
+      navigation('/writing');
     } else {
       setShowLoginModal(true);
     }

@@ -208,9 +208,9 @@ function DetailView() {
   const login = useRecoilValue(isLogin);
   const setShowLoginModal = useSetRecoilState(showLoginModal);
   const profileImg = useRecoilValue(profileImgUrl);
-
   const userInfo = useRecoilValue(loginUserInfo);
 
+  const userInfo = useRecoilValue(loginUserInfo);
 
   const [completeModal, setCompleteModal] = useRecoilState(showCompleteModal);
 
@@ -340,7 +340,7 @@ function DetailView() {
               padding-left: 20rem;
             `}
           >
-            <Link to={`/wrighting/${postId}`}>
+            <Link to={`/writing/${postId}`}>
               <Button
                 text="수정하기 / 삭제하기"
                 width={rem(150)}

@@ -24,8 +24,8 @@ function App() {
         <Route path="/main" element={<Main />} />
         <Route path="/main/*" element={<MainDetail />} />
         <Route path="/mypage" element={<Mypage />} />
-        <Route path="/wrighting" element={<Writing />} />
-        <Route path="/wrighting/*" element={<PostModify />} />
+        <Route path="/writing" element={<Writing />} />
+        <Route path="/writing/*" element={<PostModify />} />
         <Route path="/lists/borrowlist" element={<BorrowList />} />
         <Route path="/lists/lendlist" element={<LendList />} />
         <Route path="/lists/likelist" element={<LikeList />} />
