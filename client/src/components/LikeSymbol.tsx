@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { color, config, host, rem } from '../common';
 import FillHeart from '../assets/FillHeart.svg';
 import EmptyHeart from '../assets/EmptyHeart.svg';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { isLogin, showLoginModal } from '../Atom';
 import axios from 'axios';
@@ -54,6 +54,12 @@ function LikeSymbol(props: LikeProps) {
   const loginUser = useRecoilValue<boolean>(isLogin);
   const [fillHeart, setFillHeart] = useState<boolean>(isFill);
   const [countHeart, setCountHeart] = useState<number>(count);
+
+  useEffect(() => {
+    setFillHeart(isFill);
+    setCountHeart(count);
+  }, [count, isFill]);
+
   const onHeartClick = () => {
     if (loginUser) {
       axios
