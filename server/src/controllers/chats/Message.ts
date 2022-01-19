@@ -23,6 +23,7 @@ export = async (req: Request, res: Response) => {
   const post = await reservationRepository
     .createQueryBuilder('reservation')
     .leftJoinAndSelect('reservation.posts_id', 'posts_id')
+    .leftJoinAndSelect('reservation.users_id', 'users_id')
     .where('reservation.id = :id', { id: chat.reservation_id })
     .getOne();
 

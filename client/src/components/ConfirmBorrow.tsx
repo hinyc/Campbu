@@ -41,7 +41,7 @@ interface Props {
   reservation_status: number;
 }
 
-function YesOrNo({
+function ConfirmBorrow({
   text1,
   text2,
   title,
@@ -111,4 +111,4 @@ function YesOrNo({
   );
 }
 
-export default YesOrNo;
+export default ConfirmBorrow;

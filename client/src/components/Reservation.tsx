@@ -20,7 +20,7 @@ interface Props {
   cursor: string;
   hover?: string;
   postId: number;
-  img_urls: string;
+  img_urls: string[];
   address: string;
   title: string;
   deposit: number;
@@ -48,12 +48,11 @@ function Reservation(props: Props) {
   } = props;
 
   const length = reservation_dates.length;
-  const thumbnail = img_urls.split(',');
 
   return (
     <div css={post}>
       <Link to={`/main/${postId}`} css={textDecorationNone}>
-        <img src={thumbnail[0]} alt="product" css={img} />
+        <img src={img_urls[0]} alt="product" css={img} />
         <div css={textContainer}>
           <span css={[span, moneyTitle, addressStyle]}>
             <img src={Here} alt="위치" style={{ marginRight: '4px' }} />

@@ -99,7 +99,7 @@ function Footer() {
           <li css={[titleStyle, listStyle]}>
             <a
               href="https://github.com/Ohney"
-              css={[textDecorationNone, visit]}
+              css={[textDecorationNone, visit, `color: ${color.deep}`]}
             >
               류 현
             </a>

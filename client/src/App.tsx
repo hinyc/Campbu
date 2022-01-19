@@ -15,6 +15,7 @@ import LikeList from './pages/Lists/LikeList';
 import ResistList from './pages/Lists/ResistList';
 import Chat from './pages/Lists/Chat';
 import KakaoLogin from './components/KakaoLogin';
+import GoogleLogin from './components/GoogleLogin';
 import PostModify from './pages/PostModify';
 
 function App() {
@@ -51,6 +52,7 @@ function App() {
           <Footer />
         </div>
       </div>
+
     </Router>
   );
 }

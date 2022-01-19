@@ -229,10 +229,8 @@ function DetailView() {
   const likedPosts = useRecoilValue<number[]>(likedProducts);
   const login = useRecoilValue(isLogin);
   const setShowLoginModal = useSetRecoilState(showLoginModal);
-
-  const userInfo = useRecoilValue(loginUserInfo);
   const profileImg = useRecoilValue(profileImgUrl);
-
+  const userInfo = useRecoilValue(loginUserInfo);
   const [completeModal, setCompleteModal] = useRecoilState(showCompleteModal);
   const navigation = useNavigate();
   const [getReviews, setGetReviews] = useState<reviewsType>([]);
