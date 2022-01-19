@@ -148,7 +148,7 @@ function Chat() {
       setLoginUser(JSON.parse(userInfo));
     }
   }, [chatRoomId, setLoginUser]);
-  console.log(loginUser);
+  console.log('loginUser', loginUser);
   const userLend =
     loginUser?.id !== reservationUserId && loginUser?.id === postUserId;
   //? 1 : 예약 수락 => 80
@@ -435,7 +435,7 @@ function Chat() {
                       background-color: #f0f0f0;
                     }
                     background-color: ${chatRoom.id === chatRoomId
-                      ? '#F8F8F8'
+                      ? '#F4F4F4'
                       : '#ffffff'};
                   `,
                 ]}
@@ -484,20 +484,24 @@ function Chat() {
                     {chatRoom.recipient_nickname === userNickName
                       ? chatRoom.sender_nickname
                       : chatRoom.recipient_nickname}
-                    {chatCount[`Room${chatRoom.id}`] === 0 &&
+                    {chatCount[`Room${chatRoom.id}`] === 0 ||
                     chatCount[`Room${chatRoom.id}`] === undefined ? (
-                      <div></div>
+                      <div />
                     ) : (
                       <div
                         css={[
                           css`
                             position: absolute;
                             right: ${rem(10)};
-                            width: ${rem(30)};
+                            width: ${rem(22)};
+                            height: ${rem(22)};
                             top: ${rem(0)};
-                            border: ${rem(2)} solid #ed662c;
+                            background-color: #ed662c;
+                            color: white;
                             text-align: center;
                             border-radius: 50%;
+                            font-size: ${rem(12)};
+                            padding-top: ${rem(4)};
                           `,
                         ]}
                       >

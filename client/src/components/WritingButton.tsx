@@ -10,7 +10,7 @@ const buttonStyle = css`
   width: ${rem(70)};
   height: ${rem(70)};
   position: sticky;
-  bottom: ${rem(20)};
+  bottom: ${rem(10)};
   float: right;
   border: none;
   border-radius: ${rem(50)};
