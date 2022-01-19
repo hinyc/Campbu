@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { useResetRecoilState, useSetRecoilState, useRecoilState } from 'recoil';
-import { isLogin, loginUserInfo, showModal } from '../Atom';
+import { isLogin, likedProducts, loginUserInfo, showModal } from '../Atom';
 import { host, rem, shadow, textDecorationNone } from '../common';
 import { chatsNum } from '../Atom';
 
@@ -43,6 +43,8 @@ function ProfileDropdown() {
   const resetLoginUserInfo = useResetRecoilState(loginUserInfo);
   const [chatNum, setChatNum] = useRecoilState(chatsNum);
   const resetIsShowModal = useResetRecoilState(showModal);
+  const resetLikedPosts = useResetRecoilState(likedProducts);
+
   const logout = () => {
     setIsLogin(false);
     axios
@@ -52,6 +54,7 @@ function ProfileDropdown() {
         localStorage.removeItem('isLogin');
         localStorage.removeItem('userInfo');
         resetLoginUserInfo();
+        resetLikedPosts();
         navigate('/');
       })
       .catch((err) => console.error(err));

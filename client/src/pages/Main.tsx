@@ -148,8 +148,18 @@ function Main() {
     if (searchValue) {
       setAddress(searchValue);
     }
-  }, [searchValue]);
+  }, [
+    login,
+    searchAddressList,
+    searchValue,
+    setIsLoading,
+    setLikedPosts,
+    setMainSearch,
+  ]);
 
+  console.log(products);
+  console.log(likedPosts);
+  console.log('?', products.posts[0].id);
   const onChange = (e: any) => {
     setAddress(e.target.value);
   };
