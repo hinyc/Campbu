@@ -120,7 +120,6 @@ function Navbar() {
             shadow={`${shadow}`}
             hoverBackground="#F18556"
           >
-            {/* //TODO: 프로필 사진이 들어가야 함 */}
             {isShowModal || chatNum.total === 0 ? (
               <>
                 <img

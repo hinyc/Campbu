@@ -53,7 +53,7 @@ export const Button = (props: Props) => {
         border-radius: ${rem(5)};
         margin: ${margin};
         opacity: ${opacity};
-        transition: 0.1;
+        transition: 0.2s;
         :hover {
           opacity: ${hover};
           background-color: ${hoverBackground};

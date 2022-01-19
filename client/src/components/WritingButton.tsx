@@ -16,8 +16,10 @@ const buttonStyle = css`
   border-radius: ${rem(50)};
   background-color: ${color.point};
   box-shadow: ${shadow};
+  transition: 0.1s;
   :hover {
     opacity: 80%;
+    cursor: pointer;
   }
   :active {
     opacity: 95%;

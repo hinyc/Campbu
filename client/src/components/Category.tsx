@@ -35,6 +35,7 @@ const categoryStyle = css`
     box-shadow: ${hover};
     border: 2px solid ${color.deep};
     background-color: white;
+    transition: 0.1s;
   }
 `;
 
