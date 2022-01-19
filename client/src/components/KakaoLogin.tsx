@@ -72,7 +72,7 @@ export default function KakaoLogin() {
             localStorage.setItem('isLogin', 'true');
             localStorage.setItem('userInfo', JSON.stringify(userinfo));
             console.log(res);
-            navigate(-1);
+            navigate('/main');
           }
         })
         .catch((error) => {

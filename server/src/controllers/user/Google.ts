@@ -2,6 +2,7 @@ import axios from 'axios';
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import { users } from '../../entity/users';
+import { likes } from '../../entity/likes';
 import { generateToken } from '../jwt/GenerateToken';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -27,6 +28,7 @@ export default {
       })
       .then(async (response) => {
         const usersRepository = getRepository(users);
+        const likesRepository = getRepository(likes);
         const email = response.data.email;
         const nickname = response.data.name;
         const users_img = response.data.picture;
@@ -57,10 +59,20 @@ export default {
           const userInfo = await usersRepository.findOne({
             email: email,
           });
+          const likesInfo = await likesRepository
+            .createQueryBuilder('likes')
+            .select('posts_id')
+            .where('likes.users_id = :userId', {
+              userId: userInfo?.id,
+            })
+            .getRawMany();
+          const likesId = likesInfo.map((el) => {
+            return el.posts_id;
+          });
           return res
             .status(200)
             .cookie('jwt', accessToken, { httpOnly: true })
-            .json({ user: userInfo });
+            .json({ user: userInfo, likes: likesId });
         }
       });
   },
