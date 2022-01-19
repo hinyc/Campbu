@@ -376,6 +376,7 @@ function Mypage() {
                 margin={`${rem(5)} 0`}
                 fontColor={`${color.mid}`}
                 borderColor={`${color.mid}`}
+                notClickable
               />
             ) : null;
           })}
@@ -393,6 +394,7 @@ function Mypage() {
                 margin={`${rem(5)} 0`}
                 fontColor={`${color.deep}`}
                 borderColor={`${color.deep}`}
+                notClickable
               />
             );
           })}
