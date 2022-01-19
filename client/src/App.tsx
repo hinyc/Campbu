@@ -46,13 +46,13 @@ function App() {
             <Route path="/lists/resistlist" element={<ResistList />} />
             <Route path="/lists/chat" element={<Chat />} />
             <Route path="/oauth/kakao/callback" element={<KakaoLogin />} />
+            <Route path="/oauth/google/callback" element={<GoogleLogin />} />
           </Routes>
         </div>
         <div>
           <Footer />
         </div>
       </div>
-
     </Router>
   );
 }
