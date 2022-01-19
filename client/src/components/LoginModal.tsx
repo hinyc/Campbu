@@ -10,8 +10,8 @@ import {
 } from '../common';
 import { Button } from './Button';
 import Input from './Input';
-import naverimg from '../assets/naver.png';
 import kakaoimg from '../assets/kakao.png';
+import googleimg from '../assets/google.png';
 import { useSetRecoilState, useRecoilState } from 'recoil';
 import {
   isLogin,
@@ -118,14 +118,14 @@ const reqMsgStyle = css`
 function LoginModal() {
   const setShowLogin = useSetRecoilState(showLoginModal);
   const setIsLogin = useSetRecoilState(isLogin);
-
   const setShowSignup = useSetRecoilState(showSignupModal);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [reqMsgState, setReqMsgState] = useState('ok');
-
   const setLoginUserInfo = useSetRecoilState(loginUserInfo);
   const [chatNum, setChatNum] = useRecoilState(chatsNum);
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
+  const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?scope=openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20&response_type=code&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URI}&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}`;
 
   const emailHandler = (e: any) => {
     setEmail(e.target.value);
@@ -181,7 +181,7 @@ function LoginModal() {
             users_img: string;
           }
 
-          const userinfo: loginUserInfoType = res.data;
+          const userinfo: loginUserInfoType = res.data.user;
           setLoginUserInfo(userinfo);
 
           localStorage.setItem('isLogin', 'true');
@@ -223,21 +223,6 @@ function LoginModal() {
       loginHandler();
     }
   };
-
-  const kakaoLogin = () => {
-    console.log('카카오 로그인요청');
-    //   window.Kakao.Auth.login({
-    //     success: ,
-    //     scope:
-    // //   })
-  };
-  const naverLogin = () => {
-    console.log('네이버로그인요청');
-  };
-
-  const REST_API_KEY = 'b8665986f69d987ebb83449a6a9b06ba';
-  const REDIRECT_URI = 'http://localhost:3000/oauth/kakao/callback';
-  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
   return (
     <div css={modalBackgroundStyle}>
@@ -301,13 +286,15 @@ function LoginModal() {
               또는
             </div>
           </div>
-          <button css={[oauth]} onClick={naverLogin}>
-            <img css={oauthIcon} src={naverimg} alt="naver login" />
-            <div>네이버로 로그인하기</div>
-          </button>
+          <a href={GOOGLE_AUTH_URL}>
+            <button css={[oauth]}>
+              <img css={oauthIcon} src={googleimg} alt="google login" />
+              <div>구글로 로그인하기</div>
+            </button>
+          </a>
           <a href={KAKAO_AUTH_URL}>
-            <button css={[oauth, marginTop6]} onClick={kakaoLogin}>
-              <img css={oauthIcon} src={kakaoimg} alt="naver login" />
+            <button css={[oauth, marginTop6]}>
+              <img css={oauthIcon} src={kakaoimg} alt="kakao login" />
               <div>카카오로 로그인하기</div>
             </button>
           </a>

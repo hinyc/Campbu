@@ -173,6 +173,7 @@ function Signup() {
         .get(`${host}/user/signup?nickname=${nickname}`)
         .then((res) => {
           if (res.status === 200) {
+            setNickDupliacte(true);
           }
         })
         .catch((err) => {

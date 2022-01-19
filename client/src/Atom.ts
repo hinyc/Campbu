@@ -1,4 +1,3 @@
-import { decode } from 'punycode';
 import { atom } from 'recoil';
 
 export const isLogin = atom({
@@ -208,4 +207,16 @@ export const chatsNum = atom<chats>({
   default: {
     total: 0,
   },
+});
+
+//? 드롭다운메뉴 온오프
+export const showModal = atom<boolean>({
+  key: 'showModal',
+  default: false,
+});
+
+//? 강제 랜더를위한 상태
+export const forceRender = atom<boolean>({
+  key: 'forceRender',
+  default: false,
 });

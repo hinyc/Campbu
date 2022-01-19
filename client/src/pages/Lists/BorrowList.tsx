@@ -10,6 +10,7 @@ import emptyBorrow from '../../assets/pictures/emptyBorrow.svg';
 import { container, section, message } from './tab';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
+  forceRender,
   isLoading,
   showCompleteModal,
   showConfirmModal,
@@ -17,7 +18,7 @@ import {
   showSubmitModal,
 } from '../../Atom';
 import { useEffect, useState } from 'react';
-import YesOrNo from '../../components/ConfirmBorrow';
+import ConfirmBorrow from '../../components/ConfirmBorrow';
 import axios from 'axios';
 import Complete from '../../components/Complete';
 import ReviewModal from '../../components/ReviewModal';
@@ -63,8 +64,9 @@ function BorrowList() {
   const [reservationStatus, setReservationStatus] = useState(0);
   const [userId, setUserId] = useState(0);
   const [loading, setIsLoading] = useRecoilState(isLoading);
-  const printStatusText = (status: number) => button[status - 1];
+  const forceRenderEX = useRecoilValue(forceRender);
 
+  const printStatusText = (status: number) => button[status - 1];
   const onButtonClick = (id: number, status: number, userId: number) => {
     setReservationId(id);
     setReservationStatus(status);
@@ -107,7 +109,7 @@ function BorrowList() {
         .catch((err) => console.error(err));
     };
     load();
-  }, []);
+  }, [forceRenderEX]);
 
   return (
     <>
@@ -129,7 +131,7 @@ function BorrowList() {
       <div css={container}>
         {confirm &&
           ((reservationStatus === 1 && (
-            <YesOrNo
+            <ConfirmBorrow
               reservationId={reservationId}
               reservation_status={1}
               text={'예약 취소'}
@@ -139,7 +141,7 @@ function BorrowList() {
             />
           )) ||
             (reservationStatus === 2 && (
-              <YesOrNo
+              <ConfirmBorrow
                 reservationId={reservationId}
                 reservation_status={2}
                 text={'반납하기'}
@@ -172,17 +174,19 @@ function BorrowList() {
               빌린 목록이 없어요! <br />
               캠핑용품을 대여해서 즐거운 캠핑을 떠나보세요!
             </p>
-            <Button
-              text="캠핑 용품 보러 가기"
-              width={`${rem(180)}`}
-              height={`${rem(43)}`}
-              background="white"
-              color={`${color.mid}`}
-              border={`1px solid ${color.mid}`}
-              size={`${rem(14)}`}
-              cursor={'pointer'}
-              hover="80%"
-            />
+            <Link to={'/main'}>
+              <Button
+                text="캠핑 용품 보러 가기"
+                width={`${rem(180)}`}
+                height={`${rem(43)}`}
+                background="white"
+                color={`${color.mid}`}
+                border={`1px solid ${color.mid}`}
+                size={`${rem(14)}`}
+                cursor={'pointer'}
+                hover="80%"
+              />
+            </Link>
           </div>
         ) : (
           <section css={section}>
@@ -194,8 +198,8 @@ function BorrowList() {
                 )}
                 background={
                   borrowList.reservation_reservation_status !== 4
-                    ? `${color.point}`
-                    : `${color.mid}`
+                    ? color.point
+                    : color.mid
                 }
                 color="white"
                 cursor={
@@ -217,7 +221,7 @@ function BorrowList() {
                     : '100%'
                 }
                 postId={borrowList.posts_id}
-                img_urls={borrowList.posts_img_urls}
+                img_urls={borrowList.posts_img_urls.split(',')}
                 address={borrowList.posts_address}
                 title={borrowList.posts_title}
                 deposit={borrowList.posts_deposit}

@@ -8,9 +8,10 @@ import { Link } from 'react-router-dom';
 import { link, visit } from './tab';
 import Reservation from '../../components/Reservation';
 import { container, section, message } from './tab';
-import YesOrNo from '../../components/ConfirmLend';
+import ConfirmLend from '../../components/ConfirmLend';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
+  forceRender,
   showCompleteModal,
   showConfirmModal,
   showReviewModal,
@@ -66,6 +67,7 @@ function LendList() {
   const [reservationId, setReservationId] = useState(0);
   const [reservationStatus, setReservationStatus] = useState(0);
   const [userId, setUserId] = useState(0);
+  const forceRenderEX = useRecoilValue(forceRender);
   const button = ['예약 수락', '반납 대기 중', '반납 확인', '회수 완료'];
   const printStatusText = (status: number) => button[status - 1];
   const onButtonClick = (id: number, status: number, userId: number) => {
@@ -105,7 +107,7 @@ function LendList() {
         setLendLists({ lend: sortedData });
       })
       .catch((err) => console.error(err));
-  }, []);
+  }, [forceRenderEX]);
 
   return (
     <>
@@ -127,7 +129,7 @@ function LendList() {
       <div css={container}>
         {confirm &&
           ((reservationStatus === 1 && (
-            <YesOrNo
+            <ConfirmLend
               reservationId={reservationId}
               reservation_status={1}
               text={'예약 수락'}
@@ -137,7 +139,7 @@ function LendList() {
             />
           )) ||
             (reservationStatus === 3 && (
-              <YesOrNo
+              <ConfirmLend
                 reservationId={reservationId}
                 reservation_status={3}
                 text={'반납 확인'}
@@ -166,15 +168,17 @@ function LendList() {
               빌려준 목록이 없어요! <br />
               캠핑 용품이 있다면 대여 게시글을 올려보세요!
             </p>
-            <Button
-              text="캠핑 용품 보러 가기"
-              width={`${rem(180)}`}
-              height={`${rem(43)}`}
-              background="white"
-              color={`${color.mid}`}
-              border={`1px solid ${color.mid}`}
-              size={`${rem(14)}`}
-            />
+            <Link to={'/main'}>
+              <Button
+                text="캠핑 용품 보러 가기"
+                width={`${rem(180)}`}
+                height={`${rem(43)}`}
+                background="white"
+                color={`${color.mid}`}
+                border={`1px solid ${color.mid}`}
+                size={`${rem(14)}`}
+              />
+            </Link>
           </div>
         ) : (
           <section css={section}>
@@ -184,8 +188,8 @@ function LendList() {
                 text={printStatusText(lendList.reservation_reservation_status)}
                 background={
                   lendList.reservation_reservation_status !== 4
-                    ? `${color.point}`
-                    : `${color.mid}`
+                    ? color.point
+                    : color.mid
                 }
                 color="white"
                 cursor={
@@ -205,7 +209,7 @@ function LendList() {
                   lendList.reservation_reservation_status === 2 ? '50%' : '100%'
                 }
                 postId={lendList.posts_id}
-                img_urls={lendList.posts_img_urls}
+                img_urls={lendList.posts_img_urls.split(',')}
                 address={lendList.posts_address}
                 title={lendList.posts_title}
                 deposit={lendList.posts_deposit}

@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { useResetRecoilState, useSetRecoilState, useRecoilState } from 'recoil';
-import { isLogin, loginUserInfo } from '../Atom';
+import { isLogin, loginUserInfo, showModal } from '../Atom';
 import { host, rem, shadow, textDecorationNone } from '../common';
 import { chatsNum } from '../Atom';
 
@@ -42,7 +42,7 @@ function ProfileDropdown() {
   const navigate = useNavigate();
   const resetLoginUserInfo = useResetRecoilState(loginUserInfo);
   const [chatNum, setChatNum] = useRecoilState(chatsNum);
-
+  const resetIsShowModal = useResetRecoilState(showModal);
   const logout = () => {
     setIsLogin(false);
     axios
@@ -60,7 +60,11 @@ function ProfileDropdown() {
   return (
     <div css={box}>
       <ul css={ulStyle}>
-        <Link to="/lists/chat" css={textDecorationNone}>
+        <Link
+          to="/lists/chat"
+          css={textDecorationNone}
+          onClick={resetIsShowModal}
+        >
           <li
             css={[
               li,
@@ -92,20 +96,36 @@ function ProfileDropdown() {
             )}
           </li>
         </Link>
-        <Link to="/lists/borrowlist" css={textDecorationNone}>
+        <Link
+          to="/lists/borrowlist"
+          css={textDecorationNone}
+          onClick={resetIsShowModal}
+        >
           <li css={li}>빌린 목록</li>
         </Link>
-        <Link to="/lists/lendlist" css={textDecorationNone}>
+        <Link
+          to="/lists/lendlist"
+          css={textDecorationNone}
+          onClick={resetIsShowModal}
+        >
           <li css={li}>빌려준 목록</li>
         </Link>
-        <Link to="/lists/likelist" css={textDecorationNone}>
+        <Link
+          to="/lists/likelist"
+          css={textDecorationNone}
+          onClick={resetIsShowModal}
+        >
           <li css={li}>찜한 목록</li>
         </Link>
-        <Link to="/lists/resistlist" css={textDecorationNone}>
+        <Link
+          to="/lists/resistlist"
+          css={textDecorationNone}
+          onClick={resetIsShowModal}
+        >
           <li css={li}>내가 쓴 글</li>
         </Link>
         <div css={line} />
-        <Link to="mypage" css={textDecorationNone}>
+        <Link to="mypage" css={textDecorationNone} onClick={resetIsShowModal}>
           <li css={li}>계정</li>
         </Link>
 
@@ -113,6 +133,18 @@ function ProfileDropdown() {
           로그아웃
         </li>
       </ul>
+      <div
+        css={css`
+          width: 100vw;
+          height: 100vh;
+          background-color: rgba(0, 0, 0, 0);
+          position: fixed;
+          top: 0;
+          left: 0;
+          z-index: -1;
+        `}
+        onClick={resetIsShowModal}
+      ></div>
     </div>
   );
 }

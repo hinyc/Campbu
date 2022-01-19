@@ -4,6 +4,7 @@ import Logo from '../assets/Logo.svg';
 import { color, rem, textDecorationNone } from '../common';
 
 const footerStyle = css`
+  width: 100vw;
   background-color: #eeefcb;
   margin-top: ${rem(60)};
 `;
@@ -98,7 +99,7 @@ function Footer() {
           <li css={[titleStyle, listStyle]}>
             <a
               href="https://github.com/Ohney"
-              css={[textDecorationNone, visit]}
+              css={[textDecorationNone, visit, `color: ${color.deep}`]}
             >
               류 현
             </a>
