@@ -38,6 +38,7 @@ interface ReviewContent {
   fontColor: string;
   borderColor: string;
   onClick?: any;
+  notClickable?: any;
 }
 
 function ReviewBox(props: ReviewContent) {
@@ -54,18 +55,19 @@ function ReviewBox(props: ReviewContent) {
     fontColor,
     borderColor,
     onClick,
+    notClickable,
   } = props;
 
   const clickHandler = () => {
-    setClick(!click);
+    if (!notClickable) {
+      setClick(!click);
+      onClick();
+    }
   };
 
   return (
     <div
-      onClick={() => {
-        clickHandler();
-        onClick();
-      }}
+      onClick={clickHandler}
       css={[
         reviewStyle,
         css`
@@ -78,10 +80,10 @@ function ReviewBox(props: ReviewContent) {
           margin: ${margin ? margin : null};
           background-color: ${click ? (isBad ? color.deep : color.mid) : null};
           :hover {
-            cursor: pointer;
+            cursor: ${notClickable ? null : 'pointer'};
           }
           :active {
-            opacity: '80%';
+            opacity: ${notClickable ? null : '0.8'};
           }
         `,
       ]}

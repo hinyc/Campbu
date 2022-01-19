@@ -459,6 +459,7 @@ function DetailView() {
                   margin={`${rem(4)} 0`}
                   fontColor={`${color.mid}`}
                   borderColor={`${color.mid}`}
+                  notClickable
                 />
               ) : null;
             })}
@@ -477,6 +478,7 @@ function DetailView() {
                   margin={`${rem(4)} 0`}
                   fontColor={`${color.deep}`}
                   borderColor={`${color.deep}`}
+                  notClickable
                 />
               );
             })}

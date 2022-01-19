@@ -17,8 +17,8 @@ import ReviewBox from '../components/ReviewBox';
 import ReviewTitle from '../components/ReviweTitle';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { isLogin } from '../Atom';
-import { useSetRecoilState } from 'recoil';
+import { isLogin, likedProducts, loginUserInfo } from '../Atom';
+import { useResetRecoilState, useSetRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
 
 const imgStyle = css`
@@ -163,6 +163,8 @@ function Mypage() {
   const [nickDuplicateClick, setNickDuplicateClick] = useState(false);
   const [nickDupliacte, setNickDupliacte] = useState(false);
   const [reqState, setReqStatee] = useState<string>('ok');
+  const resetLoginUserInfo = useResetRecoilState(loginUserInfo);
+  const resetLikedPosts = useResetRecoilState(likedProducts);
 
   const navigate = useNavigate();
   // 유저정보요청
@@ -271,6 +273,8 @@ function Mypage() {
         console.log(res.status);
         localStorage.removeItem('isLogin');
         localStorage.removeItem('userInfo');
+        resetLoginUserInfo();
+        resetLikedPosts();
         axios
           .delete(API, config)
           .then((res) => {
@@ -372,6 +376,7 @@ function Mypage() {
                 margin={`${rem(5)} 0`}
                 fontColor={`${color.mid}`}
                 borderColor={`${color.mid}`}
+                notClickable
               />
             ) : null;
           })}
@@ -389,6 +394,7 @@ function Mypage() {
                 margin={`${rem(5)} 0`}
                 fontColor={`${color.deep}`}
                 borderColor={`${color.deep}`}
+                notClickable
               />
             );
           })}
