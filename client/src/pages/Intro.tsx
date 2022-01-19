@@ -35,6 +35,7 @@ import AlertModal from '../components/AlertModal';
 import SelectAddressList from '../components/SelectAddress';
 
 const divStyle = css`
+  width: ${rem(1280)};
   text-align: center;
 `;
 
