@@ -177,7 +177,7 @@ function LoginModal() {
             users_img: string;
           }
 
-          const userinfo: loginUserInfoType = res.data;
+          const userinfo: loginUserInfoType = res.data.user;
           setLoginUserInfo(userinfo);
 
           localStorage.setItem('isLogin', 'true');
