@@ -12,6 +12,7 @@ import {
   loginUserInfo,
   post_id,
   showLoginModal,
+  showModal,
   showSignupModal,
 } from '../Atom';
 import { color, hover, rem, shadow } from '../common';
@@ -34,7 +35,7 @@ const headerStyle = css`
 `;
 
 function Navbar() {
-  const [click, setClick] = useState<boolean>(false);
+  const [isShowModal, setIsShowModal] = useRecoilState(showModal);
   const [login, setIsLogin] = useRecoilState(isLogin);
   const [showLogin, setShowLogin] = useRecoilState(showLoginModal);
   const [chatNum, setChatNum] = useRecoilState(chatsNum);
@@ -42,9 +43,8 @@ function Navbar() {
   const setPostId = useSetRecoilState(post_id);
 
   const showSignup = useRecoilValue(showSignupModal);
-  console.log('showLogin', showLogin);
   const onClick = () => {
-    setClick(!click);
+    setIsShowModal(!isShowModal);
   };
 
   useEffect(() => {
@@ -54,7 +54,7 @@ function Navbar() {
     if (localStorage.getItem('userInfo')) {
       const userInfo = localStorage.getItem('userInfo');
       if (userInfo) {
-        setLoginUserInfo(JSON.parse(userInfo).user);
+        setLoginUserInfo(JSON.parse(userInfo));
       }
     }
   }, [setIsLogin, setLoginUserInfo]);
@@ -88,7 +88,7 @@ function Navbar() {
             hoverBackground="#F18556"
           >
             {/* //TODO: 프로필 사진이 들어가야 함 */}
-            {click || chatNum.total === 0 ? (
+            {isShowModal || chatNum.total === 0 ? (
               <>
                 <img
                   src={Menu}
@@ -139,7 +139,7 @@ function Navbar() {
               </div>
             )}
           </Button>
-          {click && <ProfileDropdown />}
+          {isShowModal && <ProfileDropdown />}
         </>
       ) : (
         <Button

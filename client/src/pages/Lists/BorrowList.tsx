@@ -10,6 +10,7 @@ import emptyBorrow from '../../assets/pictures/emptyBorrow.svg';
 import { container, section, message } from './tab';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
+  forceRender,
   isLoading,
   showCompleteModal,
   showConfirmModal,
@@ -63,8 +64,9 @@ function BorrowList() {
   const [reservationStatus, setReservationStatus] = useState(0);
   const [userId, setUserId] = useState(0);
   const [loading, setIsLoading] = useRecoilState(isLoading);
-  const printStatusText = (status: number) => button[status - 1];
+  const forceRenderEX = useRecoilValue(forceRender);
 
+  const printStatusText = (status: number) => button[status - 1];
   const onButtonClick = (id: number, status: number, userId: number) => {
     setReservationId(id);
     setReservationStatus(status);
@@ -107,7 +109,7 @@ function BorrowList() {
         .catch((err) => console.error(err));
     };
     load();
-  }, []);
+  }, [forceRenderEX]);
 
   return (
     <>
@@ -172,17 +174,19 @@ function BorrowList() {
               빌린 목록이 없어요! <br />
               캠핑용품을 대여해서 즐거운 캠핑을 떠나보세요!
             </p>
-            <Button
-              text="캠핑 용품 보러 가기"
-              width={`${rem(180)}`}
-              height={`${rem(43)}`}
-              background="white"
-              color={`${color.mid}`}
-              border={`1px solid ${color.mid}`}
-              size={`${rem(14)}`}
-              cursor={'pointer'}
-              hover="80%"
-            />
+            <Link to={'/main'}>
+              <Button
+                text="캠핑 용품 보러 가기"
+                width={`${rem(180)}`}
+                height={`${rem(43)}`}
+                background="white"
+                color={`${color.mid}`}
+                border={`1px solid ${color.mid}`}
+                size={`${rem(14)}`}
+                cursor={'pointer'}
+                hover="80%"
+              />
+            </Link>
           </div>
         ) : (
           <section css={section}>
