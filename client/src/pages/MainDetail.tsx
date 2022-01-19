@@ -245,9 +245,19 @@ function DetailView() {
         .get(API, config)
         .then((res) => {
           const postInfo = res.data;
-
           setPostInfo(postInfo);
-          setUnableDates(postInfo.posts.unavailable_dates.sort());
+
+          let reservations: string[] = [];
+          postInfo.reservations.forEach((el: any) => {
+            reservations = [...reservations, ...el.reservation_dates];
+          });
+
+          let unableDates: string[] = [
+            ...postInfo.posts.unavailable_dates,
+            ...reservations,
+          ];
+
+          setUnableDates(unableDates.sort());
 
           let tempReviews: reviewsType = [...reviews];
           postInfo.reviews.forEach((el: any) => {
