@@ -24,7 +24,6 @@ export default async () => {
       const message: string = info.chatMessage;
       const nickName: string = info.userNickName;
       const date = Date();
-
       const chatMessage = { message, sender: nickName, date };
       const chatRepository = getRepository(chats);
       const chat = await chatRepository
@@ -34,7 +33,7 @@ export default async () => {
         });
       const newChat = JSON.stringify(chat.concat(chatMessage));
       chatRepository.update(Number(id), { chat: newChat });
-      console.log(socket.rooms);
+
       io.to(id).emit('receive-message', {
         message,
         sender: nickName,

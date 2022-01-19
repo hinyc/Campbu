@@ -14,6 +14,8 @@ import {
   showLoginModal,
   showModal,
   showSignupModal,
+  chattingRoomId,
+  chatsNum,
 } from '../Atom';
 import { color, hover, rem, shadow } from '../common';
 
@@ -21,7 +23,6 @@ import { Button } from './Button';
 import LoginModal from './LoginModal';
 import ProfileDropdown from './ProfileDropdown';
 import Signup from './Signup';
-import { chatsNum } from '../Atom';
 import io from 'socket.io-client';
 
 const headerStyle = css`
@@ -45,6 +46,10 @@ function Navbar() {
   const setLoginUserInfo = useSetRecoilState(loginUserInfo);
   const userInfo = useRecoilState(loginUserInfo);
   const setPostId = useSetRecoilState(post_id);
+  const chatRoomId = useRecoilValue(chattingRoomId);
+  const [roomId, setRoomId] = useState<string>('');
+  const [mesId, setMesId] = useState<number>();
+  const [mesDate, setMesDate] = useState<Date>();
 
   const showSignup = useRecoilValue(showSignupModal);
   const onClick = () => {
@@ -76,23 +81,22 @@ function Navbar() {
   }, [setIsLogin]);
 
   useEffect(() => {
-    socket?.on('receive-message', (message: any) => {
-      const roomId = 'Room' + String(message.id);
-      const date = new Date(message.date);
-      const milliSeconds = date.getMilliseconds();
-      if (
-        milliSeconds !== messageDate &&
-        !userInfo[0].nickname &&
-        userInfo[0].nickname !== message.sender
-      ) {
-        setMessageDate(milliSeconds);
-        setChatNum((chatNum) => ({
-          ...chatNum,
-          total: chatNum.total + 1,
-          [roomId]: chatNum[roomId] + 1,
-        }));
-      }
-    });
+    if (mesId !== chatRoomId && roomId !== '' && mesId !== undefined) {
+      console.log('roomId', roomId);
+      setChatNum((chatNum) => ({
+        ...chatNum,
+        total: chatNum.total + 1,
+        [roomId]: chatNum[roomId] + 1,
+      }));
+      console.log('chatNum', chatNum);
+    }
+  }, [mesDate]);
+
+  socket?.on('receive-message', (message: any) => {
+    const roomId = 'Room' + String(message.id);
+    setRoomId(roomId);
+    setMesId(message.id);
+    setMesDate(message.date);
   });
 
   return (

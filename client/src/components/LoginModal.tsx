@@ -18,6 +18,7 @@ import {
   loginUserInfo,
   showLoginModal,
   showSignupModal,
+  allChatRoomId,
 } from '../Atom';
 import { useState } from 'react';
 import axios from 'axios';
@@ -126,6 +127,7 @@ function LoginModal() {
   const [chatNum, setChatNum] = useRecoilState(chatsNum);
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
   const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?scope=openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20&response_type=code&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URI}&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}`;
+  const setChatIds = useSetRecoilState(allChatRoomId);
 
   const emailHandler = (e: any) => {
     setEmail(e.target.value);
@@ -206,7 +208,8 @@ function LoginModal() {
                 return chat.id;
               });
               const ids = JSON.stringify(chatIds);
-              const newSocket = io('http://localhost:5050', {
+              setChatIds(ids);
+              io('http://localhost:5050', {
                 query: { ids },
               });
             });

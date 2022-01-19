@@ -220,3 +220,15 @@ export const forceRender = atom<boolean>({
   key: 'forceRender',
   default: false,
 });
+
+//? 현재 채팅 중인 아이디
+export const chattingRoomId = atom<number>({
+  key: 'chattingRoomId',
+  default: 0,
+});
+
+//? 유저가 참여 중인 채팅 방 아이디
+export const allChatRoomId = atom<string>({
+  key: 'allChatRoomId',
+  default: '',
+});
