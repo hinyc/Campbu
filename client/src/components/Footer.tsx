@@ -72,7 +72,12 @@ function Footer() {
     <footer css={footerStyle}>
       <div css={divStyle}>
         <div style={{ marginLeft: `${rem(80)}` }}>
-          <img src={Logo} className="CampBu-logo" alt="logo" />
+          <img
+            src={Logo}
+            className="CampBu-logo"
+            alt="logo"
+            draggable="false"
+          />
           <p css={textStyle}>서울특별시 강남구 논현동 384-2</p>
         </div>
         <ul css={ulStyle}>
@@ -81,6 +86,7 @@ function Footer() {
             <a
               href="https://github.com/codestates/Campbu/wiki"
               css={[textDecorationNone, visit]}
+              draggable="false"
             >
               Wiki
             </a>
@@ -89,6 +95,7 @@ function Footer() {
             <a
               href="https://github.com/codestates/Campbu"
               css={[textDecorationNone, visit]}
+              draggable="false"
             >
               Github
             </a>
@@ -100,6 +107,7 @@ function Footer() {
             <a
               href="https://github.com/Ohney"
               css={[textDecorationNone, visit, `color: ${color.deep}`]}
+              draggable="false"
             >
               류 현
             </a>
@@ -108,6 +116,7 @@ function Footer() {
             <a
               href="https://github.com/YeChan8812"
               css={[textDecorationNone, visit]}
+              draggable="false"
             >
               곽예찬
             </a>
@@ -116,6 +125,7 @@ function Footer() {
             <a
               href="https://github.com/bgyoons"
               css={[textDecorationNone, visit]}
+              draggable="false"
             >
               백윤서
             </a>
@@ -124,6 +134,7 @@ function Footer() {
             <a
               href="https://github.com/hinyc"
               css={[textDecorationNone, visit]}
+              draggable="false"
             >
               홍인열
             </a>

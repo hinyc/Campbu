@@ -232,3 +232,9 @@ export const allChatRoomId = atom<string>({
   key: 'allChatRoomId',
   default: '',
 });
+
+//? 선택된 카테고리
+export const selectCategory = atom<string>({
+  key: 'selectCategory',
+  default: 'all',
+});

@@ -103,8 +103,8 @@ function Navbar() {
     <header css={headerStyle}>
       {showSignup ? <Signup /> : null}
       {showLogin ? <LoginModal /> : null}
-      <Link to="/">
-        <img src={Logo} className="CampBu-logo" alt="logo" />
+      <Link to="/" draggable="false">
+        <img src={Logo} className="CampBu-logo" alt="logo" draggable="false" />
       </Link>
       {login ? (
         <>
@@ -128,12 +128,14 @@ function Navbar() {
                   className="CampBu-logo"
                   alt="logo"
                   style={{ margin: `0 ${rem(14)} ${rem(2)} 0` }}
+                  draggable="false"
                 />
                 <img
                   style={{ marginTop: rem(2) }}
                   src={Profile}
                   className="CampBu-logo"
                   alt="logo"
+                  draggable="false"
                 />
               </>
             ) : (
@@ -152,6 +154,7 @@ function Navbar() {
                   className="CampBu-logo"
                   alt="logo"
                   style={{ margin: `0 ${rem(14)} ${rem(2)} 0` }}
+                  draggable="false"
                 />
                 <div
                   css={[

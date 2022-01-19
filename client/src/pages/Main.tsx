@@ -118,10 +118,12 @@ function Main() {
               console.log(`${host}/product/address/${searchValue}`, res.data);
               searchAddressList(res.data);
               setMainSearch(res.data);
-              const likes = res.data['likes'].map(
-                (obj: { posts_id: number }) => obj.posts_id,
-              );
-              setLikedPosts(likes);
+              if (res.data.likes) {
+                const likes = res.data.likes.map(
+                  (obj: { posts_id: number }) => obj.posts_id,
+                );
+                setLikedPosts(likes);
+              }
               setIsLoading(false);
             }
           })
