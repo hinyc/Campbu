@@ -12,7 +12,7 @@ import { Button } from './Button';
 import Input from './Input';
 import naverimg from '../assets/naver.png';
 import kakaoimg from '../assets/kakao.png';
-import { useSetRecoilState } from 'recoil';
+import { useSetRecoilState, useRecoilState } from 'recoil';
 import {
   isLogin,
   loginUserInfo,
@@ -23,6 +23,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import KakaoLogin from './KakaoLogin';
+import io from 'socket.io-client';
+import { chatsNum } from '../Atom';
 
 const backgroundStyle = css`
   background-color: white;
@@ -123,6 +125,7 @@ function LoginModal() {
   const [reqMsgState, setReqMsgState] = useState('ok');
 
   const setLoginUserInfo = useSetRecoilState(loginUserInfo);
+  const [chatNum, setChatNum] = useRecoilState(chatsNum);
 
   const emailHandler = (e: any) => {
     setEmail(e.target.value);
@@ -183,6 +186,30 @@ function LoginModal() {
 
           localStorage.setItem('isLogin', 'true');
           localStorage.setItem('userInfo', JSON.stringify(userinfo));
+
+          axios
+            .get(`${host}/chat/chatRoom`, {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              withCredentials: true,
+            })
+            .then((res: any) => {
+              const chatIds = res.data.chat.map((chat: any) => {
+                const roomId = 'Room' + String(chat.id);
+                if (!(roomId in chatNum)) {
+                  setChatNum((chatNum) => ({
+                    ...chatNum,
+                    [roomId]: 0,
+                  }));
+                }
+                return chat.id;
+              });
+              const ids = JSON.stringify(chatIds);
+              const newSocket = io('http://localhost:5050', {
+                query: { ids },
+              });
+            });
         }
       })
       .catch((res) => {

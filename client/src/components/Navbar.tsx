@@ -14,7 +14,7 @@ import {
   showLoginModal,
   showSignupModal,
 } from '../Atom';
-import { color, hover, rem, shadow, host } from '../common';
+import { color, rem, shadow } from '../common';
 
 import { Button } from './Button';
 import LoginModal from './LoginModal';
@@ -22,7 +22,6 @@ import ProfileDropdown from './ProfileDropdown';
 import Signup from './Signup';
 import { chatsNum } from '../Atom';
 import io from 'socket.io-client';
-import axios from 'axios';
 
 const headerStyle = css`
   height: ${rem(99)};
@@ -41,7 +40,9 @@ function Navbar() {
   const [showLogin, setShowLogin] = useRecoilState(showLoginModal);
   const [chatNum, setChatNum] = useRecoilState(chatsNum);
   const [socket, setSocket] = useState<any>();
+  const [messageDate, setMessageDate] = useState<number>(1000);
   const setLoginUserInfo = useSetRecoilState(loginUserInfo);
+  const userInfo = useRecoilState(loginUserInfo);
   const setPostId = useSetRecoilState(post_id);
 
   const showSignup = useRecoilValue(showSignupModal);
@@ -69,43 +70,30 @@ function Navbar() {
     }
   }, [setPostId]);
 
-  // useEffect(() => {
-  //   if (localStorage.getItem('isLogin')) {
-  //     axios
-  //       .get(`${host}/chat/chatRoom`, {
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //         withCredentials: true,
-  //       })
-  //       .then((res: any) => {
-  //         console.log(res.data);
-  //         const chatIds = res.data.chat.map((chat: any) => {
-  //           const roomId = 'Room' + String(chat.id);
-  //           if (!(roomId in chatNum)) {
-  //             setChatNum((chatNum) => ({
-  //               ...chatNum,
-  //               [roomId]: 0,
-  //             }));
-  //           }
-  //           return chat.id;
-  //         });
-  //         const newSocket = io('http://localhost:5050');
-  //         console.log(chatIds);
-  //         newSocket.emit('open-room', chatIds);
-  //         setSocket(newSocket);
-  //       });
-  //   }
-  // }, [login]);
+  useEffect(() => {
+    const newSocket = io('http://localhost:5050');
+    setSocket(newSocket);
+  }, [setIsLogin]);
 
-  // socket?.on('receive-message', (message: any) => {
-  //   const roomId = 'Room' + String(message.id);
-  //   setChatNum((chatNum) => ({
-  //     ...chatNum,
-  //     total: chatNum.total + 1,
-  //     [roomId]: chatNum[roomId] + 1,
-  //   }));
-  // });
+  useEffect(() => {
+    socket?.on('receive-message', (message: any) => {
+      const roomId = 'Room' + String(message.id);
+      const date = new Date(message.date);
+      const milliSeconds = date.getMilliseconds();
+      if (
+        milliSeconds !== messageDate &&
+        !userInfo[0].nickname &&
+        userInfo[0].nickname !== message.sender
+      ) {
+        setMessageDate(milliSeconds);
+        setChatNum((chatNum) => ({
+          ...chatNum,
+          total: chatNum.total + 1,
+          [roomId]: chatNum[roomId] + 1,
+        }));
+      }
+    });
+  });
 
   return (
     <header css={headerStyle}>

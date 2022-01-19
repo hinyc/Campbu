@@ -147,18 +147,7 @@ function Chat() {
         withCredentials: true,
       })
       .then((res: any) => {
-        const chatIds = res.data.chat.map((chat: any) => {
-          const roomId = 'Room' + String(chat.id);
-          if (!(roomId in chatCount)) {
-            setChatCount((chatCount) => ({
-              ...chatCount,
-              [roomId]: 0,
-            }));
-          }
-          return chat.id;
-        });
         const newSocket = io('http://localhost:5050');
-        newSocket.emit('open-room', chatIds);
         setSocket(newSocket);
         setChatRooms(res.data.chat);
         setUserNickName(res.data.nickName);
@@ -178,11 +167,11 @@ function Chat() {
     socket.on('receive-message', (message: any) => {
       if (message.id !== chatRoomId) {
         const roomId = 'Room' + String(message.id);
-        setChatCount((chatCount) => ({
-          ...chatCount,
-          total: chatCount.total + 1,
-          [roomId]: chatCount[roomId] + 1,
-        }));
+        // setChatCount((chatCount) => ({
+        //   ...chatCount,
+        //   total: chatCount.total + 1,
+        //   [roomId]: chatCount[roomId] + 1,
+        // }));
       } else if (message.id === chatRoomId) {
         setChatting([...chatting, message]);
       }
