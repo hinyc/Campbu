@@ -84,17 +84,8 @@ function LendList() {
     }
   };
 
-  const onReviewCompleteClick = async () => {
+  const onReviewCompleteClick = () => {
     setSubmit(false);
-    await axios
-      .get(`${host}/userinfo/product/lend`, config)
-      .then((res) => {
-        const sortedData = res.data['lend'].sort(
-          (a: any, b: any) => b.reservation_id - a.reservation_id,
-        );
-        setLendLists({ lend: sortedData });
-      })
-      .catch((err) => console.error(err));
   };
 
   useEffect(() => {

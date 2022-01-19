@@ -25,27 +25,26 @@ import { useNavigate } from 'react-router-dom';
 
 const backgroundStyle = css`
   background-color: white;
-  width: ${rem(334)};
-  height: ${rem(413)};
+  width: ${rem(380)};
+  height: ${rem(485)};
   border-radius: ${rem(15)};
   box-shadow: ${shadow};
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: ${rem(12)};
   position: relative;
 `;
 
 const x = css`
-  font-size: ${rem(14)};
+  font-size: ${rem(20)};
   width: ${rem(18)};
   height: ${rem(18)};
   line-height: ${rem(18)};
   text-align: center;
   color: ${color.placeholder};
   top: ${rem(14)};
-  right: ${rem(12)};
+  right: ${rem(18)};
   position: absolute;
   :hover {
     font-size: ${rem(18)};
@@ -57,9 +56,9 @@ const oauth = css`
   border: 1px solid ${color.border};
   border-radius: ${rem(5)};
   background-color: ${color.white};
-  width: ${rem(205)};
-  height: ${rem(40)};
-  font-size: ${rem(12)};
+  width: ${rem(240)};
+  height: ${rem(48)};
+  font-size: ${rem(14)};
   position: relative;
   transition: 0.1s;
   :hover {
@@ -70,11 +69,11 @@ const oauth = css`
   }
 `;
 const oauthIcon = css`
-  width: ${rem(19)};
-  height: ${rem(19)};
+  width: ${rem(22)};
+  height: ${rem(22)};
   position: absolute;
   left: ${rem(15)};
-  top: ${rem(9.5)};
+  top: ${rem(11)};
 `;
 
 const marginTop6 = css`
@@ -82,7 +81,7 @@ const marginTop6 = css`
 `;
 
 const topLine = css`
-  width: ${rem(205)};
+  width: ${rem(240)};
   border: 1px solid ${color.border};
   border-style: solid none none none;
   margin-top: ${rem(20)};
@@ -90,7 +89,7 @@ const topLine = css`
   position: relative;
 `;
 const floatingTextBox = css`
-  width: ${rem(205)};
+  width: ${rem(240)};
   display: flex;
   justify-content: center;
 `;
@@ -99,7 +98,7 @@ const floatingText = css`
   position: absolute;
   background-color: ${color.white};
   color: ${color.placeholder};
-  font-size: ${rem(10)};
+  font-size: ${rem(11)};
   line-height: ${rem(10)};
   top: ${rem(-5)};
 `;
@@ -107,9 +106,10 @@ const floatingText = css`
 const reqMsgStyle = css`
   height: ${rem(18)};
   line-height: ${rem(18)};
-  font-size: ${rem(10)};
+  font-size: ${rem(12)};
   color: ${color.point};
   margin-left: ${rem(12)};
+  margin-top: ${rem(5)};
 `;
 
 function LoginModal() {
@@ -205,22 +205,22 @@ function LoginModal() {
         <div className="login">
           <div>
             <Input
-              width={205}
-              height={40}
+              width={240}
+              height={48}
               borderRadius={5}
               placeholder="이메일을 입력해주세요."
-              fontSize={12}
+              fontSize={14}
               onChange={emailHandler}
               value={email}
             />
           </div>
           <div css={marginTop6}>
             <Input
-              width={205}
-              height={40}
+              width={240}
+              height={48}
               borderRadius={5}
               placeholder="비밀번호를 입력해주세요."
-              fontSize={12}
+              fontSize={14}
               onChange={passwordHandler}
               value={password}
               type="password"
@@ -234,12 +234,12 @@ function LoginModal() {
           <div>
             <Button
               text="로그인"
-              width={rem(205)}
-              height={rem(40)}
+              width={rem(240)}
+              height={rem(48)}
               background={color.point}
               color={color.white}
               border="none"
-              size={rem(12)}
+              size={rem(14)}
               hover=".85"
               onClick={loginHandler}
             />
@@ -259,8 +259,12 @@ function LoginModal() {
             </div>
           </div>
           <a href={GOOGLE_AUTH_URL}>
-            <button css={[oauth]}>
-              <img css={oauthIcon} src={googleimg} alt="google login" />
+            <button css={oauth}>
+              <img
+                css={[oauthIcon, `width: ${rem(24)}`, `height: ${rem(24)}`]}
+                src={googleimg}
+                alt="google login"
+              />
               <div>구글로 로그인하기</div>
             </button>
           </a>
@@ -286,12 +290,12 @@ function LoginModal() {
           </div>
           <Button
             text="회원가입"
-            width={rem(205)}
-            height={rem(40)}
+            width={rem(240)}
+            height={rem(48)}
             background={color.white}
             color={color.point}
             border={`1px solid ${color.point}`}
-            size={rem(12)}
+            size={rem(14)}
             fontWeight={700}
             hover=".7"
             onClick={() => {

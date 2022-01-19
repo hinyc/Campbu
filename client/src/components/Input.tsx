@@ -45,6 +45,7 @@ export default function Input(props: InputProps) {
           font-size: ${fontSize ? rem(fontSize) : `1rem`};
           border-radius: ${borderRadius ? rem(borderRadius) : rem(5)};
           border-style: ${borderStyle ? borderStyle : null};
+          outline: none;
           ::placeholder {
             color: ${color.placeholder};
           }

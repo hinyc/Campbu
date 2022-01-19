@@ -21,8 +21,8 @@ import TermsOfUse from './TermsOfUse';
 
 export const backgroundStyle = css`
   background-color: white;
-  width: ${rem(334)};
-  height: ${rem(450)};
+  width: ${rem(400)};
+  height: ${rem(600)};
   border-radius: ${rem(15)};
   box-shadow: ${shadow};
   display: flex;
@@ -45,10 +45,12 @@ const checkStyle = css`
 
 const validButtonInactive = css`
   color: ${color.border};
+  font-size: ${rem(14)};
   font-weight: 700;
 `;
 const validButtonActive = css`
   color: ${color.point};
+  font-size: ${rem(14)};
   font-weight: 700;
   :hover {
     color: ${color.point};
@@ -60,23 +62,22 @@ const validButtonActive = css`
   }
 `;
 const x = css`
-  font-size: ${rem(14)};
+  font-size: ${rem(20)};
   width: ${rem(18)};
   height: ${rem(18)};
   line-height: ${rem(18)};
   text-align: center;
   color: ${color.placeholder};
   top: ${rem(14)};
-  right: ${rem(12)};
+  right: ${rem(18)};
   position: absolute;
   :hover {
-    font-size: ${rem(18)};
     cursor: pointer;
   }
 `;
 
 const marginTop12 = css`
-  margin-top: ${rem(12)};
+  margin-top: ${rem(16)};
 `;
 const marginTop6 = css`
   margin-top: ${rem(6)};
@@ -89,18 +90,18 @@ const alignItemFlexEnd = css`
 `;
 
 const noticeOk = css`
-  font-size: ${rem(10)};
+  font-size: ${rem(12)};
   color: ${color.mid};
 `;
 const noticeNo = css`
-  font-size: ${rem(10)};
+  font-size: ${rem(12)};
   color: ${color.point};
 `;
 
 const alignLeft = css`
-  width: ${rem(113)};
   text-align: left;
   margin-left: ${rem(13.5)};
+  height: ${rem(15)};
 `;
 const padding35 = css`
   padding: ${rem(35)};
@@ -110,12 +111,15 @@ const termsStyle = css`
   border: 1px solid ${color.border};
   border-radius: ${rem(5)};
   padding: ${rem(10)};
-
   font-size: ${rem(12)};
   overflow-y: scroll;
 `;
 const backgroundNone = css`
   background-color: rgba(0, 0, 0, 0);
+`;
+
+const textStyle = css`
+  font-size: ${rem(14)};
 `;
 
 function Signup() {
@@ -259,7 +263,7 @@ function Signup() {
                 color={color.white}
                 cursor="pointer"
                 border="none"
-                size={rem(14)}
+                size={rem(12)}
                 onClick={showTermsOfUseHandler}
               />
             </div>
@@ -281,7 +285,7 @@ function Signup() {
                 color={color.white}
                 cursor="pointer"
                 border="none"
-                size={rem(14)}
+                size={rem(12)}
                 onClick={showTermsOfPPHandler}
               />
             </div>
@@ -293,21 +297,8 @@ function Signup() {
           &times;
         </div>
         <div css={[verticalAlign]}>
-          <div css={[flexBetween, alignItemFlexEnd]}>
-            <span>닉네임</span>
-            <div
-              css={css`
-                margin-left: ${rem(5)};
-              `}
-            >
-              {nickDuplicateClick ? (
-                nickDupliacte ? (
-                  <div css={noticeOk}> * 사용가능한 닉네임입니다.</div>
-                ) : (
-                  <div css={noticeNo}> * 중복된 닉네임입니다.</div>
-                )
-              ) : null}
-            </div>
+          <div css={[flexBetween, alignItemFlexEnd, `padding-top: ${rem(20)}`]}>
+            <span css={textStyle}>닉네임</span>
             <span
               css={
                 nickname.length > 0 ? validButtonActive : validButtonInactive
@@ -319,28 +310,30 @@ function Signup() {
           </div>
           <div css={marginTop6}>
             <Input
-              width={205}
-              height={38}
-              fontSize={12}
+              width={240}
+              height={48}
+              fontSize={14}
               onChange={nicknameHandler}
               value={nickname}
               type="text"
               placeholder="닉네임을 입력해주세요."
             />
           </div>
+          <div
+            css={css`
+              margin-top: ${rem(8)};
+            `}
+          >
+            {nickDuplicateClick ? (
+              nickDupliacte ? (
+                <div css={noticeOk}> * 사용가능한 닉네임입니다.</div>
+              ) : (
+                <div css={noticeNo}> * 중복된 닉네임입니다.</div>
+              )
+            ) : null}
+          </div>
           <div css={[flexBetween, marginTop12, alignItemFlexEnd]}>
-            <span>이메일</span>
-            <div css={alignLeft}>
-              {emailDuplicateClick ? (
-                emailDupliacte ? (
-                  <span css={noticeOk}>* 사용 가능한 이메일 입니다.</span>
-                ) : (
-                  <span css={noticeNo}>* 중복된 이메일 입니다.</span>
-                )
-              ) : emailValid ? null : email.length > 0 ? (
-                <span css={noticeNo}>* 이메일 형식을 지켜주세요.</span>
-              ) : null}
-            </div>
+            <span css={textStyle}>이메일</span>
             <span
               css={emailValid ? validButtonActive : validButtonInactive}
               onClick={emailDuplicateCheckHandler}
@@ -350,44 +343,40 @@ function Signup() {
           </div>
           <div css={marginTop6}>
             <Input
-              width={205}
-              height={38}
-              fontSize={12}
+              width={240}
+              height={48}
+              fontSize={14}
               onChange={emailHandler}
               value={email}
               type="text"
               placeholder="이메일을 입력해주세요."
             />
           </div>
+          <div
+            css={css`
+              margin-top: ${rem(8)};
+            `}
+          >
+            {emailDuplicateClick ? (
+              emailDupliacte ? (
+                <span css={noticeOk}>* 사용 가능한 이메일 입니다.</span>
+              ) : (
+                <span css={noticeNo}>* 중복된 이메일 입니다.</span>
+              )
+            ) : emailValid ? null : email.length > 0 ? (
+              <span css={noticeNo}>* 이메일 형식을 지켜주세요.</span>
+            ) : null}
+          </div>
           <div css={marginTop12}>
             <div css={[flex, alignItemFlexEnd]}>
-              <div>비밀번호</div>
-              <div
-                css={css`
-                  margin-left: ${rem(4)};
-                `}
-              >
-                {confirmPassword.length > 0 && passwordValid ? (
-                  password === confirmPassword ? (
-                    <div css={noticeOk}>* 사용가능한 비밀번호입니다.</div>
-                  ) : (
-                    <div css={noticeNo}>* 비밀번호가 일치하지 않습니다.</div>
-                  )
-                ) : password.length > 0 ? (
-                  passwordValid ? null : (
-                    <div css={noticeNo}>
-                      * 영문, 숫자 조합 8자 이상 입력해주세요.{' '}
-                    </div>
-                  )
-                ) : null}
-              </div>
+              <div css={textStyle}>비밀번호</div>
             </div>
           </div>
           <div css={marginTop6}>
             <Input
-              width={205}
-              height={38}
-              fontSize={12}
+              width={240}
+              height={48}
+              fontSize={14}
               onChange={passwordHandler}
               value={password}
               type="password"
@@ -396,18 +385,36 @@ function Signup() {
           </div>
           <div css={marginTop6}>
             <Input
-              width={205}
-              height={38}
-              fontSize={12}
+              width={240}
+              height={48}
+              fontSize={14}
               onChange={confirmPasswordHandler}
               value={confirmPassword}
               type="password"
               placeholder="비밀번호를 한 번 더입력해주세요."
             />
           </div>
-
+          <div
+            css={css`
+              margin-top: ${rem(8)};
+            `}
+          >
+            {confirmPassword.length > 0 && passwordValid ? (
+              password === confirmPassword ? (
+                <div css={noticeOk}>* 사용가능한 비밀번호입니다.</div>
+              ) : (
+                <div css={noticeNo}>* 비밀번호가 일치하지 않습니다.</div>
+              )
+            ) : password.length > 0 ? (
+              passwordValid ? null : (
+                <div css={noticeNo}>
+                  * 영문, 숫자 조합 8자 이상 입력해주세요.{' '}
+                </div>
+              )
+            ) : null}
+          </div>
           <div css={[flexBetween, marginTop12, alignItemCenter]}>
-            <span>{`[필수] 이용약관`}</span>
+            <span css={textStyle}>{`[필수] 이용약관`}</span>
             <Button
               text="보기"
               width={rem(41)}
@@ -422,7 +429,7 @@ function Signup() {
             />
           </div>
           <div css={[flexBetween, marginTop6, alignItemCenter]}>
-            <span>{`[필수] 개인정보 수집 및 이용`}</span>
+            <span css={textStyle}>{`[필수] 개인정보 수집 및 이용`}</span>
             <Button
               text="보기"
               width={rem(41)}
@@ -446,13 +453,13 @@ function Signup() {
               type="checkbox"
               onClick={acceptTermsHandler}
             />
-            <span>{`모든 이용약관에 동의합니다.`}</span>
+            <span css={textStyle}>{`모든 이용약관에 동의합니다.`}</span>
           </div>
           <div css={marginTop12} onClick={signupHandler}>
             <Button
               text="회원가입"
-              width={rem(205)}
-              height={rem(40)}
+              width={rem(240)}
+              height={rem(48)}
               background={
                 nickDupliacte &&
                 emailDupliacte &&
@@ -465,7 +472,7 @@ function Signup() {
               color={color.white}
               cursor="pointer"
               border="none"
-              size={rem(12)}
+              size={rem(14)}
             />
           </div>
         </div>
