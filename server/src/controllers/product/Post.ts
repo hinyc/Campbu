@@ -2,6 +2,7 @@ import { Request, response, Response } from 'express';
 import { posts } from '../../entity/posts';
 import { users } from '../../entity/users';
 import { users_reviews } from '../../entity/users_reviews';
+import { reservation } from '../../entity/reservation';
 import { getRepository } from 'typeorm';
 import { authorizeToken } from '../jwt/AuthorizeToken';
 
@@ -11,6 +12,7 @@ export default {
     const postRepository = getRepository(posts);
     const userRepository = getRepository(users);
     const reviewRepository = getRepository(users_reviews);
+    const reservationRepository = getRepository(reservation);
 
     const post = await postRepository
       .createQueryBuilder('post')
@@ -33,11 +35,16 @@ export default {
       .where('users_reviews.users_id = :users_id', { users_id: userId })
       .getRawMany();
 
+    const reservations = await reservationRepository
+      .createQueryBuilder()
+      .where('reservation.posts_id = :posts_id', { posts_id: post?.id })
+      .getMany();
+
     const user = await userRepository.findOne({ id: userId });
     if (reviews === undefined || reviews === null) {
-      res.status(200).json({ posts: post, reviews: [], user });
+      res.status(200).json({ posts: post, reviews: [], user, reservations });
     } else {
-      res.status(200).json({ posts: post, reviews, user });
+      res.status(200).json({ posts: post, reviews, user, reservations });
     }
   },
   delete: async (req: Request, res: Response) => {

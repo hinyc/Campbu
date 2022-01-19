@@ -12,16 +12,20 @@ import { Button } from './Button';
 import Input from './Input';
 import kakaoimg from '../assets/kakao.png';
 import googleimg from '../assets/google.png';
-import { useSetRecoilState } from 'recoil';
+import { useSetRecoilState, useRecoilState } from 'recoil';
 import {
   isLogin,
   loginUserInfo,
   showLoginModal,
   showSignupModal,
+  allChatRoomId,
 } from '../Atom';
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import KakaoLogin from './KakaoLogin';
+import io from 'socket.io-client';
+import { chatsNum } from '../Atom';
 
 const backgroundStyle = css`
   background-color: white;
@@ -120,8 +124,10 @@ function LoginModal() {
   const [password, setPassword] = useState('');
   const [reqMsgState, setReqMsgState] = useState('ok');
   const setLoginUserInfo = useSetRecoilState(loginUserInfo);
+  const [chatNum, setChatNum] = useRecoilState(chatsNum);
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
   const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?scope=openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20&response_type=code&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URI}&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}`;
+  const setChatIds = useSetRecoilState(allChatRoomId);
 
   const emailHandler = (e: any) => {
     setEmail(e.target.value);
@@ -182,6 +188,31 @@ function LoginModal() {
 
           localStorage.setItem('isLogin', 'true');
           localStorage.setItem('userInfo', JSON.stringify(userinfo));
+
+          axios
+            .get(`${host}/chat/chatRoom`, {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              withCredentials: true,
+            })
+            .then((res: any) => {
+              const chatIds = res.data.chat.map((chat: any) => {
+                const roomId = 'Room' + String(chat.id);
+                if (!(roomId in chatNum)) {
+                  setChatNum((chatNum) => ({
+                    ...chatNum,
+                    [roomId]: 0,
+                  }));
+                }
+                return chat.id;
+              });
+              const ids = JSON.stringify(chatIds);
+              setChatIds(ids);
+              io('http://localhost:5050', {
+                query: { ids },
+              });
+            });
         }
       })
       .catch((res) => {

@@ -245,6 +245,7 @@ function DetailView() {
         .get(API, config)
         .then((res) => {
           const postInfo = res.data;
+
           setPostInfo(postInfo);
           setUnableDates(postInfo.posts.unavailable_dates.sort());
 

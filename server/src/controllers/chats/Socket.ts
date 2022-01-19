@@ -14,17 +14,16 @@ export default async () => {
   });
 
   await io.on('connection', async (socket) => {
-    socket.on('open-room', async (ids) => {
-      ids.map((id: any) => {
-        socket.join(id);
-      });
-    });
+    const jsonIds: any = socket.handshake.query.ids;
+    if (jsonIds !== undefined) {
+      const ids = JSON.parse(jsonIds);
+      io.socketsJoin(ids);
+    }
     socket.on('send-message', async (info) => {
       const id: string = info.chatRoomId;
       const message: string = info.chatMessage;
       const nickName: string = info.userNickName;
       const date = Date();
-
       const chatMessage = { message, sender: nickName, date };
       const chatRepository = getRepository(chats);
       const chat = await chatRepository

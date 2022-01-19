@@ -33,6 +33,7 @@ import {
   showConfirmModal,
   showReviewModal,
   showSubmitModal,
+  chattingRoomId,
 } from '../../Atom';
 import io from 'socket.io-client';
 import axios from 'axios';
@@ -97,7 +98,7 @@ interface chatNum {
 
 function Chat() {
   const [chatMessage, setChatMessage] = useState<string>('');
-  const [chatRoomId, setChatRoomId] = useState<number>();
+  const [chatRoomId, setChatRoomId] = useRecoilState<number>(chattingRoomId);
   const [chatNickName, setChatNickName] = useState<string>('');
   const [chatting, setChatting] = useState<object[]>([]);
   const [chatRooms, setChatRooms] = useState([]);
@@ -106,7 +107,7 @@ function Chat() {
   const [socket, setSocket] = useState<any>();
   const [chatCount, setChatCount] = useRecoilState<chatNum>(chatsNum);
 
-  const loginUser = useRecoilValue(loginUserInfo);
+  const [loginUser, setLoginUser] = useRecoilState(loginUserInfo);
   const [postUserId, setPostUserId] = useState(0);
   const [reservationUserId, setReservationUserId] = useState(0);
   const borrowButton = [
@@ -122,8 +123,15 @@ function Chat() {
   const [submit, setSubmit] = useRecoilState(showSubmitModal);
 
   //? 유저 아이디 === 포스트 유저 아이디 (빌려준 사람)
+  useEffect(() => {
+    const userInfo: any = localStorage.getItem('userInfo');
+    if (userInfo) {
+      setLoginUser(JSON.parse(userInfo));
+    }
+  }, [chatRoomId, setLoginUser]);
+  console.log(loginUser);
   const userLend =
-    loginUser.id !== reservationUserId && loginUser.id === postUserId;
+    loginUser?.id !== reservationUserId && loginUser?.id === postUserId;
   //? 1 : 예약 수락 => 80
   //? 2 : 반납 대기 중 => opacity, not allowed 50
   //? 3 : 반납 확인 => 리뷰 (예약 아이디, 예약한 유저 아이디) 80
@@ -131,7 +139,7 @@ function Chat() {
 
   //? 유저 아이디 === 예약자 아이디 && 유저 아이디 !== 포스트 유저 아이디 (빌린 사람)
   const userBorrow =
-    loginUser.id === reservationUserId && loginUser.id !== postUserId;
+    loginUser?.id === reservationUserId && loginUser?.id !== postUserId;
   //? 1 : 예약 취소 => delete 80
   //? 2 : 반납하기 => 리뷰 (예약 아이디, 포스트 유저 아이디) 80
   //? 3 : 반납 확인 대기 중 => opacity, not allowed 50
@@ -174,17 +182,12 @@ function Chat() {
       })
       .then((res: any) => {
         const chatIds = res.data.chat.map((chat: any) => {
-          const roomId = 'Room' + String(chat.id);
-          if (!(roomId in chatCount)) {
-            setChatCount((chatCount) => ({
-              ...chatCount,
-              [roomId]: 0,
-            }));
-          }
           return chat.id;
         });
-        const newSocket = io('http://localhost:5050');
-        newSocket.emit('open-room', chatIds);
+        const ids = JSON.stringify(chatIds);
+        const newSocket = io('http://localhost:5050', {
+          query: { ids },
+        });
         setSocket(newSocket);
         const sortedData = res.data.chat.sort((a: any, b: any) => b.id - a.id);
         setChatRooms(sortedData);
@@ -200,21 +203,12 @@ function Chat() {
   // }, [chatRoomId]);
 
   useEffect(() => {
-    if (socket == null) return;
-
-    socket.on('receive-message', (message: any) => {
-      if (message.id !== chatRoomId) {
-        const roomId = 'Room' + String(message.id);
-        setChatCount((chatCount) => ({
-          ...chatCount,
-          total: chatCount.total + 1,
-          [roomId]: chatCount[roomId] + 1,
-        }));
-      } else if (message.id === chatRoomId) {
+    socket?.on('receive-message', (message: any) => {
+      if (message.id === chatRoomId) {
         setChatting([...chatting, message]);
       }
     });
-    return () => socket.off('receive-message');
+    return () => socket?.off('receive-message');
   });
 
   const handleOnChange = (e: any) => {
@@ -235,11 +229,14 @@ function Chat() {
 
   const handleChatRoomClick = (e: any, id: number, nickName: string) => {
     if (chatRoomId !== id) {
-      setChatCount((chatCount) => ({
-        ...chatCount,
-        total: chatCount.total - chatCount[`Room${id}`],
-        [`Room${id}`]: 0,
-      }));
+      const clickRoomId = `Room${id}`;
+      if (chatCount[clickRoomId]) {
+        setChatCount((chatCount) => ({
+          ...chatCount,
+          [clickRoomId]: 0,
+          total: chatCount.total - chatCount[clickRoomId],
+        }));
+      }
       setChatRoomId(id);
       setChatNickName(nickName);
       axios
@@ -296,8 +293,6 @@ function Chat() {
     }
   };
 
-  const getDayLine = (inDate: any) => {};
-
   const scrollLastMessage: any = useRef(null);
   useEffect(() => {
     scrollLastMessage.current.scrollIntoView({
@@ -306,7 +301,7 @@ function Chat() {
       inline: 'start',
     });
   }, [chatting]);
-
+  console.log('chatCount', chatCount['Room6']);
   return (
     <>
       {confirm && userLend && posts.reservation_status === 1 && (
@@ -465,7 +460,8 @@ function Chat() {
                     {chatRoom.recipient_nickname === userNickName
                       ? chatRoom.sender_nickname
                       : chatRoom.recipient_nickname}
-                    {chatCount[`Room${chatRoom.id}`] === 0 ? (
+                    {chatCount[`Room${chatRoom.id}`] === 0 &&
+                    chatCount[`Room${chatRoom.id}`] === undefined ? (
                       <div></div>
                     ) : (
                       <div

@@ -14,6 +14,8 @@ import {
   showLoginModal,
   showModal,
   showSignupModal,
+  chattingRoomId,
+  chatsNum,
 } from '../Atom';
 import { color, hover, rem, shadow } from '../common';
 
@@ -21,7 +23,7 @@ import { Button } from './Button';
 import LoginModal from './LoginModal';
 import ProfileDropdown from './ProfileDropdown';
 import Signup from './Signup';
-import { chatsNum } from '../Atom';
+import io from 'socket.io-client';
 
 const headerStyle = css`
   height: ${rem(99)};
@@ -39,8 +41,15 @@ function Navbar() {
   const [login, setIsLogin] = useRecoilState(isLogin);
   const [showLogin, setShowLogin] = useRecoilState(showLoginModal);
   const [chatNum, setChatNum] = useRecoilState(chatsNum);
+  const [socket, setSocket] = useState<any>();
+  const [messageDate, setMessageDate] = useState<number>(1000);
   const setLoginUserInfo = useSetRecoilState(loginUserInfo);
+  const userInfo = useRecoilState(loginUserInfo);
   const setPostId = useSetRecoilState(post_id);
+  const chatRoomId = useRecoilValue(chattingRoomId);
+  const [roomId, setRoomId] = useState<string>('');
+  const [mesId, setMesId] = useState<number>();
+  const [mesDate, setMesDate] = useState<Date>();
 
   const showSignup = useRecoilValue(showSignupModal);
   const onClick = () => {
@@ -54,7 +63,7 @@ function Navbar() {
     if (localStorage.getItem('userInfo')) {
       const userInfo = localStorage.getItem('userInfo');
       if (userInfo) {
-        setLoginUserInfo(JSON.parse(userInfo));
+        setLoginUserInfo(JSON.parse(userInfo).user);
       }
     }
   }, [setIsLogin, setLoginUserInfo]);
@@ -65,6 +74,30 @@ function Navbar() {
       setPostId(Number(postId));
     }
   }, [setPostId]);
+
+  useEffect(() => {
+    const newSocket = io('http://localhost:5050');
+    setSocket(newSocket);
+  }, [setIsLogin]);
+
+  useEffect(() => {
+    if (mesId !== chatRoomId && roomId !== '' && mesId !== undefined) {
+      console.log('roomId', roomId);
+      setChatNum((chatNum) => ({
+        ...chatNum,
+        total: chatNum.total + 1,
+        [roomId]: chatNum[roomId] + 1,
+      }));
+      console.log('chatNum', chatNum);
+    }
+  }, [mesDate]);
+
+  socket?.on('receive-message', (message: any) => {
+    const roomId = 'Room' + String(message.id);
+    setRoomId(roomId);
+    setMesId(message.id);
+    setMesDate(message.date);
+  });
 
   return (
     <header css={headerStyle}>
