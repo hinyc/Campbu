@@ -357,28 +357,29 @@ function DetailView() {
               {postInfo.posts.address}
             </span>
           </div>
-          {userInfo.id === postInfo.user.id ? (
+          {userInfo.id === postInfo.user.id && (
             <div
               css={css`
-                padding-left: 20rem;
+                margin-left: auto;
+                margin-right: ${rem(20)};
               `}
             >
               <Link to={`/writing/${postId}`}>
                 <Button
-                  text="수정하기 / 삭제하기"
-                  width={rem(150)}
+                  text="수정 / 삭제"
+                  width={''}
                   height={`none`}
                   background={color.white}
                   color={color.placeholder}
                   border="none"
-                  size={rem(18)}
+                  size={rem(16)}
                   margin={`none`}
-                  hover="0.65"
+                  hover="0.70"
                   cursor="pointer"
                 />
               </Link>
             </div>
-          ) : null}
+          )}
           <LikeSymbol
             postId={postId}
             isFill={likedPosts.includes(postId)}

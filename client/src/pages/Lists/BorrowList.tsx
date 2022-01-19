@@ -81,17 +81,8 @@ function BorrowList() {
     }
   };
 
-  const onReviewCompleteClick = async () => {
+  const onReviewCompleteClick = () => {
     setSubmit(false);
-    await axios
-      .get(`${host}/userinfo/product/borrow`, config)
-      .then((res) => {
-        const sortedData = res.data['borrow'].sort(
-          (a: any, b: any) => b.reservation_id - a.reservation_id,
-        );
-        setBorrowLists({ borrow: sortedData });
-      })
-      .catch((err) => console.error(err));
   };
 
   useEffect(() => {

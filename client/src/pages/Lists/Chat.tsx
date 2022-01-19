@@ -28,6 +28,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import {
   chatsNum,
+  forceRender,
   loginUserInfo,
   showCompleteModal,
   showConfirmModal,
@@ -42,6 +43,9 @@ import ConfirmBorrow from '../../components/ConfirmBorrow';
 import ConfirmLend from '../../components/ConfirmLend';
 import Complete from '../../components/Complete';
 import ReviewModal from '../../components/ReviewModal';
+import BackButton from '../../components/BackButton';
+import silentMessage from '../../assets/pictures/silentMessage.svg';
+import selectMessageRoom from '../../assets/pictures/selectMessageRoom.svg';
 
 //! ------------ css -------------------
 const button = css`
@@ -55,13 +59,11 @@ const button = css`
 
 const message = css`
   width: ${rem(318)};
-  height: ${rem(66)};
   text-align: left;
   font-size: ${rem(18)};
   font-weight: 700;
-  padding-left: ${rem(20)};
-  padding-top: ${rem(18)};
-  border-bottom: ${rem(1)} solid #dedede;
+  padding: ${rem(18)} ${rem(35)};
+  border-bottom: ${rem(1)} solid #f0f0f0;
 `;
 
 const imgStyle = css`
@@ -71,6 +73,22 @@ const imgStyle = css`
   border-radius: 50%;
   background-size: cover;
   margin: ${rem(10)} ${rem(12)} 0 ${rem(12)};
+`;
+
+const selectMessage = css`
+  font-size: ${rem(20)};
+  color: ${color.mid};
+  line-height: ${rem(28)};
+  margin-top: ${rem(15)};
+`;
+
+const chatImg = css`
+  max-width: ${rem(250)};
+  font-size: ${rem(16)};
+  margin-top: ${rem(5)};
+  text-align: left;
+  border-radius: ${rem(5)};
+  padding: ${rem(13)};
 `;
 
 //! ------------ interface -------------------
@@ -121,6 +139,7 @@ function Chat() {
   const [complete, setComplete] = useRecoilState(showCompleteModal);
   const [review, setReview] = useRecoilState(showReviewModal);
   const [submit, setSubmit] = useRecoilState(showSubmitModal);
+  const forceRerender = useRecoilValue(forceRender);
 
   //? 유저 아이디 === 포스트 유저 아이디 (빌려준 사람)
   useEffect(() => {
@@ -154,7 +173,6 @@ function Chat() {
   };
 
   const onButtonClick = () => {
-    console.log('버튼 클릭');
     setConfirm(true);
   };
 
@@ -165,6 +183,11 @@ function Chat() {
       (userBorrow && posts.reservation_status === 2)
     ) {
       setReview(true);
+    } else if (userBorrow && posts.reservation_status === 1) {
+      setChatNickName('');
+      setChatting([]);
+      setChatRoomId(0);
+      setPosts({});
     }
   };
 
@@ -193,7 +216,7 @@ function Chat() {
         setChatRooms(sortedData);
         setUserNickName(res.data.nickName);
       });
-  }, []);
+  }, [forceRerender]);
 
   // useEffect((): any => {
   //   const newSocket = io('http://localhost:5050', {
@@ -252,7 +275,6 @@ function Chat() {
           setPostUserId(res.data.userId.users_id);
           setReservationUserId(res.data.post.users_id.id);
           console.log('받아오는 데이터', res.data);
-          console.log('로그인한 사람', loginUser);
         });
     } else {
       setChatRoomId(0);
@@ -367,7 +389,7 @@ function Chat() {
           onClick={onReviewCompleteClick}
         />
       )}
-      <ListTab />
+      <BackButton />
       <div
         css={[
           container,
@@ -384,7 +406,8 @@ function Chat() {
               display: flex;
               flex-direction: column;
               align-items: center;
-              border: ${rem(1)} solid #dedede;
+              border: ${rem(1)} solid #f0f0f0;
+              border-radius: ${rem(15)} 0 0 ${rem(15)};
             `,
           ]}
         >
@@ -406,12 +429,13 @@ function Chat() {
                   css`
                     width: ${rem(318)};
                     height: ${rem(90)};
+                    padding-top: ${rem(10)};
                     display: flex;
                     :hover {
                       background-color: #f0f0f0;
                     }
                     background-color: ${chatRoom.id === chatRoomId
-                      ? '#f0f0f0'
+                      ? '#F8F8F8'
                       : '#ffffff'};
                   `,
                 ]}
@@ -486,11 +510,12 @@ function Chat() {
                       css`
                         height: ${rem(40)};
                         text-align: left;
+                        font-size: ${rem(14)};
                         margin-left: ${rem(10)};
-                        margin-top: ${rem(-10)};
+                        margin-top: ${rem(-23)};
                       `,
                     ]}
-                  >{`${chatRoom.reservation_id.reservation_dates[0]}~${
+                  >{`${chatRoom.reservation_id.reservation_dates[0]} ~ ${
                     chatRoom.reservation_id.reservation_dates[
                       chatRoom.reservation_id.reservation_dates.length - 1
                     ]
@@ -506,22 +531,20 @@ function Chat() {
               width: ${rem(640)};
               display: flex;
               flex-direction: column;
-              border: ${rem(1)} solid #dedede;
+              border: ${rem(1)} solid #f0f0f0;
             `,
           ]}
         >
           <div
             css={[
               css`
-                height: ${rem(66)};
                 text-align: left;
                 font-size: ${rem(18)};
                 font-weight: 700;
-                padding-left: ${rem(20)};
-                padding-top: ${rem(18)};
+                padding: ${rem(18)} ${rem(35)};
                 border-bottom: ${chatNickName === ''
                   ? ''
-                  : `${rem(1)} solid #dedede`};
+                  : `${rem(1)} solid #f0f0f0`};
               `,
             ]}
           >
@@ -538,155 +561,172 @@ function Chat() {
               `,
             ]}
           >
-            {chatting.map((chats: any, index: number) => (
-              <>
-                {chats.sender === userNickName ? (
-                  <div
-                    css={[
-                      flex,
-                      css`
-                        justify-content: right;
-                        margin: ${rem(10)};
-                      `,
-                    ]}
-                    key={chats.date}
-                  >
+            {chatRooms.length === 0 ? (
+              <div style={{ padding: `${rem(50)} 0 ${rem(100)} 0` }}>
+                <img
+                  src={silentMessage}
+                  alt="no message room"
+                  css={[img, `margin-top: ${rem(50)}`]}
+                />
+                <p css={selectMessage}>메시지함이 비어있어요.</p>
+              </div>
+            ) : chatting.length === 0 ? (
+              <div style={{ padding: `${rem(50)} 0 ${rem(100)} 0` }}>
+                <img
+                  src={selectMessageRoom}
+                  alt="select message room"
+                  css={[img, `margin-top: ${rem(30)}`]}
+                />
+                <p css={selectMessage}>
+                  메시지함을 선택해서 대화를 나눠보세요!
+                </p>
+              </div>
+            ) : (
+              chatting.map((chats: any, index: number) => (
+                <>
+                  {chats.sender === userNickName ? (
                     <div
                       css={[
+                        flex,
                         css`
-                          width: ${rem(70)};
-                          position: relative;
+                          justify-content: right;
+                          margin: ${rem(10)};
                         `,
                       ]}
+                      key={chats.date}
                     >
                       <div
                         css={[
                           css`
-                            font-size: ${rem(10)};
-                            text-align: left;
-                            color: #7d7d7d;
-                            position: absolute;
-                            bottom: ${rem(10)};
+                            width: ${rem(70)};
+                            position: relative;
                           `,
                         ]}
                       >
-                        {getTime(chats.date)}
+                        <div
+                          css={[
+                            css`
+                              font-size: ${rem(10)};
+                              text-align: left;
+                              color: #7d7d7d;
+                              position: absolute;
+                              bottom: ${rem(10)};
+                              margin-left: ${rem(5)};
+                            `,
+                          ]}
+                        >
+                          {getTime(chats.date)}
+                        </div>
                       </div>
-                    </div>
-                    <div>
+                      <div>
+                        <div
+                          css={[
+                            chatImg,
+                            css`
+                              margin-right: ${rem(12)};
+                              background-color: #ed662c;
+                              color: #ffffff;
+                            `,
+                          ]}
+                        >
+                          {chats.message}
+                        </div>
+                      </div>
                       <div
                         css={[
                           css`
-                            max-width: ${rem(250)};
-                            font-size: ${rem(16)};
-                            margin-right: ${rem(12)};
-                            margin-top: ${rem(5)};
-                            text-align: left;
-                            background-color: #ed662c;
-                            border-radius: ${rem(5)};
-                            padding: ${rem(13)};
-                            color: #ffffff;
+                            width: ${rem(40)};
+                            height: ${rem(40)};
+                            border: 2px solid ${color.point};
+                            border-radius: 50%;
+                            background-size: cover;
+                            margin-top: ${rem(10)};
                           `,
                         ]}
-                      >
-                        {chats.message}
-                      </div>
+                      ></div>
                     </div>
+                  ) : (
                     <div
                       css={[
+                        flex,
                         css`
-                          width: ${rem(50)};
-                          height: ${rem(50)};
-                          border: 2px solid ${color.point};
-                          border-radius: 50%;
-                          background-size: cover;
+                          margin: ${rem(10)};
                         `,
                       ]}
-                    ></div>
-                  </div>
-                ) : (
-                  <div
-                    css={[
-                      flex,
-                      css`
-                        margin: ${rem(10)};
-                      `,
-                    ]}
-                    key={chats.date}
-                  >
-                    <div
-                      css={[
-                        css`
-                          width: ${rem(50)};
-                          height: ${rem(50)};
-                          border: 2px solid ${color.point};
-                          border-radius: 50%;
-                          background-size: cover;
-                        `,
-                      ]}
-                    ></div>
-                    <div>
-                      <div
-                        css={[
-                          css`
-                            max-width: ${rem(250)};
-                            font-size: ${rem(16)};
-                            margin-left: ${rem(12)};
-                            margin-top: ${rem(5)};
-                            text-align: right;
-                            border: 1px solid #ed662c;
-                            border-radius: ${rem(5)};
-                            padding: ${rem(13)};
-                          `,
-                        ]}
-                      >
-                        {chats.message}
-                      </div>
-                    </div>
-                    <div
-                      css={[
-                        css`
-                          width: ${rem(70)};
-                          position: relative;
-                        `,
-                      ]}
+                      key={chats.date}
                     >
                       <div
                         css={[
                           css`
-                            font-size: ${rem(10)};
-                            text-align: right;
-                            color: #7d7d7d;
-                            position: absolute;
-                            bottom: ${rem(10)};
-                            margin-left: ${rem(5)};
+                            width: ${rem(40)};
+                            height: ${rem(40)};
+                            border: 2px solid ${color.point};
+                            border-radius: 50%;
+                            background-size: cover;
+                            margin-top: ${rem(10)};
+                          `,
+                        ]}
+                      ></div>
+                      <div>
+                        <div
+                          css={[
+                            chatImg,
+                            css`
+                              margin-left: ${rem(12)};
+                              border: 1px solid #ed662c;
+                            `,
+                          ]}
+                        >
+                          {chats.message}
+                        </div>
+                      </div>
+                      <div
+                        css={[
+                          css`
+                            width: ${rem(70)};
+                            position: relative;
                           `,
                         ]}
                       >
-                        {getTime(chats.date)}
+                        <div
+                          css={[
+                            css`
+                              font-size: ${rem(10)};
+                              text-align: right;
+                              color: #7d7d7d;
+                              position: absolute;
+                              bottom: ${rem(10)};
+                              margin-left: ${rem(5)};
+                            `,
+                          ]}
+                        >
+                          {getTime(chats.date)}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </>
-            ))}
+                  )}
+                </>
+              ))
+            )}
             <div ref={scrollLastMessage}></div>
           </div>
-          <span css={[relative]}>
-            <Input
-              type="text"
-              width={500}
-              height={50}
-              font-size={18}
-              placeholder="메시지를 입력해주세요"
-              value={chatMessage}
-              onChange={handleOnChange}
-              onKeyPress={handleKeyPress}
-            />
-            <button css={button} onClick={handleOnClick}>
-              <img src={PaperPlane} alt="PaperPlane"></img>
-            </button>
-          </span>
+          {chatting.length !== 0 && (
+            <span css={[relative]}>
+              <Input
+                type="text"
+                width={500}
+                height={50}
+                font-size={18}
+                placeholder="메시지를 입력해주세요"
+                value={chatMessage}
+                onChange={handleOnChange}
+                onKeyPress={handleKeyPress}
+              />
+              <button css={button} onClick={handleOnClick}>
+                <img src={PaperPlane} alt="PaperPlane"></img>
+              </button>
+            </span>
+          )}
         </div>
         <div
           css={[
@@ -695,8 +735,10 @@ function Chat() {
               display: flex;
               flex-direction: column;
               align-items: center;
-              border: ${rem(1)} solid #dedede;
+              border: ${rem(1)} solid #f0f0f0;
               padding: ${rem(30)};
+              border-radius: 0 ${rem(15)} ${rem(15)} 0;
+              text-align: left;
             `,
           ]}
         >
