@@ -16,6 +16,8 @@ import {
   showSignupModal,
   chattingRoomId,
   chatsNum,
+  selectAddress,
+  selectCategory,
 } from '../Atom';
 import { color, hover, rem, shadow } from '../common';
 
@@ -50,7 +52,8 @@ function Navbar() {
   const [roomId, setRoomId] = useState<string>('');
   const [mesId, setMesId] = useState<number>();
   const [mesDate, setMesDate] = useState<Date>();
-
+  const setSelectAddress = useSetRecoilState(selectAddress);
+  const setSelectCategory = useSetRecoilState(selectCategory);
   const showSignup = useRecoilValue(showSignupModal);
   const onClick = () => {
     setIsShowModal(!isShowModal);
@@ -74,6 +77,19 @@ function Navbar() {
       setPostId(Number(postId));
     }
   }, [setPostId]);
+
+  useEffect(() => {
+    const address = localStorage.getItem('address');
+    if (address) {
+      setSelectAddress(address);
+    }
+  }, [setSelectAddress]);
+  useEffect(() => {
+    const category = localStorage.getItem('category');
+    if (category) {
+      setSelectCategory(category);
+    }
+  }, [setSelectCategory]);
 
   useEffect(() => {
     const newSocket = io('http://localhost:5050');

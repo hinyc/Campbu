@@ -33,6 +33,7 @@ import {
   loginUserInfo,
   post_id,
   profileImgUrl,
+  selectAddress,
   selectDate,
   showCalendar,
   showCompleteModal,
@@ -163,16 +164,12 @@ let dummyData = {
     users_id: 0,
     created_at: '',
     updated_at: '',
-    likes_count: 99,
+    likes_count: 0,
   },
   reviews: [
     {
-      count: 15,
-      reviews_id: 2,
-    },
-    {
-      count: 52,
-      reviews_id: 8,
+      count: 0,
+      reviews_id: 0,
     },
   ],
   user: {
@@ -226,27 +223,27 @@ function DetailView() {
     useRecoilState(isSelectStart);
   const [isShowCalendar, setIsShowCalendar] = useRecoilState(showCalendar);
   const postId = useRecoilValue(post_id);
-  const likedPosts = useRecoilValue<number[]>(likedProducts);
   const login = useRecoilValue(isLogin);
   const setShowLoginModal = useSetRecoilState(showLoginModal);
   const profileImg = useRecoilValue(profileImgUrl);
   const userInfo = useRecoilValue(loginUserInfo);
   const [completeModal, setCompleteModal] = useRecoilState(showCompleteModal);
+  const searchValue = useRecoilValue(selectAddress);
   const navigation = useNavigate();
   const [getReviews, setGetReviews] = useState<reviewsType>([]);
   const [postInfo, setPostInfo] = useState<postInfoType>(dummyData);
   const [selectImgNum, setSelectImgNum] = useState<number>(0);
-
+  const [isLikePost, setIsLikePost] = useState(false);
   useEffect(() => {
     if (postId) {
       const API = `${host}/product/post/${postId}`;
 
       axios
         .get(API, config)
-        .then((res) => {
+        .then((res: any) => {
           const postInfo = res.data;
           setPostInfo(postInfo);
-
+          console.log(res);
           let reservations: string[] = [];
           postInfo.reservations.forEach((el: any) => {
             reservations = [...reservations, ...el.reservation_dates];
@@ -266,6 +263,23 @@ function DetailView() {
               count: el.count,
             };
           });
+
+          axios
+            .get(`${host}/product/address/${searchValue}`, config)
+            .then((res) => {
+              if (res.status === 200) {
+                const likes = res.data.likes;
+                let isLike = false;
+                for (let i = 0; i < likes.length; i++) {
+                  if (likes[i].posts_id === postId) {
+                    isLike = true;
+                    break;
+                  }
+                }
+                setIsLikePost(isLike);
+              }
+            });
+
           setGetReviews(tempReviews);
         })
         .catch((err) => console.log(err));
@@ -392,7 +406,7 @@ function DetailView() {
           )}
           <LikeSymbol
             postId={postId}
-            isFill={likedPosts.includes(postId)}
+            isFill={isLikePost}
             count={postInfo.posts.likes_count}
             fontSize={18}
             borderColor={color.border}

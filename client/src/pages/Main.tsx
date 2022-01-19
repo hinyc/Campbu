@@ -18,6 +18,7 @@ import {
   isLoading,
   isLogin,
   likedProducts,
+  selectCategory,
 } from '../Atom';
 import { useEffect, useState } from 'react';
 import AlertModal from '../components/AlertModal';
@@ -94,8 +95,8 @@ export interface Post {
 }
 
 function Main() {
-  const [products, searchAddressList] = useRecoilState<Posts>(posts);
-  const setMainSearch = useSetRecoilState<Posts>(originalPosts);
+  const [products, setProducts] = useRecoilState<Posts>(posts);
+  const [mainSearch, setMainSearch] = useRecoilState<Posts>(originalPosts);
   const [loading, setIsLoading] = useRecoilState(isLoading);
   const [showModal, setShowModal] = useRecoilState(showAlertModal);
   const [searchValue, setSearchValue] = useRecoilState(selectAddress);
@@ -104,59 +105,56 @@ function Main() {
   const login = useRecoilValue(isLogin);
   const [selected, setSelected] = useState<boolean>(false);
   const [likedPosts, setLikedPosts] = useRecoilState<number[]>(likedProducts);
+  const category = useRecoilValue(selectCategory);
 
   const [address, setAddress] = useState('');
 
   useEffect(() => {
     if (searchValue) {
       setIsLoading(true);
-      if (login) {
-        axios
-          .get(`${host}/product/address/${searchValue}`, config)
-          .then((res) => {
-            if (res.status === 200) {
-              console.log(`${host}/product/address/${searchValue}`, res.data);
-              searchAddressList(res.data);
-              setMainSearch(res.data);
-              if (res.data.likes) {
-                const likes = res.data.likes.map(
-                  (obj: { posts_id: number }) => obj.posts_id,
-                );
-                setLikedPosts(likes);
-              }
-              setIsLoading(false);
+      axios
+        .get(`${host}/product/address/${searchValue}`, config)
+        .then((res) => {
+          if (res.status === 200) {
+            console.log(`${host}/product/address/${searchValue}`, res.data);
+            setMainSearch(res.data);
+            console.log(res.data);
+            if (login && res.data.likes) {
+              const likes = res.data.likes.map(
+                (obj: { posts_id: number }) => obj.posts_id,
+              );
+              setLikedPosts(likes);
             }
-          })
-          .catch((err) => {
-            console.error('검색결과가 없습니다.', err);
-            setIsLoading(false);
-          });
-      } else {
-        axios
-          .get(`${host}/product/address/${searchValue}`)
-          .then((res) => {
-            if (res.status === 200) {
-              searchAddressList(res.data);
-              setMainSearch(res.data);
-              setIsLoading(false);
-            }
-          })
-          .catch((err) => {
-            console.error('검색결과가 없습니다.', err);
-            setIsLoading(false);
-          });
-      }
+          }
+          if (category === '전체') {
+            const filtered = res.data.posts.filter(
+              (obj: any) => obj.category !== 'dummy',
+            );
+            setProducts({ posts: filtered });
+          } else {
+            const filtered = res.data.posts.filter(
+              (obj: any) => obj.category === category,
+            );
+            setProducts({ posts: filtered });
+          }
+        })
+        .catch((err) => {
+          console.error('검색결과가 없습니다.', err);
+          setIsLoading(false);
+        });
+      setIsLoading(false);
     }
     if (searchValue) {
       setAddress(searchValue);
     }
   }, [
     login,
-    searchAddressList,
+    setProducts,
     searchValue,
     setIsLoading,
     setLikedPosts,
     setMainSearch,
+    category,
   ]);
 
   const onChange = (e: any) => {
@@ -224,21 +222,7 @@ function Main() {
         <div css={load}>
           <img src={Load} alt="loading..." />
         </div>
-      ) : products['posts'].length === 0 ? (
-        <div style={{ margin: `${rem(80)} 0 ${rem(150)} 0` }}>
-          <img src={emptySearchResult} alt="camping" />
-          <p css={[message, `font-weight: 700`]}>
-            검색 결과가 없어요! 다시 검색해주세요.
-          </p>
-        </div>
-      ) : products.posts[0].title === '' ? (
-        <div style={{ margin: `${rem(80)} 0 ${rem(150)} 0` }}>
-          <img src={Geolocation} alt="please search" />
-          <p css={[message, `font-weight: 700`]}>
-            검색된 게 없어요, 지역을 검색해주세요!
-          </p>
-        </div>
-      ) : (
+      ) : products['posts'].length ? (
         <section css={section}>
           {products['posts'].map((product: Post, index) => (
             <Product
@@ -254,6 +238,20 @@ function Main() {
             />
           ))}
         </section>
+      ) : searchValue ? (
+        <div style={{ margin: `${rem(80)} 0 ${rem(150)} 0` }}>
+          <img src={emptySearchResult} alt="camping" />
+          <p css={[message, `font-weight: 700`]}>
+            검색 결과가 없어요! 다시 검색해주세요.
+          </p>
+        </div>
+      ) : (
+        <div style={{ margin: `${rem(80)} 0 ${rem(150)} 0` }}>
+          <img src={Geolocation} alt="please search" />
+          <p css={[message, `font-weight: 700`]}>
+            검색된 게 없어요, 지역을 검색해주세요!
+          </p>
+        </div>
       )}
       <WritingButton />
     </div>

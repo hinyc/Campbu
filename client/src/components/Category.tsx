@@ -76,6 +76,7 @@ function Category() {
       setFilteredPosts({ posts: filtered });
     }
     setSelect(title);
+    localStorage.setItem('category', title);
   };
 
   const catergorys = [
