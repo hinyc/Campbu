@@ -157,9 +157,6 @@ function Main() {
     setMainSearch,
   ]);
 
-  console.log(products);
-  console.log(likedPosts);
-  console.log('?', products.posts[0].id);
   const onChange = (e: any) => {
     setAddress(e.target.value);
   };
