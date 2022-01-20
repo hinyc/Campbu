@@ -20,6 +20,7 @@ import { useState, useEffect } from 'react';
 import { isLogin, likedProducts, loginUserInfo } from '../Atom';
 import { useResetRecoilState, useSetRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
+import Profile from '../assets/Profile.svg';
 
 const imgStyle = css`
   width: ${rem(114)};
@@ -118,8 +119,8 @@ const hiddenUpload = css`
   position: absolute;
   line-height: ${rem(107)};
   color: white;
-  top: -4px;
-  left: -4px;
+  top: 0;
+  left: 0;
   background-color: black;
   opacity: 0;
   text-align: center;
@@ -327,28 +328,19 @@ function Mypage() {
           `,
         ]}
       >
-        <div
-          css={[
-            imgStyle,
-            relative,
-            css`
-              background-image: ${`url(${userImg})`};
-            `,
-          ]}
-        >
-          <form encType="multiparty/form-data">
-            <label css={[imgStyle, hiddenUpload]} htmlFor="file">
-              수정하기
-            </label>
-            <input
-              css={hidden}
-              type="file"
-              id="file"
-              accept="image/*"
-              onChange={insertImgHandler}
-            />
-          </form>
-        </div>
+        <form encType="multiparty/form-data" css={relative}>
+          <img src={userImg || Profile} css={[imgStyle, relative]} alt="" />
+          <label css={[imgStyle, hiddenUpload]} htmlFor="file">
+            수정하기
+          </label>
+          <input
+            css={hidden}
+            type="file"
+            id="file"
+            accept="image/*"
+            onChange={insertImgHandler}
+          />
+        </form>
         <div css={hello}>{`안녕하세요, ${currentNickName} 님`}</div>
         <Gage ratio={campbuIndicator} />
         <div

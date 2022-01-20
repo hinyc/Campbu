@@ -45,8 +45,7 @@ function Navbar() {
   const [chatNum, setChatNum] = useRecoilState(chatsNum);
   const [socket, setSocket] = useState<any>();
   const [messageDate, setMessageDate] = useState<number>(1000);
-  const setLoginUserInfo = useSetRecoilState(loginUserInfo);
-  const userInfo = useRecoilState(loginUserInfo);
+  const [userInfo, setLoginUserInfo] = useRecoilState(loginUserInfo);
   const setPostId = useSetRecoilState(post_id);
   const chatRoomId = useRecoilValue(chattingRoomId);
   const [roomId, setRoomId] = useState<string>('');
@@ -115,6 +114,7 @@ function Navbar() {
     setMesDate(message.date);
   });
 
+  console.log(userInfo.users_img);
   return (
     <header css={headerStyle}>
       {showSignup ? <Signup /> : null}
@@ -136,60 +136,52 @@ function Navbar() {
             shadow={`${shadow}`}
             hoverBackground="#F18556"
           >
-            {/* //TODO: 프로필 사진이 들어가야 함 */}
-            {isShowModal || chatNum.total === 0 ? (
-              <>
+            <div
+              css={[
+                css`
+                  display: flex;
+                  justify-content: center;
+                `,
+              ]}
+            >
+              <img
+                src={Menu}
+                className="CampBu-logo"
+                alt="logo"
+                draggable="false"
+              />
+              {isShowModal || chatNum.total === 0 ? (
                 <img
-                  src={Menu}
+                  css={css`
+                    width: ${rem(20)};
+                    height: ${rem(20)};
+                    border-radius: 50%;
+                    margin-left: 0.8rem;
+                  `}
+                  src={userInfo.users_img || Profile}
                   className="CampBu-logo"
                   alt="logo"
-                  style={{ margin: `0 ${rem(14)} ${rem(2)} 0` }}
                   draggable="false"
                 />
-                <img
-                  style={{ marginTop: rem(2) }}
-                  src={Profile}
-                  className="CampBu-logo"
-                  alt="logo"
-                  draggable="false"
-                />
-              </>
-            ) : (
-              <div
-                css={[
-                  css`
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: center;
-                    margin-top: ${rem(3)};
-                  `,
-                ]}
-              >
-                <img
-                  src={Menu}
-                  className="CampBu-logo"
-                  alt="logo"
-                  style={{ margin: `0 ${rem(14)} ${rem(2)} 0` }}
-                  draggable="false"
-                />
+              ) : (
                 <div
                   css={[
                     css`
                       background-color: white;
                       width: ${rem(20)};
                       height: ${rem(20)};
-                      color: #ed662c;
+                      color: ${color.point};
                       border-radius: 50%;
+                      margin-left: 0.8rem;
                       font-size: ${rem(15)};
                       line-height: ${rem(20)};
-                      margin-bottom: ${rem(4)};
                     `,
                   ]}
                 >
                   {chatNum.total}
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </Button>
           {isShowModal && <ProfileDropdown />}
         </>

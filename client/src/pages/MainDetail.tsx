@@ -42,6 +42,7 @@ import {
   unableDate,
 } from '../Atom';
 import Complete from '../components/Complete';
+import Profile from '../assets/Profile.svg';
 
 const width = css`
   width: ${rem(752)};
@@ -521,7 +522,7 @@ function DetailView() {
               <div css={profileBoxStyle}>
                 <img
                   css={profileImgStyle}
-                  src={postInfo.user.users_img}
+                  src={postInfo.user.users_img || Profile}
                   alt="profileImg"
                 />
               </div>
