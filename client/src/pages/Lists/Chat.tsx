@@ -484,8 +484,7 @@ function Chat() {
                     {chatRoom.recipient_nickname === userNickName
                       ? chatRoom.sender_nickname
                       : chatRoom.recipient_nickname}
-                    {chatCount[`Room${chatRoom.id}`] === 0 &&
-                    chatCount[`Room${chatRoom.id}`] === undefined ? (
+                    {chatCount[`Room${chatRoom.id}`] === 0 ? (
                       <div></div>
                     ) : (
                       <div
