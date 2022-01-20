@@ -163,9 +163,10 @@ function Mypage() {
   const [passwordValid, setPasswordValid] = useState(false);
   const [nickDuplicateClick, setNickDuplicateClick] = useState(false);
   const [nickDupliacte, setNickDupliacte] = useState(false);
-  const [reqState, setReqStatee] = useState<string>('ok');
+  const [reqState, setReqState] = useState<string>('ok');
   const resetLoginUserInfo = useResetRecoilState(loginUserInfo);
   const resetLikedPosts = useResetRecoilState(likedProducts);
+  const setLoginUserInfo = useSetRecoilState(loginUserInfo);
 
   const navigate = useNavigate();
   // 유저정보요청
@@ -215,7 +216,7 @@ function Mypage() {
           if (res.status === 200) {
             console.log(`API ${host}/user/signup?nickname=${nickname}`);
             console.log('닉네임 사용가능', setNickDupliacte(true));
-            setReqStatee('ok');
+            setReqState('ok');
           }
         })
         .catch((err) => {
@@ -240,7 +241,7 @@ function Mypage() {
   //! 수정 탈퇴 요청 함수
   const modifyAccount = () => {
     if (!!nickname && !nickDupliacte) {
-      return setReqStatee('nickname');
+      return setReqState('nickname');
     }
 
     if (passwordValid && password === confirmPassword) {
@@ -254,13 +255,43 @@ function Mypage() {
         users_img: userImg,
       };
       console.log(data);
-      axios.patch(API, data, config).then((res: any) => {
-        console.log('응답', res.data.users.nickname);
-        setCurrentNickName(res.data.users.nickname);
-        setUserImg(res.data.users.users_img);
-      });
+      axios
+        .patch(API, data, config)
+        .then((res: any) => {
+          console.log('응답', res.data.users.nickname);
+          setCurrentNickName(res.data.users.nickname);
+          setUserImg(res.data.users.users_img);
+        })
+        .then(() => {
+          const loginInfo = {
+            email,
+            password,
+          };
+
+          axios.post(`${host}/user/login`, loginInfo, config).then((res) => {
+            console.log(res);
+            if (res.status === 200) {
+              setIsLogin(true);
+              interface loginUserInfoType {
+                created_at: string;
+                email: string;
+                id: number;
+                nickname: string;
+                updated_at: string;
+                users_img: string;
+              }
+
+              const userinfo: loginUserInfoType = res.data.user;
+              setLoginUserInfo(userinfo);
+
+              localStorage.setItem('isLogin', 'true');
+              localStorage.setItem('userInfo', JSON.stringify(userinfo));
+            }
+          });
+        })
+        .catch((err) => console.error(err));
     } else {
-      return setReqStatee('password');
+      return setReqState('password');
     }
   };
 
