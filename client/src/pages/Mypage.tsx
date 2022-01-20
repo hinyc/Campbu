@@ -17,10 +17,22 @@ import ReviewBox from '../components/ReviewBox';
 import ReviewTitle from '../components/ReviweTitle';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { isLogin, likedProducts, loginUserInfo } from '../Atom';
-import { useResetRecoilState, useSetRecoilState } from 'recoil';
+import {
+  forceRender,
+  isLogin,
+  likedProducts,
+  loginUserInfo,
+  showCompleteModal,
+} from '../Atom';
+import {
+  useRecoilState,
+  useRecoilValue,
+  useResetRecoilState,
+  useSetRecoilState,
+} from 'recoil';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../components/BackButton';
+import Complete from '../components/Complete';
 
 const imgStyle = css`
   width: ${rem(114)};
@@ -167,7 +179,7 @@ function Mypage() {
   const [reqState, setReqStatee] = useState<string>('ok');
   const resetLoginUserInfo = useResetRecoilState(loginUserInfo);
   const resetLikedPosts = useResetRecoilState(likedProducts);
-
+  const [complete, setComplete] = useRecoilState(showCompleteModal);
   const navigate = useNavigate();
   // 유저정보요청
   useEffect(() => {
@@ -260,9 +272,14 @@ function Mypage() {
         setCurrentNickName(res.data.users.nickname);
         setUserImg(res.data.users.users_img);
       });
+      setComplete(true);
     } else {
       return setReqStatee('password');
     }
+  };
+
+  const completeClick = () => {
+    setComplete(false);
   };
 
   const deleteAccount = () => {
@@ -322,6 +339,9 @@ function Mypage() {
           display: flex;
         `}
       >
+        {complete && (
+          <Complete text="수정이 완료되었습니다." onClick={completeClick} />
+        )}
         <div
           css={[
             css`
