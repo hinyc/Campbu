@@ -10,6 +10,8 @@ import {
   hidden,
   config,
   host,
+  deleteS3Img,
+  deleteS3Imgs,
 } from '../common';
 import { Button } from '../components/Button';
 import BackButton from '../components/BackButton';
@@ -31,6 +33,7 @@ import SelectAddressList from '../components/SelectAddress';
 import { useNavigate } from 'react-router-dom';
 import Complete from '../components/Complete';
 import { noticeNo, reqMsgStyle } from './Mypage';
+import { img } from '../components/post';
 
 const fixAddressList = css`
   position: absolute;
@@ -153,9 +156,11 @@ const UploadImg = () => {
     setImageUrls([...imageUrls, imageUrl]);
   };
 
-  const deleteImg = (target: number) => {
+  const deleteImg = (el: string, target: number) => {
     setImageUrls(imageUrls.filter((el, idx) => idx !== target));
+    deleteS3Img(el);
   };
+
   return (
     <div css={[uploadImgStyle]}>
       {imageUrls.map((el, idx) => {
@@ -171,7 +176,7 @@ const UploadImg = () => {
             ]}
           >
             <img css={imgStyle} draggable="false" src={el} alt={el} />
-            <div css={xStyle} onClick={() => deleteImg(idx)}>
+            <div css={xStyle} onClick={() => deleteImg(el, idx)}>
               ×
             </div>
           </div>
@@ -225,8 +230,6 @@ export const PostModify = () => {
   const [isComplete, setIsComplete] = useState(false);
   const [postUserId, setPostUserId] = useState<number>(0);
   const navigate = useNavigate();
-
-  console.log(userInfo.id === postUserId);
 
   useEffect(() => {
     console.log('postId', postId);
@@ -372,7 +375,6 @@ export const PostModify = () => {
         .catch((err) => console.log(err));
     }
   };
-
   const deleteHandler = () => {
     if (postId && userInfo.id === postUserId) {
       const API = `${host}/product/post/${postId}`;
@@ -381,9 +383,18 @@ export const PostModify = () => {
         .then((res) => {
           console.log(res.status);
           setPostId(0);
-          navigate('/lists/resistlist');
         })
         .catch((err) => console.log(err));
+
+      let obj: {
+        Key: string;
+      }[] = imgUrls.map((el: string) => {
+        const key: string[] = el.split('/');
+        return { Key: key[key.length - 1] };
+      });
+
+      deleteS3Imgs(obj);
+      navigate('/lists/resistlist');
     }
   };
 

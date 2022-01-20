@@ -230,7 +230,6 @@ function DetailView() {
   const profileImg = useRecoilValue(profileImgUrl);
   const userInfo = useRecoilValue(loginUserInfo);
   const [completeModal, setCompleteModal] = useRecoilState(showCompleteModal);
-  const searchValue = useRecoilValue(selectAddress);
   const navigation = useNavigate();
   const [getReviews, setGetReviews] = useState<reviewsType>([]);
   const [postInfo, setPostInfo] = useState<postInfoType>(dummyData);
@@ -267,7 +266,7 @@ function DetailView() {
           });
 
           axios
-            .get(`${host}/product/address/${searchValue}`, config)
+            .get(`${host}/product/address/${postInfo.posts.address}`, config)
             .then((res) => {
               if (res.status === 200) {
                 const likes = res.data.likes;
