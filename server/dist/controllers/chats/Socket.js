@@ -37,27 +37,27 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var socket_io_1 = require("socket.io");
-var app_1 = require("../../app");
+var index_1 = require("../../index");
 var chats_1 = require("../../entity/chats");
 var typeorm_1 = require("typeorm");
 exports.default = (function () { return __awaiter(void 0, void 0, void 0, function () {
     var io;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, new socket_io_1.Server(app_1.server, {
+            case 0: return [4 /*yield*/, new socket_io_1.Server(index_1.server, {
                     cors: {
                         origin: [
-                            'http://localhost:3000',
-                            'http://campbu.cf',
-                            'http://www.campbu.cf',
-                            'https://d1l7um8b0honrd.cloudfront.net/',
+                            "http://localhost:3000",
+                            "http://campbu.cf",
+                            "http://www.campbu.cf",
+                            "https://d1l7um8b0honrd.cloudfront.net/",
                         ],
-                        methods: ['GET', 'POST'],
+                        methods: ["GET", "POST"],
                     },
                 })];
             case 1:
                 io = _a.sent();
-                return [4 /*yield*/, io.on('connection', function (socket) { return __awaiter(void 0, void 0, void 0, function () {
+                return [4 /*yield*/, io.on("connection", function (socket) { return __awaiter(void 0, void 0, void 0, function () {
                         var jsonIds, ids;
                         return __generator(this, function (_a) {
                             jsonIds = socket.handshake.query.ids;
@@ -65,7 +65,7 @@ exports.default = (function () { return __awaiter(void 0, void 0, void 0, functi
                                 ids = JSON.parse(jsonIds);
                                 io.socketsJoin(ids);
                             }
-                            socket.on('send-message', function (info) { return __awaiter(void 0, void 0, void 0, function () {
+                            socket.on("send-message", function (info) { return __awaiter(void 0, void 0, void 0, function () {
                                 var id, message, nickName, date, chatMessage, chatRepository, chat, newChat;
                                 return __generator(this, function (_a) {
                                     switch (_a.label) {
@@ -85,7 +85,7 @@ exports.default = (function () { return __awaiter(void 0, void 0, void 0, functi
                                             chat = _a.sent();
                                             newChat = JSON.stringify(chat.concat(chatMessage));
                                             chatRepository.update(Number(id), { chat: newChat });
-                                            io.to(id).emit('receive-message', {
+                                            io.to(id).emit("receive-message", {
                                                 message: message,
                                                 sender: nickName,
                                                 date: date,

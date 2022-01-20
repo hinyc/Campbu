@@ -9,7 +9,7 @@ interface loginType {
   password: string;
 }
 
-export default async (req: Request, res: Response) => {
+export = async (req: Request, res: Response) => {
   const { email, password }: loginType = req.body;
   const usersRepository = getRepository(users);
   const likesRepository = getRepository(likes);

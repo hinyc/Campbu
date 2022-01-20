@@ -59,16 +59,16 @@ exports.default = {
                 case 2:
                     userInfo = _a.sent();
                     if (!!userInfo) return [3 /*break*/, 3];
-                    return [2 /*return*/, res.status(401).json({ message: 'Unauthorized User' })];
-                case 3: return [4 /*yield*/, (0, typeorm_1.createQueryBuilder)('reservation')
-                        .leftJoinAndSelect('reservation.posts_id', 'posts')
-                        .where('reservation.users_id = :users_id', { users_id: userInfo.id })
+                    return [2 /*return*/, res.status(401).json({ message: "Unauthorized User" })];
+                case 3: return [4 /*yield*/, (0, typeorm_1.createQueryBuilder)("reservation")
+                        .leftJoinAndSelect("reservation.posts_id", "posts")
+                        .where("reservation.users_id = :users_id", { users_id: userInfo.id })
                         .getRawMany()
                         .then(function (res) {
                         res.map(function (el) {
                             el.reservation_reservation_dates =
-                                el.reservation_reservation_dates.split(',');
-                            el.posts_unavailable_dates = el.posts_unavailable_dates.split(',');
+                                el.reservation_reservation_dates.split(",");
+                            el.posts_unavailable_dates = el.posts_unavailable_dates.split(",");
                         });
                         return res;
                     })];
@@ -92,16 +92,16 @@ exports.default = {
                 case 2:
                     userInfo = _a.sent();
                     if (!!userInfo) return [3 /*break*/, 3];
-                    return [2 /*return*/, res.status(401).json({ message: 'Unauthorized User' })];
-                case 3: return [4 /*yield*/, (0, typeorm_1.createQueryBuilder)('reservation')
-                        .leftJoinAndSelect('reservation.posts_id', 'posts')
-                        .where('posts.users_id = :users_id', { users_id: userInfo.id })
+                    return [2 /*return*/, res.status(401).json({ message: "Unauthorized User" })];
+                case 3: return [4 /*yield*/, (0, typeorm_1.createQueryBuilder)("reservation")
+                        .leftJoinAndSelect("reservation.posts_id", "posts")
+                        .where("posts.users_id = :users_id", { users_id: userInfo.id })
                         .getRawMany()
                         .then(function (res) {
                         res.map(function (el) {
                             el.reservation_reservation_dates =
-                                el.reservation_reservation_dates.split(',');
-                            el.posts_unavailable_dates = el.posts_unavailable_dates.split(',');
+                                el.reservation_reservation_dates.split(",");
+                            el.posts_unavailable_dates = el.posts_unavailable_dates.split(",");
                         });
                         return res;
                     })];
@@ -127,11 +127,11 @@ exports.default = {
                 case 2:
                     userInfo = _a.sent();
                     if (!!userInfo) return [3 /*break*/, 3];
-                    return [2 /*return*/, res.status(401).json({ message: 'Unauthorized User' })];
+                    return [2 /*return*/, res.status(401).json({ message: "Unauthorized User" })];
                 case 3: return [4 /*yield*/, likesRepository
-                        .createQueryBuilder('likes')
-                        .select('posts_id')
-                        .where('likes.users_id = :users_id', { users_id: userInfo.id })
+                        .createQueryBuilder("likes")
+                        .select("posts_id")
+                        .where("likes.users_id = :users_id", { users_id: userInfo.id })
                         .getRawMany()];
                 case 4:
                     likesInfo = _a.sent();
@@ -139,9 +139,9 @@ exports.default = {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0: return [4 /*yield*/, postsRepository
-                                            .createQueryBuilder('post')
-                                            .loadRelationCountAndMap('post.likes_count', 'post.likes')
-                                            .where('post.id = :id', { id: el.posts_id })
+                                            .createQueryBuilder("post")
+                                            .loadRelationCountAndMap("post.likes_count", "post.likes")
+                                            .where("post.id = :id", { id: el.posts_id })
                                             .getMany()];
                                     case 1: return [2 /*return*/, _a.sent()];
                                 }
@@ -168,10 +168,10 @@ exports.default = {
                 case 2:
                     userInfo = _a.sent();
                     if (!!userInfo) return [3 /*break*/, 3];
-                    return [2 /*return*/, res.status(401).json({ message: 'Unauthorized User' })];
+                    return [2 /*return*/, res.status(401).json({ message: "Unauthorized User" })];
                 case 3: return [4 /*yield*/, postsRepository
-                        .createQueryBuilder('post')
-                        .where('post.users_id = :id', { id: userInfo.id })
+                        .createQueryBuilder("post")
+                        .where("post.users_id = :id", { id: userInfo.id })
                         .getMany()];
                 case 4:
                     postInfo = _a.sent();

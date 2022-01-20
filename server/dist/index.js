@@ -35,35 +35,48 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.server = void 0;
 require("reflect-metadata");
+var express_1 = __importDefault(require("express"));
+var cors_1 = __importDefault(require("cors"));
+var cookie_parser_1 = __importDefault(require("cookie-parser"));
+var index_1 = __importDefault(require("./routes/index"));
 var typeorm_1 = require("typeorm");
-var reviews_1 = require("./entity/reviews");
+var http_1 = __importDefault(require("http"));
+var app = (0, express_1.default)();
+exports.server = http_1.default.createServer(app);
+var port = 5050;
 (0, typeorm_1.createConnection)()
     .then(function (connection) { return __awaiter(void 0, void 0, void 0, function () {
-    var review;
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                review = (0, typeorm_1.getRepository)(reviews_1.reviews);
-                return [4 /*yield*/, review.insert([
-                        { content: '가까운 거래장소' },
-                        { content: '상세한 물품 설명' },
-                        { content: '합리적인 대여비' },
-                        { content: '질 좋은 물건' },
-                        { content: '정확한 시간 약속' },
-                        { content: '빠른 답장' },
-                        { content: '욕설 등의 비매너' },
-                        { content: '실제와 다른 상품 설명' },
-                        { content: '비싼 대여비' },
-                        { content: '질 낮은 물건' },
-                        { content: '약속 시간에 지각' },
-                        { content: '느린 답장' },
-                    ])];
-            case 1:
-                _a.sent();
-                return [2 /*return*/];
-        }
+        console.log("DB connected!");
+        return [2 /*return*/];
     });
 }); })
-    .catch(function (error) { return console.log(error); });
+    .catch(function (error) {
+    console.log(error);
+});
+app.use((0, cors_1.default)({
+    origin: [
+        "http://localhost:3000",
+        "http://campbu.cf",
+        "http://www.campbu.cf",
+        "https://d1l7um8b0honrd.cloudfront.net/",
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "OPTION", "PATCH", "DELETE"],
+}));
+app.use(express_1.default.urlencoded({ extended: true }));
+app.use(express_1.default.json());
+app.use((0, cookie_parser_1.default)());
+app.use("/", index_1.default);
+app.get("/", function (req, res) {
+    res.send("Hello code!");
+});
+exports.server.listen(port, function () {
+    console.log("Server listening at http://localhost:".concat(port));
+});

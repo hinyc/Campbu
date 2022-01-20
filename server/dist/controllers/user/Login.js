@@ -38,12 +38,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var users_1 = __importDefault(require("../../entity/users"));
 var likes_1 = require("../../entity/likes");
 var GenerateToken_1 = require("../jwt/GenerateToken");
-exports.default = (function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+module.exports = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, email, password, usersRepository, likesRepository, userInfo, token, likesInfo, likesId;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -80,4 +79,4 @@ exports.default = (function (req, res) { return __awaiter(void 0, void 0, void 0
             case 5: return [2 /*return*/, res.status(404).json({ message: 'User not exists' })];
         }
     });
-}); });
+}); };
