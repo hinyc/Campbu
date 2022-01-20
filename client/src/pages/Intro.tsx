@@ -17,7 +17,12 @@ import Search from '../assets/Search.svg';
 
 import SearchInput from '../components/SearchInput';
 import { useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import {
+  useRecoilState,
+  useRecoilValue,
+  useResetRecoilState,
+  useSetRecoilState,
+} from 'recoil';
 import {
   posts,
   selectAddress,
@@ -96,10 +101,17 @@ function Intro() {
   const login = useRecoilValue(isLogin);
   const [selected, setSelected] = useState<boolean>(false);
   const setLikedPosts = useSetRecoilState(likedProducts);
+  const resetOriginalPosts = useResetRecoilState(originalPosts);
 
   useEffect(() => {
     setSearchValue('');
     setShowAddress(false);
+    resetOriginalPosts();
+  }, [resetOriginalPosts, setSearchValue, setShowAddress]);
+
+  useEffect(() => {
+    localStorage.removeItem('address');
+    localStorage.removeItem('category');
   }, []);
 
   const onChange = (e: any) => {

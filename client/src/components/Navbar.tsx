@@ -16,6 +16,8 @@ import {
   showSignupModal,
   chattingRoomId,
   chatsNum,
+  selectAddress,
+  selectCategory,
 } from '../Atom';
 import { color, hover, rem, shadow } from '../common';
 
@@ -50,7 +52,8 @@ function Navbar() {
   const [roomId, setRoomId] = useState<string>('');
   const [mesId, setMesId] = useState<number>();
   const [mesDate, setMesDate] = useState<Date>();
-
+  const setSelectAddress = useSetRecoilState(selectAddress);
+  const setSelectCategory = useSetRecoilState(selectCategory);
   const showSignup = useRecoilValue(showSignupModal);
   const onClick = () => {
     setIsShowModal(!isShowModal);
@@ -74,6 +77,19 @@ function Navbar() {
       setPostId(Number(postId));
     }
   }, [setPostId]);
+
+  useEffect(() => {
+    const address = localStorage.getItem('address');
+    if (address) {
+      setSelectAddress(address);
+    }
+  }, [setSelectAddress]);
+  useEffect(() => {
+    const category = localStorage.getItem('category');
+    if (category) {
+      setSelectCategory(category);
+    }
+  }, [setSelectCategory]);
 
   useEffect(() => {
     const newSocket = io('http://localhost:5050');
@@ -103,8 +119,8 @@ function Navbar() {
     <header css={headerStyle}>
       {showSignup ? <Signup /> : null}
       {showLogin ? <LoginModal /> : null}
-      <Link to="/">
-        <img src={Logo} className="CampBu-logo" alt="logo" />
+      <Link to="/" draggable="false">
+        <img src={Logo} className="CampBu-logo" alt="logo" draggable="false" />
       </Link>
       {login ? (
         <>
@@ -128,12 +144,14 @@ function Navbar() {
                   className="CampBu-logo"
                   alt="logo"
                   style={{ margin: `0 ${rem(14)} ${rem(2)} 0` }}
+                  draggable="false"
                 />
                 <img
                   style={{ marginTop: rem(2) }}
                   src={Profile}
                   className="CampBu-logo"
                   alt="logo"
+                  draggable="false"
                 />
               </>
             ) : (
@@ -152,6 +170,7 @@ function Navbar() {
                   className="CampBu-logo"
                   alt="logo"
                   style={{ margin: `0 ${rem(14)} ${rem(2)} 0` }}
+                  draggable="false"
                 />
                 <div
                   css={[

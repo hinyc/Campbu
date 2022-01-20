@@ -18,6 +18,7 @@ const buttonStyle = css`
   box-shadow: ${shadow};
   :hover {
     opacity: 80%;
+    cursor: pointer;
   }
   :active {
     opacity: 95%;
@@ -37,7 +38,7 @@ function WritingButton() {
   };
   return (
     <button css={buttonStyle} onClick={goWritingPage}>
-      <img src={Pencil} alt="writing button" />
+      <img src={Pencil} alt="writing button" draggable="false" />
     </button>
   );
 }

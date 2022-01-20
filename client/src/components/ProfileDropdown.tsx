@@ -50,7 +50,6 @@ function ProfileDropdown() {
     axios
       .get(`${host}/user/logout`, { withCredentials: true })
       .then((res: any) => {
-        console.log(res);
         localStorage.removeItem('isLogin');
         localStorage.removeItem('userInfo');
         resetLoginUserInfo();

@@ -332,6 +332,7 @@ export const Writing = () => {
         }
       })
       .catch((err) => console.log(err));
+    localStorage.removeItem('address');
   };
 
   return (

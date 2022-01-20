@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, config, host, rem } from '../common';
+import { color, config, host, rem, shadow } from '../common';
 import FillHeart from '../assets/FillHeart.svg';
 import EmptyHeart from '../assets/EmptyHeart.svg';
 import { useEffect, useState } from 'react';
@@ -19,6 +19,7 @@ const like = css`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  box-shadow: ${shadow};
 `;
 
 const heart = css`

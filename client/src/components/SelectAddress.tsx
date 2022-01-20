@@ -44,12 +44,14 @@ export default function SelectAddressList({
 
   const selectAddressHandler = (e: any) => {
     setSelectAddress(e.target.textContent);
+    localStorage.setItem('address', `${e.target.textContent}`);
     setSearchAddress([]);
     setShowAddress(false);
   };
 
   const selectAddressGoHandler = (e: any) => {
     setSelectAddress(e.target.textContent);
+    localStorage.setItem('address', e.target.textContent);
     setSearchAddress([]);
     setShowAddress(false);
     navigate(`/main`);
