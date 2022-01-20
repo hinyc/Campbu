@@ -152,8 +152,9 @@ function LendList() {
             onClick={onReviewCompleteClick}
           />
         )}
-        {lendLists['lend'].length === 0 ||
-        lendLists['lend'][0].reservation_id === 0 ? (
+        {lendLists['lend'][0]?.reservation_id === 0 ? (
+          <div style={{ height: `${rem(1000)}` }} />
+        ) : lendLists['lend'].length === 0 ? (
           <div style={{ padding: `${rem(100)} 0` }}>
             <img src={emptyLend} alt="camping" />
             <p css={message}>

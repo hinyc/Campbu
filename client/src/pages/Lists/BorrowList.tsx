@@ -149,8 +149,9 @@ function BorrowList() {
             onClick={onReviewCompleteClick}
           />
         )}
-        {borrowLists['borrow'].length === 0 ||
-        borrowLists['borrow'][0].reservation_id === 0 ? (
+        {borrowLists['borrow'][0]?.reservation_id === 0 ? (
+          <div style={{ height: `${rem(1000)}` }} />
+        ) : borrowLists['borrow'].length === 0 ? (
           <div style={{ padding: `${rem(100)} 0` }}>
             <img src={emptyBorrow} alt="camping" />
             <p css={message}>
