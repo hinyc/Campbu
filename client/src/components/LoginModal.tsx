@@ -19,6 +19,7 @@ import {
   showLoginModal,
   showSignupModal,
   allChatRoomId,
+  showModal,
 } from '../Atom';
 import { useState } from 'react';
 import axios from 'axios';
@@ -128,6 +129,7 @@ function LoginModal() {
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
   const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?scope=openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20&response_type=code&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URI}&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}`;
   const setChatIds = useSetRecoilState(allChatRoomId);
+  const setIsShowModal = useSetRecoilState(showModal);
 
   const emailHandler = (e: any) => {
     setEmail(e.target.value);
@@ -213,6 +215,7 @@ function LoginModal() {
                 query: { ids },
               });
             });
+          setIsShowModal(false);
         }
       })
       .catch((res) => {
@@ -289,19 +292,25 @@ function LoginModal() {
               또는
             </div>
           </div>
-          <a href={GOOGLE_AUTH_URL}>
+          <a href={GOOGLE_AUTH_URL} draggable="false">
             <button css={oauth}>
               <img
                 css={[oauthIcon, `width: ${rem(24)}`, `height: ${rem(24)}`]}
                 src={googleimg}
                 alt="google login"
+                draggable="false"
               />
               <div>구글로 로그인하기</div>
             </button>
           </a>
-          <a href={KAKAO_AUTH_URL}>
+          <a href={KAKAO_AUTH_URL} draggable="false">
             <button css={[oauth, marginTop6]}>
-              <img css={oauthIcon} src={kakaoimg} alt="kakao login" />
+              <img
+                css={oauthIcon}
+                src={kakaoimg}
+                alt="kakao login"
+                draggable="false"
+              />
               <div>카카오로 로그인하기</div>
             </button>
           </a>

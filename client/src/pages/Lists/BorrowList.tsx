@@ -11,7 +11,6 @@ import { container, section, message } from './tab';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   forceRender,
-  isLoading,
   showCompleteModal,
   showConfirmModal,
   showReviewModal,
@@ -23,7 +22,6 @@ import axios from 'axios';
 import Complete from '../../components/Complete';
 import ReviewModal from '../../components/ReviewModal';
 import { List } from './interface';
-import Load from '../../assets/Load.svg';
 
 interface Borrow {
   borrow: List[];
@@ -32,7 +30,7 @@ interface Borrow {
 const borrows = {
   borrow: [
     {
-      reservation_id: 1,
+      reservation_id: 0,
       reservation_reservation_dates: [''],
       reservation_reservation_status: 1,
       reservation_users_id: 2,
@@ -63,7 +61,6 @@ function BorrowList() {
   const [reservationId, setReservationId] = useState(0);
   const [reservationStatus, setReservationStatus] = useState(0);
   const [userId, setUserId] = useState(0);
-  const [loading, setIsLoading] = useRecoilState(isLoading);
   const forceRenderEX = useRecoilValue(forceRender);
 
   const printStatusText = (status: number) => button[status - 1];
@@ -86,7 +83,6 @@ function BorrowList() {
   };
 
   useEffect(() => {
-    setIsLoading(true);
     const load = async () => {
       await axios
         .get(`${host}/userinfo/product/borrow`, config)
@@ -95,7 +91,6 @@ function BorrowList() {
             (a: any, b: any) => b.reservation_id - a.reservation_id,
           );
           setBorrowLists({ borrow: sortedData });
-          setIsLoading(false);
         })
         .catch((err) => console.error(err));
     };
@@ -154,10 +149,8 @@ function BorrowList() {
             onClick={onReviewCompleteClick}
           />
         )}
-        {loading ? (
-          <div css={load}>
-            <img src={Load} alt="loading..." />
-          </div>
+        {borrowLists['borrow'][0]?.reservation_id === 0 ? (
+          <div style={{ height: `${rem(1000)}` }} />
         ) : borrowLists['borrow'].length === 0 ? (
           <div style={{ padding: `${rem(100)} 0` }}>
             <img src={emptyBorrow} alt="camping" />
@@ -233,15 +226,5 @@ function BorrowList() {
     </>
   );
 }
-
-const loading = keyframes`
-  100% { transform: rotate(360deg); }
-`;
-
-const load = css`
-  margin: ${rem(100)} auto ${rem(200)} auto;
-  animation: ${loading} 6s linear infinite;
-  transform-origin: 50% 50%;
-`;
 
 export default BorrowList;

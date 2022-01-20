@@ -50,10 +50,11 @@ const img = css`
   position: absolute;
   top: 0;
   left: 0;
-
+  position: 50% 50%;
   @media (min-width: 1600px) {
     width: 100%;
     height: auto;
+    position: 50% 50%;
   }
 `;
 
@@ -169,7 +170,7 @@ function Intro() {
           onKeyPress={onSearchPress}
         />
         <button css={button} onClick={onSearchClick}>
-          <img src={Search} alt="search" />
+          <img src={Search} alt="search" draggable="false" />
         </button>
       </span>
       <div css={addressListStyle}>

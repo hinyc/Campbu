@@ -44,6 +44,7 @@ const arrow = css`
   border-radius: ${rem(5)};
   background-color: ${color.white};
   color: ${color.placeholder};
+  transition: 0.1s;
   :hover {
     opacity: 0.65;
     cursor: pointer;

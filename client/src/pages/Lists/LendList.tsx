@@ -32,7 +32,7 @@ export interface Lend {
 const lends = {
   lend: [
     {
-      reservation_id: 3,
+      reservation_id: 0,
       reservation_reservation_dates: ['2022.01.12', '2022.01.13', '2022.01.14'],
       reservation_reservation_status: 1,
       reservation_created_at: '2022-01-12T06:54:09.862Z',
@@ -152,7 +152,9 @@ function LendList() {
             onClick={onReviewCompleteClick}
           />
         )}
-        {lendLists['lend'].length === 0 ? (
+        {lendLists['lend'][0]?.reservation_id === 0 ? (
+          <div style={{ height: `${rem(1000)}` }} />
+        ) : lendLists['lend'].length === 0 ? (
           <div style={{ padding: `${rem(100)} 0` }}>
             <img src={emptyLend} alt="camping" />
             <p css={message}>

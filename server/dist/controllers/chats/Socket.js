@@ -46,7 +46,12 @@ exports.default = (function () { return __awaiter(void 0, void 0, void 0, functi
         switch (_a.label) {
             case 0: return [4 /*yield*/, new socket_io_1.Server(app_1.server, {
                     cors: {
-                        origin: 'http://localhost:3000',
+                        origin: [
+                            'http://localhost:3000',
+                            'http://campbu.cf',
+                            'http://www.campbu.cf',
+                            'https://d1l7um8b0honrd.cloudfront.net/',
+                        ],
                         methods: ['GET', 'POST'],
                     },
                 })];

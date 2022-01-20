@@ -21,7 +21,12 @@ createConnection()
 
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: [
+      'http://localhost:3000',
+      'http://campbu.cf',
+      'http://www.campbu.cf',
+      'https://d1l7um8b0honrd.cloudfront.net/',
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'OPTION', 'PATCH', 'DELETE'],
   }),
@@ -30,7 +35,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
-// app.use('/socket.io', Socket);
 app.use('/', router);
 app.get('/', (req, res) => {
   res.send('Hello code!');

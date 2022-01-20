@@ -61,14 +61,18 @@ var port = 5050;
     console.log(error);
 });
 app.use((0, cors_1.default)({
-    origin: 'http://localhost:3000',
+    origin: [
+        'http://localhost:3000',
+        'http://campbu.cf',
+        'http://www.campbu.cf',
+        'https://d1l7um8b0honrd.cloudfront.net/',
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'OPTION', 'PATCH', 'DELETE'],
 }));
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
-// app.use('/socket.io', Socket);
 app.use('/', index_1.default);
 app.get('/', function (req, res) {
     res.send('Hello code!');

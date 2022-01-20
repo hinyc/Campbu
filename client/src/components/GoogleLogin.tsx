@@ -11,6 +11,7 @@ export default function GoogleLogin() {
   const [accessToken, setAccessToken] = useState('');
   const navigate = useNavigate();
   const setLoginUserInfo = useSetRecoilState(loginUserInfo);
+
   useEffect(() => {
     const url = new URL(window.location.href);
     const authorizationCode = url.searchParams.get('code');

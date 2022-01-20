@@ -55,7 +55,11 @@ function LikeList() {
       </nav>
       <div css={container}>
         {likeLists['like'].length === 0 ? (
-          <div style={{ padding: `${rem(50)} 0 ${rem(100)} 0` }}>
+          <div
+            style={{
+              padding: `${rem(50)} 0 ${rem(150)} 0`,
+            }}
+          >
             <img src={emptyHeart} alt="broken heart" css={img} />
             <p css={message}>
               찜한 목록이 없어요! <br />

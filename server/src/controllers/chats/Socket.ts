@@ -8,7 +8,12 @@ import { getRepository } from 'typeorm';
 export default async () => {
   const io = await new Server(server, {
     cors: {
-      origin: 'http://localhost:3000',
+      origin: [
+        'http://localhost:3000',
+        'http://campbu.cf',
+        'http://www.campbu.cf',
+        'https://d1l7um8b0honrd.cloudfront.net/',
+      ],
       methods: ['GET', 'POST'],
     },
   });

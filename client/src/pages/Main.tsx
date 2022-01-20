@@ -212,7 +212,7 @@ function Main() {
           onKeyPress={onSearchPress}
         />
         <button css={button} onClick={onSearchClick}>
-          <img src={SearchGreen} alt="search" />
+          <img src={SearchGreen} alt="search" draggable="false" />
         </button>
       </span>
       <div css={addressListStyle}>
