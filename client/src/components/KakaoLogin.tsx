@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { isLogin, loginUserInfo, showLoginModal } from '../Atom';
+import { host } from '../common';
 
 export default function KakaoLogin() {
   const setShowLogin = useSetRecoilState(showLoginModal);
@@ -11,7 +12,6 @@ export default function KakaoLogin() {
   const [refreshToken, setRefreshToken] = useState('');
   const setLoginUserInfo = useSetRecoilState(loginUserInfo);
   const navigate = useNavigate();
-  const host = 'http://localhost:5050';
 
   useEffect(() => {
     const url = new URL(window.location.href);

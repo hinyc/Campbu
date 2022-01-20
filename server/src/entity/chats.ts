@@ -7,7 +7,7 @@ import {
   JoinColumn,
   Column,
 } from 'typeorm';
-import { users } from './users';
+import users from './users';
 import { reservation } from './reservation';
 
 @Entity()
@@ -23,6 +23,9 @@ export class chats {
 
   @Column()
   sender_nickname: string;
+
+  @Column({ nullable: true })
+  sender_img: string;
 
   @Column('mediumtext')
   chat: string;

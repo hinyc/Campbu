@@ -26,6 +26,7 @@ import LoginModal from './LoginModal';
 import ProfileDropdown from './ProfileDropdown';
 import Signup from './Signup';
 import io from 'socket.io-client';
+import { host } from '../common';
 
 const headerStyle = css`
   height: ${rem(99)};
@@ -92,7 +93,7 @@ function Navbar() {
   }, [setSelectCategory]);
 
   useEffect(() => {
-    const newSocket = io('http://localhost:5050');
+    const newSocket = io(`${host}`);
     setSocket(newSocket);
   }, [setIsLogin]);
 

@@ -208,7 +208,7 @@ function Chat() {
           return chat.id;
         });
         const ids = JSON.stringify(chatIds);
-        const newSocket = io('http://localhost:5050', {
+        const newSocket = io(`${host}`, {
           query: { ids },
         });
         setSocket(newSocket);

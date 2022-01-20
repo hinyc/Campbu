@@ -209,7 +209,7 @@ function LoginModal() {
               });
               const ids = JSON.stringify(chatIds);
               setChatIds(ids);
-              io('http://localhost:5050', {
+              io(`${host}`, {
                 query: { ids },
               });
             });
