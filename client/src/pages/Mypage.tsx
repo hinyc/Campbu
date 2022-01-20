@@ -36,7 +36,6 @@ import Profile from '../assets/Profile.svg';
 import BackButton from '../components/BackButton';
 import Complete from '../components/Complete';
 
-
 const imgStyle = css`
   width: ${rem(114)};
   height: ${rem(114)};
@@ -315,9 +314,6 @@ function Mypage() {
           setComplete(true);
         })
         .catch((err) => console.error(err));
-
-      
-
     } else {
       return setReqState('password');
     }
@@ -376,7 +372,6 @@ function Mypage() {
           display: flex;
         `}
       >
-
         {complete && (
           <Complete text="수정이 완료되었습니다." onClick={completeClick} />
         )}
@@ -390,30 +385,22 @@ function Mypage() {
             `,
           ]}
         >
-          <div
-            css={[
-              imgStyle,
-              relative,
-              css`
-                background-image: ${`url(${userImg})`};
-              `,
-            ]}
-          >
-              <form encType="multiparty/form-data" css={relative}>
-          <img src={userImg || Profile} css={[imgStyle, relative]} alt="" />
-          <label css={[imgStyle, hiddenUpload]} htmlFor="file">
-            수정하기
-          </label>
-          <input
-            css={hidden}
-            type="file"
-            id="file"
-            accept="image/*"
-            onChange={insertImgHandler}
-          />
-        </form>
-        <div css={hello}>{`안녕하세요, ${currentNickName} 님`}</div>
-        <Gage ratio={campbuIndicator} />
+          <form encType="multiparty/form-data" css={relative}>
+            <img src={userImg || Profile} css={[imgStyle, relative]} alt="" />
+            <label css={[imgStyle, hiddenUpload]} htmlFor="file">
+              수정하기
+            </label>
+            <input
+              css={hidden}
+              type="file"
+              id="file"
+              accept="image/*"
+              onChange={insertImgHandler}
+            />
+          </form>
+
+          <div css={hello}>{`안녕하세요, ${currentNickName} 님`}</div>
+          <Gage ratio={campbuIndicator} />
           <div
             css={[
               wnr,
