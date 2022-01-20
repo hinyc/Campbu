@@ -22,50 +22,54 @@ export const profileImgUrl = atom({
 });
 
 //? 주소 검색 결과 원본
-export const originalPosts = atom({
+export const originalPosts = atom<{
+  posts:
+    | {
+        id: number;
+        category: string;
+        deposit: number;
+        rental_fee: number;
+        unavailable_dates: string[];
+        title: string;
+        content: string;
+        longitude: number;
+        latitude: number;
+        address: string;
+        img_urls: string[];
+        users_id: number;
+        likes_count: number;
+      }[]
+    | [];
+}>({
   key: 'originalPosts',
   default: {
-    posts: [
-      {
-        id: 1,
-        category: 'Tent',
-        deposit: 30000,
-        rental_fee: 25000,
-        unavailable_dates: [''],
-        title: '',
-        content: '',
-        longitude: 126.99597295767953,
-        latitude: 35.97664845766847,
-        address: '',
-        img_urls: [''],
-        users_id: 1,
-        likes_count: 15,
-      },
-    ],
+    posts: [],
   },
 });
 
 //? 주소 검색 결과 수정용
-export const posts = atom({
+export const posts = atom<{
+  posts:
+    | {
+        id: number;
+        category: string;
+        deposit: number;
+        rental_fee: number;
+        unavailable_dates: string[];
+        title: string;
+        content: string;
+        longitude: number;
+        latitude: number;
+        address: string;
+        img_urls: string[];
+        users_id: number;
+        likes_count: number;
+      }[]
+    | [];
+}>({
   key: 'posts',
   default: {
-    posts: [
-      {
-        id: 1,
-        category: 'Tent',
-        deposit: 30000,
-        rental_fee: 25000,
-        unavailable_dates: [''],
-        title: '',
-        content: '',
-        longitude: 126.99597295767953,
-        latitude: 35.97664845766847,
-        address: '',
-        img_urls: [''],
-        users_id: 1,
-        likes_count: 15,
-      },
-    ],
+    posts: [],
   },
 });
 
@@ -231,4 +235,10 @@ export const chattingRoomId = atom<number>({
 export const allChatRoomId = atom<string>({
   key: 'allChatRoomId',
   default: '',
+});
+
+//? 선택된 카테고리
+export const selectCategory = atom<string>({
+  key: 'selectCategory',
+  default: 'all',
 });
