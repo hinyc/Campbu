@@ -45,10 +45,11 @@ const img = css`
   position: absolute;
   top: 0;
   left: 0;
-
+  position: 50% 50%;
   @media (min-width: 1600px) {
     width: 100%;
     height: auto;
+    position: 50% 50%;
   }
 `;
 
