@@ -154,9 +154,7 @@ const UploadImg = () => {
 
   const deleteImg = (el: string, target: number) => {
     setImageUrls(imageUrls.filter((el, idx) => idx !== target));
-    const divUrl = el.split('/');
-    const key = divUrl[divUrl.length - 1];
-    deleteS3Img(key);
+    deleteS3Img(el);
   };
 
   return (

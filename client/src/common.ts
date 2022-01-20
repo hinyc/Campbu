@@ -143,11 +143,13 @@ const s3 = new aws.S3({
   signatureVersion: 'v4',
 });
 // 단일 오브젝트 삭제
-export function deleteS3Img(target: string) {
+export function deleteS3Img(url: string) {
+  const divUrl = url.split('/');
+  const key = divUrl[divUrl.length - 1];
   s3.deleteObject(
     {
       Bucket: bucketName, // 사용자 버켓 이름
-      Key: target, // 버켓 내 경로
+      Key: key, // 버켓 내 경로
     },
     (err, data) => {
       if (err) {
