@@ -289,19 +289,25 @@ function LoginModal() {
               또는
             </div>
           </div>
-          <a href={GOOGLE_AUTH_URL}>
+          <a href={GOOGLE_AUTH_URL} draggable="false">
             <button css={oauth}>
               <img
                 css={[oauthIcon, `width: ${rem(24)}`, `height: ${rem(24)}`]}
                 src={googleimg}
                 alt="google login"
+                draggable="false"
               />
               <div>구글로 로그인하기</div>
             </button>
           </a>
-          <a href={KAKAO_AUTH_URL}>
+          <a href={KAKAO_AUTH_URL} draggable="false">
             <button css={[oauth, marginTop6]}>
-              <img css={oauthIcon} src={kakaoimg} alt="kakao login" />
+              <img
+                css={oauthIcon}
+                src={kakaoimg}
+                alt="kakao login"
+                draggable="false"
+              />
               <div>카카오로 로그인하기</div>
             </button>
           </a>

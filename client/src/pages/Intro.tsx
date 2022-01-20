@@ -169,7 +169,7 @@ function Intro() {
           onKeyPress={onSearchPress}
         />
         <button css={button} onClick={onSearchClick}>
-          <img src={Search} alt="search" />
+          <img src={Search} alt="search" draggable="false" />
         </button>
       </span>
       <div css={addressListStyle}>

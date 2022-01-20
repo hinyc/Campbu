@@ -101,6 +101,7 @@ function LikeSymbol(props: LikeProps) {
           width={fontSize ? fontSize * 0.9 : 14}
           src={fillHeart ? FillHeart : EmptyHeart}
           alt="fill heart"
+          draggable="false"
         />
       </button>
       <span>{loginUser ? countHeart : count}</span>

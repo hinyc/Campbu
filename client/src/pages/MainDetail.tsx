@@ -406,11 +406,13 @@ function DetailView() {
               selectImgHandler('pre');
             }}
           >{`<`}</div>
+
           <div css={[flexVertical, relative]}>
             <img
               css={[productImg]}
               src={`${postInfo.posts.img_urls[selectImgNum]}`}
               alt="detail"
+              draggable="false"
             />
             <div css={showSelectImgContainerStyle}>
               {postInfo.posts.img_urls.map((el, idx) => (
@@ -428,6 +430,7 @@ function DetailView() {
               ))}
             </div>
           </div>
+
           <div
             css={arrowStyle}
             onClick={() => {
@@ -524,6 +527,7 @@ function DetailView() {
                   css={profileImgStyle}
                   src={postInfo.user.users_img || Profile}
                   alt="profileImg"
+                  draggable="false"
                 />
               </div>
             </div>
