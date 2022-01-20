@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import { css, keyframes } from '@emotion/react';
 import Input from '../components/Input';
 import {
   color,
@@ -10,6 +10,7 @@ import {
   hidden,
   config,
   host,
+  deleteS3Img,
 } from '../common';
 import { Button } from '../components/Button';
 import BackButton from '../components/BackButton';
@@ -151,9 +152,13 @@ const UploadImg = () => {
     setImageUrls([...imageUrls, imageUrl]);
   };
 
-  const deleteImg = (target: number) => {
+  const deleteImg = (el: string, target: number) => {
     setImageUrls(imageUrls.filter((el, idx) => idx !== target));
+    const divUrl = el.split('/');
+    const key = divUrl[divUrl.length - 1];
+    deleteS3Img(key);
   };
+
   return (
     <div css={[uploadImgStyle]}>
       {imageUrls.map((el, idx) => {
@@ -169,7 +174,7 @@ const UploadImg = () => {
             ]}
           >
             <img css={imgStyle} draggable="false" src={el} alt={el} />
-            <div css={xStyle} onClick={() => deleteImg(idx)}>
+            <div css={xStyle} onClick={() => deleteImg(el, idx)}>
               ×
             </div>
           </div>
