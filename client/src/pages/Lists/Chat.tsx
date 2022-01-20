@@ -98,6 +98,7 @@ interface chatRoom {
   recipient_nickname: string;
   recipient_img: string;
   sender_nickname: string;
+  sender_img: string;
   chat: object[];
   created_at: Date;
   updated_at: Date;
@@ -141,6 +142,9 @@ function Chat() {
   const [review, setReview] = useRecoilState(showReviewModal);
   const [submit, setSubmit] = useRecoilState(showSubmitModal);
   const forceRerender = useRecoilValue(forceRender);
+  const [chatRoomImage, setChatRoomImage] = useState<
+    { nickname: string; img: string }[]
+  >([]);
 
   //? 유저 아이디 === 포스트 유저 아이디 (빌려준 사람)
   useEffect(() => {
@@ -206,8 +210,35 @@ function Chat() {
         setSocket(newSocket);
         const sortedData = res.data.chat.sort((a: any, b: any) => b.id - a.id);
         setChatRooms(sortedData);
-        console.log(sortedData);
         setUserNickName(res.data.nickName);
+
+        const saveRecipientInfo = sortedData.map((obj: any) => {
+          return {
+            nickname: obj.recipient_nickname,
+            img: obj.recipient_img,
+          };
+        });
+
+        const saveSenderInfo = saveRecipientInfo.concat(
+          sortedData.map((obj: any) => {
+            return {
+              nickname: obj.sender_nickname,
+              img: obj.sender_img,
+            };
+          }),
+        );
+
+        const saveImageInfo = saveSenderInfo.reduce((acc: any, cur: any) => {
+          if (
+            acc.findIndex(({ nickname }: any) => nickname === cur.nickname) ===
+            -1
+          ) {
+            acc.push(cur);
+          }
+          return acc;
+        }, []);
+
+        setChatRoomImage(saveImageInfo);
       });
   }, [forceRerender]);
 
@@ -447,7 +478,20 @@ function Chat() {
                   css={[
                     imgStyle,
                     css`
-                      background-image: ${`url(${chatRoom.recipient_img})`};
+                      background-image: ${loginUser.nickname ===
+                      chatRoom.recipient_nickname
+                        ? `url(${
+                            chatRoomImage.filter(
+                              (obj: any) =>
+                                obj.nickname === chatRoom.sender_nickname,
+                            )[0]?.img
+                          })`
+                        : `url(${
+                            chatRoomImage.filter(
+                              (obj: any) =>
+                                obj.nickname === chatRoom.recipient_nickname,
+                            )[0]?.img
+                          })`};
                       background-position: 50% 50%;
                       background-size: cover;
                     `,
