@@ -12,6 +12,7 @@ import {
   inactive,
   reviewsType,
   calCampbuIndicator,
+  deleteS3Img,
 } from '../common';
 import ReviewBox from '../components/ReviewBox';
 import ReviewTitle from '../components/ReviweTitle';
@@ -31,8 +32,10 @@ import {
   useSetRecoilState,
 } from 'recoil';
 import { useNavigate } from 'react-router-dom';
+import Profile from '../assets/Profile.svg';
 import BackButton from '../components/BackButton';
 import Complete from '../components/Complete';
+
 
 const imgStyle = css`
   width: ${rem(114)};
@@ -132,8 +135,8 @@ const hiddenUpload = css`
   position: absolute;
   line-height: ${rem(107)};
   color: white;
-  top: -4px;
-  left: -4px;
+  top: 0;
+  left: 0;
   background-color: black;
   opacity: 0;
   text-align: center;
@@ -176,10 +179,15 @@ function Mypage() {
   const [passwordValid, setPasswordValid] = useState(false);
   const [nickDuplicateClick, setNickDuplicateClick] = useState(false);
   const [nickDupliacte, setNickDupliacte] = useState(false);
-  const [reqState, setReqStatee] = useState<string>('ok');
+  const [reqState, setReqState] = useState<string>('ok');
   const resetLoginUserInfo = useResetRecoilState(loginUserInfo);
   const resetLikedPosts = useResetRecoilState(likedProducts);
+
+  const setLoginUserInfo = useSetRecoilState(loginUserInfo);
+  const [selectImgFile, setSelectImgFile] = useState<any>();
+  const [earlyImgUrl, setEarlyImgUrl] = useState<string>('');
   const [complete, setComplete] = useRecoilState(showCompleteModal);
+
   const navigate = useNavigate();
   // 유저정보요청
   useEffect(() => {
@@ -187,7 +195,8 @@ function Mypage() {
 
     axios.get(API, config).then((res) => {
       const userinfo = res.data;
-
+      console.log(userinfo.users.users_img);
+      setEarlyImgUrl(userinfo.users.users_img);
       setUserImg(userinfo.users.users_img);
       setCurrentNickName(userinfo.users.nickname);
       setEmail(userinfo.users.email);
@@ -228,7 +237,7 @@ function Mypage() {
           if (res.status === 200) {
             console.log(`API ${host}/user/signup?nickname=${nickname}`);
             console.log('닉네임 사용가능', setNickDupliacte(true));
-            setReqStatee('ok');
+            setReqState('ok');
           }
         })
         .catch((err) => {
@@ -249,14 +258,29 @@ function Mypage() {
   const confirmPasswordHandler = (e: any) => setConfirmPassword(e.target.value);
 
   const campbuIndicator = calCampbuIndicator(getReviews);
-
   //! 수정 탈퇴 요청 함수
-  const modifyAccount = () => {
+  const modifyAccount = async () => {
     if (!!nickname && !nickDupliacte) {
-      return setReqStatee('nickname');
+      return setReqState('nickname');
     }
 
     if (passwordValid && password === confirmPassword) {
+      const geturlAPI = `${host}/newurl`;
+      const { url } = await fetch(geturlAPI).then((res) => res.json());
+
+      let userImg = earlyImgUrl;
+
+      if (selectImgFile) {
+        await fetch(url, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          body: selectImgFile,
+        });
+        userImg = url.split('?')[0];
+      }
+
       const data: {
         nickname: string;
         password: string;
@@ -266,15 +290,36 @@ function Mypage() {
         password: password,
         users_img: userImg,
       };
-      console.log(data);
-      axios.patch(API, data, config).then((res: any) => {
-        console.log('응답', res.data.users.nickname);
-        setCurrentNickName(res.data.users.nickname);
-        setUserImg(res.data.users.users_img);
-      });
-      setComplete(true);
+
+      axios
+        .patch(API, data, config)
+        .then((res: any) => {
+          interface loginUserInfoType {
+            created_at: string;
+            email: string;
+            id: number;
+            nickname: string;
+            updated_at: string;
+            users_img: string;
+          }
+          const userinfo: loginUserInfoType = res.data.users;
+          setLoginUserInfo(userinfo);
+          localStorage.setItem('isLogin', 'true');
+          localStorage.setItem('userInfo', JSON.stringify(userinfo));
+          deleteS3Img(earlyImgUrl);
+          setEarlyImgUrl(userinfo.users_img);
+          setCurrentNickName(userinfo.nickname);
+          setUserImg(userinfo.users_img);
+          setSelectImgFile('');
+          setReqState('ok');
+          setComplete(true);
+        })
+        .catch((err) => console.error(err));
+
+      
+
     } else {
-      return setReqStatee('password');
+      return setReqState('password');
     }
   };
 
@@ -298,6 +343,7 @@ function Mypage() {
           .delete(API, config)
           .then((res) => {
             if (res.status === 200) {
+              deleteS3Img(earlyImgUrl);
               console.log('탈퇴완료');
             }
           })
@@ -311,20 +357,11 @@ function Mypage() {
 
   const insertImgHandler = async (e: any) => {
     const file = e.target.files[0];
-
-    const geturlAPI = `${host}/newurl`;
-    const { url } = await fetch(geturlAPI).then((res) => res.json());
-
-    await fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      body: file,
-    });
-
-    const imageUrl = url.split('?')[0];
-    setUserImg(imageUrl);
+    if (file) {
+      const preViewUrl = URL.createObjectURL(file);
+      setSelectImgFile(file);
+      setUserImg(preViewUrl);
+    }
   };
 
   return (
@@ -339,6 +376,7 @@ function Mypage() {
           display: flex;
         `}
       >
+
         {complete && (
           <Complete text="수정이 완료되었습니다." onClick={completeClick} />
         )}
@@ -361,21 +399,21 @@ function Mypage() {
               `,
             ]}
           >
-            <form encType="multiparty/form-data">
-              <label css={[imgStyle, hiddenUpload]} htmlFor="file">
-                수정하기
-              </label>
-              <input
-                css={hidden}
-                type="file"
-                id="file"
-                accept="image/*"
-                onChange={insertImgHandler}
-              />
-            </form>
-          </div>
-          <div css={hello}>{`안녕하세요, ${currentNickName} 님`}</div>
-          <Gage ratio={campbuIndicator} />
+              <form encType="multiparty/form-data" css={relative}>
+          <img src={userImg || Profile} css={[imgStyle, relative]} alt="" />
+          <label css={[imgStyle, hiddenUpload]} htmlFor="file">
+            수정하기
+          </label>
+          <input
+            css={hidden}
+            type="file"
+            id="file"
+            accept="image/*"
+            onChange={insertImgHandler}
+          />
+        </form>
+        <div css={hello}>{`안녕하세요, ${currentNickName} 님`}</div>
+        <Gage ratio={campbuIndicator} />
           <div
             css={[
               wnr,
@@ -425,6 +463,7 @@ function Mypage() {
             })}
           </div>
         </div>
+
         <div
           css={css`
             display: flex;

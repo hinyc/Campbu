@@ -1,3 +1,4 @@
+import aws from 'aws-sdk';
 import { css } from '@emotion/react';
 
 const rootPixel: number = 16;
@@ -128,3 +129,33 @@ export const config = {
   },
   withCredentials: true,
 };
+
+//? aws s3
+const region = 'ap-northeast-2';
+const bucketName = 'image-upload-storage-test';
+const accessKeyId = process.env.REACT_APP_AWS_ACCESS_KEY_ID;
+const secretAccessKey = process.env.REACT_APP_AWS_SECRET_ACCESS_KEY;
+
+const s3 = new aws.S3({
+  region,
+  accessKeyId,
+  secretAccessKey,
+  signatureVersion: 'v4',
+});
+// 단일 오브젝트 삭제
+export function deleteS3Img(url: string) {
+  const divUrl = url.split('/');
+  const key = divUrl[divUrl.length - 1];
+  s3.deleteObject(
+    {
+      Bucket: bucketName, // 사용자 버켓 이름
+      Key: key, // 버켓 내 경로
+    },
+    (err, data) => {
+      if (err) {
+        throw err;
+      }
+      console.log('s3 deleteObject ', data);
+    },
+  );
+}

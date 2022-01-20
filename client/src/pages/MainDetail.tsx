@@ -42,6 +42,7 @@ import {
   unableDate,
 } from '../Atom';
 import Complete from '../components/Complete';
+import Profile from '../assets/Profile.svg';
 
 const width = css`
   width: ${rem(752)};
@@ -382,29 +383,7 @@ function DetailView() {
               {postInfo.posts.address}
             </span>
           </div>
-          {userInfo.id === postInfo.user.id && (
-            <div
-              css={css`
-                margin-left: auto;
-                margin-right: ${rem(20)};
-              `}
-            >
-              <Link to={`/writing/${postId}`}>
-                <Button
-                  text="수정 / 삭제"
-                  width={''}
-                  height={`none`}
-                  background={color.white}
-                  color={color.placeholder}
-                  border="none"
-                  size={rem(16)}
-                  margin={`none`}
-                  hover="0.70"
-                  cursor="pointer"
-                />
-              </Link>
-            </div>
-          )}
+
           <LikeSymbol
             postId={postId}
             isFill={isLikePost}
@@ -428,11 +407,13 @@ function DetailView() {
               selectImgHandler('pre');
             }}
           >{`<`}</div>
+
           <div css={[flexVertical, relative]}>
             <img
               css={[productImg]}
               src={`${postInfo.posts.img_urls[selectImgNum]}`}
               alt="detail"
+              draggable="false"
             />
             <div css={showSelectImgContainerStyle}>
               {postInfo.posts.img_urls.map((el, idx) => (
@@ -450,6 +431,7 @@ function DetailView() {
               ))}
             </div>
           </div>
+
           <div
             css={arrowStyle}
             onClick={() => {
@@ -544,8 +526,9 @@ function DetailView() {
               <div css={profileBoxStyle}>
                 <img
                   css={profileImgStyle}
-                  src={postInfo.user.users_img}
+                  src={postInfo.user.users_img || Profile}
                   alt="profileImg"
+                  draggable="false"
                 />
               </div>
             </div>
@@ -567,7 +550,9 @@ function DetailView() {
                 `,
               ]}
             >
-              날짜를 입력하고 대여 비용을 확인해보세요.
+              {userInfo.id === postInfo.user.id
+                ? '해당 물품의 등록 정보를 수정 또는 삭제 할 수 있습니다.'
+                : '날짜를 입력하고 대여 비용을 확인해보세요.'}
             </div>
             <div
               css={[
@@ -631,10 +616,11 @@ function DetailView() {
                   <span
                     style={{ color: `#b8b8b8` }}
                   >{`${postInfo.posts.rental_fee.toLocaleString('ko-KR')} × ${
-                    totalRentalDates.length
+                    totalRentalDates.length - 1
                   }일`}</span>
                   <span>{` ${(
-                    postInfo.posts.rental_fee * totalRentalDates.length
+                    postInfo.posts.rental_fee * totalRentalDates.length -
+                    1
                   ).toLocaleString('ko-KR')} 원`}</span>
                 </>
               ) : (
@@ -666,21 +652,42 @@ function DetailView() {
                 font-size: 0.8rem;
               `}
             >
-              {start && end ? null : '대여일, 반납일을 지정해주세요.'}
+              {userInfo.id === postInfo.user.id
+                ? null
+                : start && end
+                ? null
+                : '대여일, 반납일을 지정해주세요.'}
             </div>
-            <Button
-              text="예약하기"
-              width={rem(240)}
-              height={rem(40)}
-              background={start && end ? color.point : color.border}
-              color={color.white}
-              border="none"
-              size={rem(14)}
-              margin={`${rem(10)} 0 ${rem(16)} 0`}
-              onClick={reservationHandler}
-              hover="0.85"
-              cursor="pointer"
-            />
+            {userInfo.id === postInfo.user.id ? (
+              <Link to={`/writing/${postId}`}>
+                <Button
+                  text="수정 / 삭제"
+                  width={rem(240)}
+                  height={rem(40)}
+                  background={color.point}
+                  color={color.white}
+                  border="none"
+                  size={rem(14)}
+                  margin={`${rem(10)} 0 ${rem(16)} 0`}
+                  hover="0.85"
+                  cursor="pointer"
+                />
+              </Link>
+            ) : (
+              <Button
+                text="예약하기"
+                width={rem(240)}
+                height={rem(40)}
+                background={start && end ? color.point : color.border}
+                color={color.white}
+                border="none"
+                size={rem(14)}
+                margin={`${rem(10)} 0 ${rem(16)} 0`}
+                onClick={reservationHandler}
+                hover="0.85"
+                cursor="pointer"
+              />
+            )}
           </div>
         </div>
       </div>
