@@ -324,20 +324,22 @@ function Mypage() {
 
   const insertImgHandler = async (e: any) => {
     const file = e.target.files[0];
+    const reader = new FileReader();
+    const imageUrl = reader.readAsDataURL(file);
+    console.log(reader.result);
 
-    const geturlAPI = `${host}/newurl`;
-    const { url } = await fetch(geturlAPI).then((res) => res.json());
+    // const geturlAPI = `${host}/newurl`;
+    // const { url } = await fetch(geturlAPI).then((res) => res.json());
 
-    await fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      body: file,
-    });
-
-    const imageUrl = url.split('?')[0];
-    setUserImg(imageUrl);
+    // await fetch(url, {
+    //   method: 'PUT',
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data',
+    //   },
+    //   body: file,
+    // });
+    // const imageUrl = url.split('?')[0];
+    // setUserImg(imageUrl);
   };
 
   return (

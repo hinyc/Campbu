@@ -114,7 +114,6 @@ function Navbar() {
     setMesDate(message.date);
   });
 
-  console.log(userInfo.users_img);
   return (
     <header css={headerStyle}>
       {showSignup ? <Signup /> : null}
