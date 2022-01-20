@@ -160,3 +160,25 @@ export function deleteS3Img(url: string) {
     },
   );
 }
+
+// 여러 오브젝트 삭제
+
+export function deleteS3Imgs(
+  obj: {
+    Key: string;
+  }[],
+) {
+  console.log('obj', obj);
+  const params = {
+    Bucket: bucketName,
+    Delete: {
+      Objects: obj,
+      Quiet: false,
+    },
+  };
+  console.log('params', params);
+  s3.deleteObjects(params, function (err, data) {
+    if (err) console.log(err, err.stack);
+    else console.log(data);
+  });
+}
