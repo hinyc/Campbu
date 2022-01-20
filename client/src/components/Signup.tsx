@@ -22,7 +22,7 @@ import TermsOfUse from './TermsOfUse';
 export const backgroundStyle = css`
   background-color: white;
   width: ${rem(400)};
-  height: ${rem(600)};
+  height: ${rem(580)};
   border-radius: ${rem(15)};
   box-shadow: ${shadow};
   display: flex;
@@ -330,9 +330,11 @@ function Signup() {
               ) : (
                 <div css={noticeNo}> * 중복된 닉네임입니다.</div>
               )
-            ) : null}
+            ) : (
+              <span css={noticeNo}>&nbsp;</span>
+            )}
           </div>
-          <div css={[flexBetween, marginTop12, alignItemFlexEnd]}>
+          <div css={[flexBetween, marginTop6, alignItemFlexEnd]}>
             <span css={textStyle}>이메일</span>
             <span
               css={emailValid ? validButtonActive : validButtonInactive}
@@ -365,9 +367,11 @@ function Signup() {
               )
             ) : emailValid ? null : email.length > 0 ? (
               <span css={noticeNo}>* 이메일 형식을 지켜주세요.</span>
-            ) : null}
+            ) : (
+              <span css={noticeNo}>&nbsp;</span>
+            )}
           </div>
-          <div css={marginTop12}>
+          <div css={marginTop6}>
             <div css={[flex, alignItemFlexEnd]}>
               <div css={textStyle}>비밀번호</div>
             </div>
@@ -411,9 +415,11 @@ function Signup() {
                   * 영문, 숫자 조합 8자 이상 입력해주세요.{' '}
                 </div>
               )
-            ) : null}
+            ) : (
+              <span css={noticeNo}>&nbsp;</span>
+            )}
           </div>
-          <div css={[flexBetween, marginTop12, alignItemCenter]}>
+          <div css={[flexBetween, marginTop6, alignItemCenter]}>
             <span css={textStyle}>{`[필수] 이용약관`}</span>
             <Button
               text="보기"

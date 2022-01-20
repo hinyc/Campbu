@@ -143,8 +143,9 @@ const profileBoxStyle = css`
 
 const profileImgStyle = css`
   display: block;
-  width: 100%;
-  height: auto;
+  width: ${rem(48)};
+  height: ${rem(48)};
+  object-fit: cover;
 `;
 
 //요청 결과 예시 데이터

@@ -17,9 +17,22 @@ import ReviewBox from '../components/ReviewBox';
 import ReviewTitle from '../components/ReviweTitle';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { isLogin, likedProducts, loginUserInfo } from '../Atom';
-import { useResetRecoilState, useSetRecoilState } from 'recoil';
+import {
+  forceRender,
+  isLogin,
+  likedProducts,
+  loginUserInfo,
+  showCompleteModal,
+} from '../Atom';
+import {
+  useRecoilState,
+  useRecoilValue,
+  useResetRecoilState,
+  useSetRecoilState,
+} from 'recoil';
 import { useNavigate } from 'react-router-dom';
+import BackButton from '../components/BackButton';
+import Complete from '../components/Complete';
 
 const imgStyle = css`
   width: ${rem(114)};
@@ -27,6 +40,7 @@ const imgStyle = css`
   border: 4px solid ${color.point};
   border-radius: 50%;
   background-size: cover;
+  background-position: 50% 50%;
 `;
 
 const hello = css`
@@ -68,7 +82,7 @@ const contentAlign = css`
 
 const buttonStyle = css`
   border: none;
-  height: ${rem(40)};
+  height: ${rem(45)};
   color: ${color.white};
   background-color: ${color.point};
   font-size: ${rem(14)};
@@ -165,7 +179,7 @@ function Mypage() {
   const [reqState, setReqStatee] = useState<string>('ok');
   const resetLoginUserInfo = useResetRecoilState(loginUserInfo);
   const resetLikedPosts = useResetRecoilState(likedProducts);
-
+  const [complete, setComplete] = useRecoilState(showCompleteModal);
   const navigate = useNavigate();
   // 유저정보요청
   useEffect(() => {
@@ -258,9 +272,14 @@ function Mypage() {
         setCurrentNickName(res.data.users.nickname);
         setUserImg(res.data.users.users_img);
       });
+      setComplete(true);
     } else {
       return setReqStatee('password');
     }
+  };
+
+  const completeClick = () => {
+    setComplete(false);
   };
 
   const deleteAccount = () => {
@@ -309,209 +328,217 @@ function Mypage() {
   };
 
   return (
-    <div
-      css={css`
-        width: ${rem(861)};
-        margin: 0 auto;
-        margin-top: ${rem(20)};
-        display: flex;
-      `}
-    >
-      <div
-        css={[
-          css`
-            width: ${rem(430)};
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-          `,
-        ]}
-      >
-        <div
-          css={[
-            imgStyle,
-            relative,
-            css`
-              background-image: ${`url(${userImg})`};
-            `,
-          ]}
-        >
-          <form encType="multiparty/form-data">
-            <label css={[imgStyle, hiddenUpload]} htmlFor="file">
-              수정하기
-            </label>
-            <input
-              css={hidden}
-              type="file"
-              id="file"
-              accept="image/*"
-              onChange={insertImgHandler}
-            />
-          </form>
-        </div>
-        <div css={hello}>{`안녕하세요, ${currentNickName} 님`}</div>
-        <Gage ratio={campbuIndicator} />
-        <div
-          css={[
-            wnr,
-            css`
-              margin-top: ${rem(10)};
-              margin-bottom: ${rem(20)};
-              font-weight: 700;
-            `,
-          ]}
-        >
-          {`깐부지수 ${campbuIndicator * 100}%`}
-        </div>
-        <ReviewTitle text="대여자에게 받은 좋은 리뷰" width={371} />
-        <div css={reviewsAlign}>
-          {getReviews.map((review, idx) => {
-            return review.id < 7 ? (
-              <ReviewBox
-                key={idx}
-                content={review.review}
-                count={review.count}
-                isBad={false}
-                width={180}
-                margin={`${rem(5)} 0`}
-                fontColor={`${color.mid}`}
-                borderColor={`${color.mid}`}
-                notClickable
-              />
-            ) : null;
-          })}
-        </div>
-        <ReviewTitle text="대여자에게 받은 나쁜 리뷰" width={371} />
-        <div css={reviewsAlign}>
-          {getReviews.map((review, idx) => {
-            return review.id < 7 ? null : (
-              <ReviewBox
-                key={idx}
-                content={review.review}
-                count={review.count}
-                isBad={true}
-                width={180}
-                margin={`${rem(5)} 0`}
-                fontColor={`${color.deep}`}
-                borderColor={`${color.deep}`}
-                notClickable
-              />
-            );
-          })}
-        </div>
-      </div>
+    <div style={{ paddingTop: `${rem(16)}` }}>
+      <BackButton />
       <div
         css={css`
-          display: flex;
-          align-items: center;
+          width: ${rem(1280)};
           justify-content: center;
-          width: ${rem(430)};
+          margin: 0 auto;
+          margin-top: ${rem(20)};
+          display: flex;
         `}
       >
-        <div css={[verticalAlign]}>
-          <div css={hello}>회원정보 수정</div>
-
-          <div css={[wnr, contentAlign]}>
-            <span>닉네임</span>
-            <div
-              css={css`
-                width: ${rem(120)};
-                margin-right: ${rem(8)};
-              `}
-            >
-              {nickDuplicateClick ? (
-                nickDupliacte ? (
-                  <div css={noticeOk}> * 사용가능한 닉네임입니다.</div>
-                ) : (
-                  <div css={noticeNo}> * 중복된 닉네임입니다.</div>
-                )
-              ) : null}
-            </div>
-            <span
-              css={
-                nickname.length > 0 ? validButtonActive : validButtonInactive
-              }
-              onClick={nicknameDuplicateCheckHandler}
-            >
-              중복 검사
-            </span>
-          </div>
-          <input
-            css={[wnr, inputStyle]}
-            type="text"
-            placeholder={currentNickName}
-            onChange={nicknameHandler}
-            value={nickname}
-          />
-          <div css={[wnr, contentAlign]}>
-            <span>이메일</span>
-          </div>
-          <input
-            css={[wnr, inputStyle, colorPlaceholder, inactive]}
-            type="text"
-            placeholder="이메일을 입력해주세요."
-            onChange={emailHandler}
-            value={email}
-            readOnly
-          />
-          <div css={[wnr, contentAlign]}>
-            <div>비밀번호</div>
-            <div
-              css={css`
-                width: ${rem(180)};
-                margin-right: ${rem(24)};
-              `}
-            >
-              {confirmPassword.length > 0 && passwordValid ? (
-                password === confirmPassword ? (
-                  <div css={noticeOk}>* 사용가능한 비밀번호입니다.</div>
-                ) : (
-                  <div css={noticeNo}>* 비밀번호가 일치하지 않습니다.</div>
-                )
-              ) : password.length > 0 ? (
-                passwordValid ? null : (
-                  <div css={noticeNo}>
-                    * 영문, 숫자 조합 8자 이상 입력해주세요.{' '}
-                  </div>
-                )
-              ) : null}
-            </div>
-          </div>
-          <input
-            css={[wnr, inputStyle]}
-            type="password"
-            placeholder="비밀번호를 입력해주세요."
-            onChange={passwordHandler}
-            value={password}
-          />
-          <input
-            css={[wnr, inputStyle]}
-            type="password"
-            placeholder="비밀번호를 한 번 더 입력해주세요."
-            onChange={confirmPasswordHandler}
-            value={confirmPassword}
-          />
-          <div css={[reqMsgStyle, noticeNo]}>{reqMag[reqState]}</div>
-          <button css={[wnr, buttonStyle]} onClick={modifyAccount}>
-            수정완료
-          </button>
+        {complete && (
+          <Complete text="수정이 완료되었습니다." onClick={completeClick} />
+        )}
+        <div
+          css={[
+            css`
+              width: ${rem(430)};
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+            `,
+          ]}
+        >
           <div
-            css={css`
-              color: ${color.border};
-              margin-top: ${rem(30)};
-              text-decoration: underline;
-              transition: 0.1s;
-              :hover {
-                font-weight: 700;
-                cursor: pointer;
-              }
-              :active {
-                opacity: 0.75;
-              }
-            `}
-            onClick={deleteAccount}
+            css={[
+              imgStyle,
+              relative,
+              css`
+                background-image: ${`url(${userImg})`};
+              `,
+            ]}
           >
-            회원탈퇴
+            <form encType="multiparty/form-data">
+              <label css={[imgStyle, hiddenUpload]} htmlFor="file">
+                수정하기
+              </label>
+              <input
+                css={hidden}
+                type="file"
+                id="file"
+                accept="image/*"
+                onChange={insertImgHandler}
+              />
+            </form>
+          </div>
+          <div css={hello}>{`안녕하세요, ${currentNickName} 님`}</div>
+          <Gage ratio={campbuIndicator} />
+          <div
+            css={[
+              wnr,
+              css`
+                margin-top: ${rem(10)};
+                margin-bottom: ${rem(20)};
+                font-weight: 700;
+              `,
+            ]}
+          >
+            {`깐부지수 ${campbuIndicator * 100}%`}
+          </div>
+          <ReviewTitle text="대여자에게 받은 좋은 리뷰" width={371} />
+          <div css={reviewsAlign}>
+            {getReviews.map((review, idx) => {
+              return review.id < 7 ? (
+                <ReviewBox
+                  key={idx}
+                  content={review.review}
+                  count={review.count}
+                  isBad={false}
+                  width={180}
+                  margin={`${rem(5)} 0`}
+                  fontColor={`${color.mid}`}
+                  borderColor={`${color.mid}`}
+                  notClickable
+                />
+              ) : null;
+            })}
+          </div>
+          <ReviewTitle text="대여자에게 받은 나쁜 리뷰" width={371} />
+          <div css={reviewsAlign}>
+            {getReviews.map((review, idx) => {
+              return review.id < 7 ? null : (
+                <ReviewBox
+                  key={idx}
+                  content={review.review}
+                  count={review.count}
+                  isBad={true}
+                  width={180}
+                  margin={`${rem(5)} 0`}
+                  fontColor={`${color.deep}`}
+                  borderColor={`${color.deep}`}
+                  notClickable
+                />
+              );
+            })}
+          </div>
+        </div>
+        <div
+          css={css`
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: ${rem(430)};
+          `}
+        >
+          <div css={[verticalAlign]}>
+            <div css={hello}>회원정보 수정</div>
+
+            <div css={[wnr, contentAlign]}>
+              <span>닉네임</span>
+              <div
+                css={css`
+                  width: ${rem(120)};
+                  margin-right: ${rem(8)};
+                `}
+              >
+                {nickDuplicateClick ? (
+                  nickDupliacte ? (
+                    <div css={noticeOk}> * 사용가능한 닉네임입니다.</div>
+                  ) : (
+                    <div css={noticeNo}> * 중복된 닉네임입니다.</div>
+                  )
+                ) : null}
+              </div>
+              <span
+                css={
+                  nickname.length > 0 ? validButtonActive : validButtonInactive
+                }
+                onClick={nicknameDuplicateCheckHandler}
+              >
+                중복 검사
+              </span>
+            </div>
+            <input
+              css={[wnr, inputStyle]}
+              type="text"
+              placeholder={currentNickName}
+              onChange={nicknameHandler}
+              value={nickname}
+            />
+            <div css={[wnr, contentAlign]}>
+              <span>이메일</span>
+            </div>
+            <input
+              css={[wnr, inputStyle, colorPlaceholder, inactive]}
+              type="text"
+              placeholder="이메일을 입력해주세요."
+              onChange={emailHandler}
+              value={email}
+              readOnly
+            />
+            <div css={[wnr, contentAlign]}>
+              <div>비밀번호</div>
+              <div
+                css={css`
+                  width: ${rem(180)};
+                  margin-right: ${rem(24)};
+                `}
+              >
+                {confirmPassword.length > 0 && passwordValid ? (
+                  password === confirmPassword ? (
+                    <div css={noticeOk}>* 사용가능한 비밀번호입니다.</div>
+                  ) : (
+                    <div css={noticeNo}>* 비밀번호가 일치하지 않습니다.</div>
+                  )
+                ) : password.length > 0 ? (
+                  passwordValid ? null : (
+                    <div css={noticeNo}>
+                      * 영문, 숫자 조합 8자 이상 입력해주세요.{' '}
+                    </div>
+                  )
+                ) : null}
+              </div>
+            </div>
+            <input
+              css={[wnr, inputStyle]}
+              type="password"
+              placeholder="비밀번호를 입력해주세요."
+              onChange={passwordHandler}
+              value={password}
+            />
+            <input
+              css={[wnr, inputStyle]}
+              type="password"
+              placeholder="비밀번호를 한 번 더 입력해주세요."
+              onChange={confirmPasswordHandler}
+              value={confirmPassword}
+            />
+            <div css={[reqMsgStyle, noticeNo]}>{reqMag[reqState]}</div>
+            <button css={[wnr, buttonStyle]} onClick={modifyAccount}>
+              수정완료
+            </button>
+            <div
+              css={css`
+                color: ${color.placeholder};
+                margin-top: ${rem(30)};
+                font-size: ${rem(14)};
+                text-decoration: underline;
+                transition: 0.1s;
+                :hover {
+                  font-weight: 700;
+                  cursor: pointer;
+                }
+                :active {
+                  opacity: 0.75;
+                }
+              `}
+              onClick={deleteAccount}
+            >
+              회원탈퇴
+            </div>
           </div>
         </div>
       </div>

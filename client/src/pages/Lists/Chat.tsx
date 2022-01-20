@@ -98,6 +98,7 @@ interface chatRoom {
   recipient_nickname: string;
   recipient_img: string;
   sender_nickname: string;
+  sender_img: string;
   chat: object[];
   created_at: Date;
   updated_at: Date;
@@ -128,6 +129,7 @@ function Chat() {
   const [loginUser, setLoginUser] = useRecoilState(loginUserInfo);
   const [postUserId, setPostUserId] = useState(0);
   const [reservationUserId, setReservationUserId] = useState(0);
+  const [partnerImage, setPartnerImage] = useState('');
   const borrowButton = [
     '예약 취소',
     '반납하기',
@@ -140,6 +142,9 @@ function Chat() {
   const [review, setReview] = useRecoilState(showReviewModal);
   const [submit, setSubmit] = useRecoilState(showSubmitModal);
   const forceRerender = useRecoilValue(forceRender);
+  const [chatRoomImage, setChatRoomImage] = useState<
+    { nickname: string; img: string }[]
+  >([]);
 
   //? 유저 아이디 === 포스트 유저 아이디 (빌려준 사람)
   useEffect(() => {
@@ -148,21 +153,12 @@ function Chat() {
       setLoginUser(JSON.parse(userInfo));
     }
   }, [chatRoomId, setLoginUser]);
-  console.log(loginUser);
+
   const userLend =
     loginUser?.id !== reservationUserId && loginUser?.id === postUserId;
-  //? 1 : 예약 수락 => 80
-  //? 2 : 반납 대기 중 => opacity, not allowed 50
-  //? 3 : 반납 확인 => 리뷰 (예약 아이디, 예약한 유저 아이디) 80
-  //? 4 : 회수 완료 => not allowed 100
 
-  //? 유저 아이디 === 예약자 아이디 && 유저 아이디 !== 포스트 유저 아이디 (빌린 사람)
   const userBorrow =
     loginUser?.id === reservationUserId && loginUser?.id !== postUserId;
-  //? 1 : 예약 취소 => delete 80
-  //? 2 : 반납하기 => 리뷰 (예약 아이디, 포스트 유저 아이디) 80
-  //? 3 : 반납 확인 대기 중 => opacity, not allowed 50
-  //? 4 : 반납 완료 => not allowed 100
 
   const printStatusText = (status: number) => {
     if (userLend) {
@@ -215,6 +211,34 @@ function Chat() {
         const sortedData = res.data.chat.sort((a: any, b: any) => b.id - a.id);
         setChatRooms(sortedData);
         setUserNickName(res.data.nickName);
+
+        const saveRecipientInfo = sortedData.map((obj: any) => {
+          return {
+            nickname: obj.recipient_nickname,
+            img: obj.recipient_img,
+          };
+        });
+
+        const saveSenderInfo = saveRecipientInfo.concat(
+          sortedData.map((obj: any) => {
+            return {
+              nickname: obj.sender_nickname,
+              img: obj.sender_img,
+            };
+          }),
+        );
+
+        const saveImageInfo = saveSenderInfo.reduce((acc: any, cur: any) => {
+          if (
+            acc.findIndex(({ nickname }: any) => nickname === cur.nickname) ===
+            -1
+          ) {
+            acc.push(cur);
+          }
+          return acc;
+        }, []);
+
+        setChatRoomImage(saveImageInfo);
       });
   }, [forceRerender]);
 
@@ -274,7 +298,7 @@ function Chat() {
           setPosts(res.data.post);
           setPostUserId(res.data.userId.users_id);
           setReservationUserId(res.data.post.users_id.id);
-          console.log('받아오는 데이터', res.data);
+          setPartnerImage(res.data.post.users_id.users_img);
         });
     } else {
       setChatRoomId(0);
@@ -435,7 +459,7 @@ function Chat() {
                       background-color: #f0f0f0;
                     }
                     background-color: ${chatRoom.id === chatRoomId
-                      ? '#F8F8F8'
+                      ? '#F4F4F4'
                       : '#ffffff'};
                   `,
                 ]}
@@ -454,7 +478,22 @@ function Chat() {
                   css={[
                     imgStyle,
                     css`
-                      background-image: ${`url(${chatRoom.recipient_img})`};
+                      background-image: ${loginUser.nickname ===
+                      chatRoom.recipient_nickname
+                        ? `url(${
+                            chatRoomImage.filter(
+                              (obj: any) =>
+                                obj.nickname === chatRoom.sender_nickname,
+                            )[0]?.img
+                          })`
+                        : `url(${
+                            chatRoomImage.filter(
+                              (obj: any) =>
+                                obj.nickname === chatRoom.recipient_nickname,
+                            )[0]?.img
+                          })`};
+                      background-position: 50% 50%;
+                      background-size: cover;
                     `,
                   ]}
                 ></div>
@@ -484,20 +523,24 @@ function Chat() {
                     {chatRoom.recipient_nickname === userNickName
                       ? chatRoom.sender_nickname
                       : chatRoom.recipient_nickname}
-                    {chatCount[`Room${chatRoom.id}`] === 0 &&
+                    {chatCount[`Room${chatRoom.id}`] === 0 ||
                     chatCount[`Room${chatRoom.id}`] === undefined ? (
-                      <div></div>
+                      <div />
                     ) : (
                       <div
                         css={[
                           css`
                             position: absolute;
                             right: ${rem(10)};
-                            width: ${rem(30)};
+                            width: ${rem(22)};
+                            height: ${rem(22)};
                             top: ${rem(0)};
-                            border: ${rem(2)} solid #ed662c;
+                            background-color: #ed662c;
+                            color: white;
                             text-align: center;
                             border-radius: 50%;
+                            font-size: ${rem(12)};
+                            padding-top: ${rem(4)};
                           `,
                         ]}
                       >
@@ -641,6 +684,8 @@ function Chat() {
                             border-radius: 50%;
                             background-size: cover;
                             margin-top: ${rem(10)};
+                            background-image: ${`url(${loginUser.users_img})`};
+                            background-position: 50% 50%;
                           `,
                         ]}
                       ></div>
@@ -664,6 +709,8 @@ function Chat() {
                             border-radius: 50%;
                             background-size: cover;
                             margin-top: ${rem(10)};
+                            background-image: ${`url(${partnerImage})`};
+                            background-position: 50% 50%;
                           `,
                         ]}
                       ></div>
