@@ -135,6 +135,7 @@ function Navbar() {
             shadow={`${shadow}`}
             hoverBackground="#F18556"
           >
+
             <div
               css={[
                 css`
@@ -150,6 +151,7 @@ function Navbar() {
                 draggable="false"
               />
               {isShowModal || chatNum.total === 0 ? (
+
                 <img
                   css={css`
                     width: ${rem(20)};

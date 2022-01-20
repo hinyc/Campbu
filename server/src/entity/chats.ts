@@ -24,6 +24,9 @@ export class chats {
   @Column()
   sender_nickname: string;
 
+  @Column({ nullable: true })
+  sender_img: string;
+
   @Column('mediumtext')
   chat: string;
 

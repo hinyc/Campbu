@@ -29,6 +29,7 @@ const li = css`
   padding: ${rem(11)} 0 ${rem(11)} ${rem(19)};
   :hover {
     background-color: #f0f0f0;
+    transition: 0.3s;
   }
 `;
 
