@@ -1,8 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { searchAddress, selectAddress, showAddressList } from '../Atom';
+import { useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
+import {
+  navbarOn,
+  searchAddress,
+  selectAddress,
+  showAddressList,
+} from '../Atom';
 import { color, rem, shadow } from '../common';
 
 const addressListStyle = css`
@@ -39,6 +44,7 @@ export default function SelectAddressList({
   const setSelectAddress = useSetRecoilState(selectAddress);
   const setSearchAddress = useSetRecoilState(searchAddress);
   const setShowAddress = useSetRecoilState(showAddressList);
+  const resetIsNavOn = useResetRecoilState(navbarOn);
 
   const navigate = useNavigate();
 
@@ -54,6 +60,7 @@ export default function SelectAddressList({
     localStorage.setItem('address', e.target.textContent);
     setSearchAddress([]);
     setShowAddress(false);
+    resetIsNavOn();
     navigate(`/main`);
     // setSelectAddress('');
   };

@@ -242,3 +242,6 @@ export const selectCategory = atom<string>({
   key: 'selectCategory',
   default: 'all',
 });
+
+//? navbarOn/Off
+export const navbarOn = atom<boolean>({ key: 'navbarOn', default: true });
