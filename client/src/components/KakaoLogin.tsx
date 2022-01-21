@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
-import { isLogin, loginUserInfo, showLoginModal } from '../Atom';
+import { useResetRecoilState, useSetRecoilState } from 'recoil';
+import { isLogin, loginUserInfo, navbarOn, showLoginModal } from '../Atom';
 
 export default function KakaoLogin() {
   const setShowLogin = useSetRecoilState(showLoginModal);
@@ -10,6 +10,8 @@ export default function KakaoLogin() {
   const [accessToken, setAccessToken] = useState('');
   const [refreshToken, setRefreshToken] = useState('');
   const setLoginUserInfo = useSetRecoilState(loginUserInfo);
+  const resetIsNavOn = useResetRecoilState(navbarOn);
+
   const navigate = useNavigate();
   const host = 'http://localhost:5050';
 
@@ -73,6 +75,7 @@ export default function KakaoLogin() {
             localStorage.setItem('userInfo', JSON.stringify(userinfo));
             console.log(res);
             navigate('/main');
+            resetIsNavOn();
           }
         })
         .catch((error) => {

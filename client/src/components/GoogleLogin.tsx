@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
-import { isLogin, loginUserInfo, showLoginModal } from '../Atom';
+import { useResetRecoilState, useSetRecoilState } from 'recoil';
+import { isLogin, loginUserInfo, navbarOn, showLoginModal } from '../Atom';
 
 export default function GoogleLogin() {
   const setShowLogin = useSetRecoilState(showLoginModal);
@@ -10,6 +10,8 @@ export default function GoogleLogin() {
   const [accessToken, setAccessToken] = useState('');
   const navigate = useNavigate();
   const setLoginUserInfo = useSetRecoilState(loginUserInfo);
+  const resetIsNavOn = useResetRecoilState(navbarOn);
+
   const host = 'http://localhost:5050';
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -67,6 +69,7 @@ export default function GoogleLogin() {
             localStorage.setItem('isLogin', 'true');
             localStorage.setItem('userInfo', JSON.stringify(userinfo));
             console.log(res);
+            resetIsNavOn();
             navigate('/main');
           }
         })

@@ -3,7 +3,13 @@ import { css } from '@emotion/react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { useResetRecoilState, useSetRecoilState, useRecoilState } from 'recoil';
-import { isLogin, likedProducts, loginUserInfo, showModal } from '../Atom';
+import {
+  isLogin,
+  likedProducts,
+  loginUserInfo,
+  navbarOn,
+  showModal,
+} from '../Atom';
 import { host, rem, shadow, textDecorationNone } from '../common';
 import { chatsNum } from '../Atom';
 
@@ -45,6 +51,7 @@ function ProfileDropdown() {
   const [chatNum, setChatNum] = useRecoilState(chatsNum);
   const resetIsShowModal = useResetRecoilState(showModal);
   const resetLikedPosts = useResetRecoilState(likedProducts);
+  const resetIsNavOn = useResetRecoilState(navbarOn);
 
   const logout = () => {
     setIsLogin(false);
@@ -102,33 +109,52 @@ function ProfileDropdown() {
         <Link
           to="/lists/borrowlist"
           css={textDecorationNone}
-          onClick={resetIsShowModal}
+          onClick={() => {
+            resetIsShowModal();
+            resetIsNavOn();
+          }}
         >
           <li css={li}>빌린 목록</li>
         </Link>
         <Link
           to="/lists/lendlist"
           css={textDecorationNone}
-          onClick={resetIsShowModal}
+          onClick={() => {
+            resetIsShowModal();
+            resetIsNavOn();
+          }}
         >
           <li css={li}>빌려준 목록</li>
         </Link>
         <Link
           to="/lists/likelist"
           css={textDecorationNone}
-          onClick={resetIsShowModal}
+          onClick={() => {
+            resetIsShowModal();
+            resetIsNavOn();
+          }}
         >
           <li css={li}>찜한 목록</li>
         </Link>
         <Link
           to="/lists/resistlist"
           css={textDecorationNone}
-          onClick={resetIsShowModal}
+          onClick={() => {
+            resetIsShowModal();
+            resetIsNavOn();
+          }}
         >
           <li css={li}>내가 쓴 글</li>
         </Link>
         <div css={line} />
-        <Link to="mypage" css={textDecorationNone} onClick={resetIsShowModal}>
+        <Link
+          to="mypage"
+          css={textDecorationNone}
+          onClick={() => {
+            resetIsShowModal();
+            resetIsNavOn();
+          }}
+        >
           <li css={li}>계정</li>
         </Link>
 

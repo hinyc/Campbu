@@ -18,6 +18,7 @@ import {
   chatsNum,
   selectAddress,
   selectCategory,
+  navbarOn,
 } from '../Atom';
 import { color, hover, rem, shadow } from '../common';
 
@@ -31,6 +32,7 @@ const headerStyle = css`
   height: ${rem(99)};
   display: flex;
   justify-content: space-between;
+  width: 100vw;
   max-width: ${rem(1280)};
   margin: 0 auto;
   align-items: center;
@@ -54,6 +56,8 @@ function Navbar() {
   const setSelectAddress = useSetRecoilState(selectAddress);
   const setSelectCategory = useSetRecoilState(selectCategory);
   const showSignup = useRecoilValue(showSignupModal);
+  const setNavOn = useSetRecoilState(navbarOn);
+
   const onClick = () => {
     setIsShowModal(!isShowModal);
   };
@@ -118,88 +122,98 @@ function Navbar() {
     <header css={headerStyle}>
       {showSignup ? <Signup /> : null}
       {showLogin ? <LoginModal /> : null}
-      <Link to="/" draggable="false">
-        <img src={Logo} className="CampBu-logo" alt="logo" draggable="false" />
-      </Link>
-      {login ? (
-        <>
+      <div>
+        <Link to="/" draggable="false">
+          <img
+            src={Logo}
+            className="CampBu-logo"
+            alt="logo"
+            draggable="false"
+            onClick={() => {
+              setNavOn(false);
+            }}
+          />
+        </Link>
+      </div>
+      <div>
+        {login ? (
+          <>
+            <Button
+              width={`${rem(83)}`}
+              height={`${rem(36)}`}
+              background={`${color.point}`}
+              color="white"
+              border="none"
+              size={`${rem(13)}`}
+              cursor="pointer"
+              onClick={onClick}
+              shadow={`${shadow}`}
+              hoverBackground="#F18556"
+            >
+              <div
+                css={[
+                  css`
+                    display: flex;
+                    justify-content: center;
+                  `,
+                ]}
+              >
+                <img
+                  src={Menu}
+                  className="CampBu-logo"
+                  alt="logo"
+                  draggable="false"
+                />
+                {isShowModal || chatNum.total === 0 ? (
+                  <img
+                    css={css`
+                      width: ${rem(20)};
+                      height: ${rem(20)};
+                      border-radius: 50%;
+                      margin-left: 0.8rem;
+                    `}
+                    src={userInfo.users_img || Profile}
+                    className="CampBu-logo"
+                    alt="logo"
+                    draggable="false"
+                  />
+                ) : (
+                  <div
+                    css={[
+                      css`
+                        background-color: white;
+                        width: ${rem(20)};
+                        height: ${rem(20)};
+                        color: ${color.point};
+                        border-radius: 50%;
+                        margin-left: 0.8rem;
+                        font-size: ${rem(15)};
+                        line-height: ${rem(20)};
+                      `,
+                    ]}
+                  >
+                    {chatNum.total}
+                  </div>
+                )}
+              </div>
+            </Button>
+            {isShowModal && <ProfileDropdown />}
+          </>
+        ) : (
           <Button
+            text="Login"
             width={`${rem(83)}`}
             height={`${rem(36)}`}
             background={`${color.point}`}
             color="white"
             border="none"
-            size={`${rem(13)}`}
-            cursor="pointer"
-            onClick={onClick}
-            shadow={`${shadow}`}
+            size={`${rem(14)}`}
             hoverBackground="#F18556"
-          >
-
-            <div
-              css={[
-                css`
-                  display: flex;
-                  justify-content: center;
-                `,
-              ]}
-            >
-              <img
-                src={Menu}
-                className="CampBu-logo"
-                alt="logo"
-                draggable="false"
-              />
-              {isShowModal || chatNum.total === 0 ? (
-
-                <img
-                  css={css`
-                    width: ${rem(20)};
-                    height: ${rem(20)};
-                    border-radius: 50%;
-                    margin-left: 0.8rem;
-                  `}
-                  src={userInfo.users_img || Profile}
-                  className="CampBu-logo"
-                  alt="logo"
-                  draggable="false"
-                />
-              ) : (
-                <div
-                  css={[
-                    css`
-                      background-color: white;
-                      width: ${rem(20)};
-                      height: ${rem(20)};
-                      color: ${color.point};
-                      border-radius: 50%;
-                      margin-left: 0.8rem;
-                      font-size: ${rem(15)};
-                      line-height: ${rem(20)};
-                    `,
-                  ]}
-                >
-                  {chatNum.total}
-                </div>
-              )}
-            </div>
-          </Button>
-          {isShowModal && <ProfileDropdown />}
-        </>
-      ) : (
-        <Button
-          text="Login"
-          width={`${rem(83)}`}
-          height={`${rem(36)}`}
-          background={`${color.point}`}
-          color="white"
-          border="none"
-          size={`${rem(14)}`}
-          hoverBackground="#F18556"
-          cursor="pointer"
-          onClick={() => setShowLogin(true)}
-        />
-      )}
+            cursor="pointer"
+            onClick={() => setShowLogin(true)}
+          />
+        )}
+      </div>
     </header>
   );
 }
