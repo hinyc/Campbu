@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { rem, color, hover, shadow, host, config } from '../common';
+import { rem, color, hover, shadow, host } from '../common';
 import { Button } from './Button';
 import { useState } from 'react';
 import Complete from './Complete';
-import { useSetRecoilState } from 'recoil';
-import { showCompleteModal, showConfirmModal } from '../Atom';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { jwtToken, showCompleteModal, showConfirmModal } from '../Atom';
 import axios from 'axios';
 
 const box = css`
@@ -51,10 +51,17 @@ function ConfirmBorrow({
 }: Props) {
   const setConfirm = useSetRecoilState(showConfirmModal);
   const setComplete = useSetRecoilState(showCompleteModal);
+  const token = useRecoilValue(jwtToken);
   const onOkClick = () => {
     if (reservation_status === 1) {
       axios
-        .delete(`${host}/reservation/${reservationId}`, config)
+        .delete(`${host}/reservation/${reservationId}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        })
         .then((res) => console.log(res.data.message))
         .catch((err) => console.error(err));
     } else {
@@ -62,7 +69,13 @@ function ConfirmBorrow({
         .patch(
           `${host}/reservation/${reservationId}`,
           { reservation_status: reservation_status + 1 },
-          config,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+          },
         )
         .then((res) => console.log(res.data.message))
         .catch((err) => console.error(err));

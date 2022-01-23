@@ -64,7 +64,6 @@ export default function GoogleLogin() {
           withCredentials: true,
         })
         .then((res) => {
-          console.log(res);
           if (res.status === 200) {
             setShowLogin(false);
             setIsLogin(true);
@@ -107,7 +106,7 @@ export default function GoogleLogin() {
                 });
                 const ids = JSON.stringify(chatIds);
                 setChatIds(ids);
-                io('http://localhost:5050', {
+                io(host, {
                   query: { ids },
                 });
               });

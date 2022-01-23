@@ -1,13 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import {
-  color,
-  config,
-  host,
-  modalBackgroundStyle,
-  rem,
-  shadow,
-} from '../common';
+import { color, host, modalBackgroundStyle, rem, shadow } from '../common';
 import { Button } from './Button';
 import Input from './Input';
 import kakaoimg from '../assets/kakao.png';
@@ -181,9 +174,7 @@ function LoginModal() {
         withCredentials: true,
       })
       .then((res) => {
-        console.log(res);
         if (res.status === 200) {
-          console.log('로그인성공');
           setShowLogin(false);
           setIsLogin(true);
           interface loginUserInfoType {
@@ -225,7 +216,7 @@ function LoginModal() {
               });
               const ids = JSON.stringify(chatIds);
               setChatIds(ids);
-              io('http://localhost:5050', {
+              io(host, {
                 query: { ids },
               });
             });
@@ -235,7 +226,6 @@ function LoginModal() {
         }
       })
       .catch((res) => {
-        console.log(res);
         setReqMsgState('conflict');
       });
   };

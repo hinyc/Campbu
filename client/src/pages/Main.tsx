@@ -2,7 +2,7 @@
 import { css, keyframes } from '@emotion/react';
 import Product from '../components/Product';
 import WritingButton from '../components/WritingButton';
-import { rem, relative, host, addressAPI, config } from '../common';
+import { rem, relative, host, addressAPI } from '../common';
 import SearchGreen from '../assets/SearchGreen.svg';
 import SearchInput from '../components/SearchInput';
 import Category from '../components/Category';
@@ -19,6 +19,7 @@ import {
   isLogin,
   likedProducts,
   selectCategory,
+  jwtToken,
 } from '../Atom';
 import { useEffect, useState } from 'react';
 import AlertModal from '../components/AlertModal';
@@ -106,6 +107,7 @@ function Main() {
   const [selected, setSelected] = useState<boolean>(false);
   const [likedPosts, setLikedPosts] = useRecoilState<number[]>(likedProducts);
   const category = useRecoilValue(selectCategory);
+  const token = useRecoilValue(jwtToken);
 
   const [address, setAddress] = useState('');
 
@@ -113,12 +115,16 @@ function Main() {
     if (searchValue) {
       setIsLoading(true);
       axios
-        .get(`${host}/product/address/${searchValue}`, config)
+        .get(`${host}/product/address/${searchValue}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        })
         .then((res) => {
           if (res.status === 200) {
-            console.log(`${host}/product/address/${searchValue}`, res.data);
             setMainSearch(res.data);
-            console.log(res.data);
             if (login && res.data.likes) {
               const likes = res.data.likes.map(
                 (obj: { posts_id: number }) => obj.posts_id,

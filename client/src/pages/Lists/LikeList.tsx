@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, rem, flex, textDecorationNone, config } from '../../common';
+import { color, rem, flex, textDecorationNone } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Button } from '../../components/Button';
 import emptyHeart from '../../assets/pictures/emptyHeart.svg';
@@ -14,6 +14,7 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { host } from '../../common';
 import { LikePost } from './interface';
+import { jwtToken } from '../../Atom';
 
 const img = css`
   margin-top: ${rem(51)};
@@ -26,10 +27,17 @@ interface Likes {
 function LikeList() {
   const [likeLists, setLikeLists] = useState<Likes>({ like: [] });
   const [modalShow, setModalShow] = useState(false);
+  const token = useRecoilValue(jwtToken);
 
   useEffect(() => {
     axios
-      .get(`${host}/userinfo/product/like`, config)
+      .get(`${host}/userinfo/product/like`, {
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      })
       .then((res) => {
         setLikeLists(res.data);
       })

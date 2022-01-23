@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, rem, flex, config } from '../../common';
+import { color, rem, flex } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Button } from '../../components/Button';
 import emptyLend from '../../assets/pictures/emptyLend.svg';
@@ -12,6 +12,7 @@ import ConfirmLend from '../../components/ConfirmLend';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   forceRender,
+  jwtToken,
   showCompleteModal,
   showConfirmModal,
   showReviewModal,
@@ -68,6 +69,7 @@ function LendList() {
   const [reservationStatus, setReservationStatus] = useState(0);
   const [userId, setUserId] = useState(0);
   const forceRenderEX = useRecoilValue(forceRender);
+  const token = useRecoilValue(jwtToken);
   const button = ['예약 수락', '반납 대기 중', '반납 확인', '회수 완료'];
   const printStatusText = (status: number) => button[status - 1];
   const onButtonClick = (id: number, status: number, userId: number) => {
@@ -90,7 +92,13 @@ function LendList() {
 
   useEffect(() => {
     axios
-      .get(`${host}/userinfo/product/lend`, config)
+      .get(`${host}/userinfo/product/lend`, {
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      })
       .then((res) => {
         const sortedData = res.data['lend'].sort(
           (a: any, b: any) => b.reservation_id - a.reservation_id,

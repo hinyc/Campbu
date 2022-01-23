@@ -35,6 +35,7 @@ import {
   showReviewModal,
   showSubmitModal,
   chattingRoomId,
+  jwtToken,
 } from '../../Atom';
 import io from 'socket.io-client';
 import axios from 'axios';
@@ -125,7 +126,7 @@ function Chat() {
   const [posts, setPosts] = useState<any>({});
   const [socket, setSocket] = useState<any>();
   const [chatCount, setChatCount] = useRecoilState<chatNum>(chatsNum);
-
+  const token = useRecoilValue(jwtToken);
   const [loginUser, setLoginUser] = useRecoilState(loginUserInfo);
   const [postUserId, setPostUserId] = useState(0);
   const [reservationUserId, setReservationUserId] = useState(0);
@@ -192,55 +193,61 @@ function Chat() {
   };
 
   useEffect(() => {
-    axios
-      .get(`${host}/chat/chatRoom`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true,
-      })
-      .then((res: any) => {
-        const chatIds = res.data.chat.map((chat: any) => {
-          return chat.id;
-        });
-        const ids = JSON.stringify(chatIds);
-        const newSocket = io('http://localhost:5050', {
-          query: { ids },
-        });
-        setSocket(newSocket);
-        const sortedData = res.data.chat.sort((a: any, b: any) => b.id - a.id);
-        setChatRooms(sortedData);
-        setUserNickName(res.data.nickName);
+    if (token) {
+      axios
+        .get(`${host}/chat/chatRoom`, {
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        })
+        .then((res: any) => {
+          const chatIds = res.data.chat.map((chat: any) => {
+            return chat.id;
+          });
+          const ids = JSON.stringify(chatIds);
+          const newSocket = io(host, {
+            query: { ids },
+          });
+          setSocket(newSocket);
+          const sortedData = res.data.chat.sort(
+            (a: any, b: any) => b.id - a.id,
+          );
+          setChatRooms(sortedData);
+          setUserNickName(res.data.nickName);
 
-        const saveRecipientInfo = sortedData.map((obj: any) => {
-          return {
-            nickname: obj.recipient_nickname,
-            img: obj.recipient_img,
-          };
-        });
-
-        const saveSenderInfo = saveRecipientInfo.concat(
-          sortedData.map((obj: any) => {
+          const saveRecipientInfo = sortedData.map((obj: any) => {
             return {
-              nickname: obj.sender_nickname,
-              img: obj.sender_img,
+              nickname: obj.recipient_nickname,
+              img: obj.recipient_img,
             };
-          }),
-        );
+          });
 
-        const saveImageInfo = saveSenderInfo.reduce((acc: any, cur: any) => {
-          if (
-            acc.findIndex(({ nickname }: any) => nickname === cur.nickname) ===
-            -1
-          ) {
-            acc.push(cur);
-          }
-          return acc;
-        }, []);
+          const saveSenderInfo = saveRecipientInfo.concat(
+            sortedData.map((obj: any) => {
+              return {
+                nickname: obj.sender_nickname,
+                img: obj.sender_img,
+              };
+            }),
+          );
 
-        setChatRoomImage(saveImageInfo);
-      });
-  }, [forceRerender]);
+          const saveImageInfo = saveSenderInfo.reduce((acc: any, cur: any) => {
+            if (
+              acc.findIndex(
+                ({ nickname }: any) => nickname === cur.nickname,
+              ) === -1
+            ) {
+              acc.push(cur);
+            }
+            return acc;
+          }, []);
+
+          setChatRoomImage(saveImageInfo);
+        });
+    }
+  }, [forceRerender, token]);
 
   // useEffect((): any => {
   //   const newSocket = io('http://localhost:5050', {
@@ -290,6 +297,7 @@ function Chat() {
         .get(`${host}/chat/message/${id}`, {
           headers: {
             'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         })
@@ -347,7 +355,6 @@ function Chat() {
       inline: 'start',
     });
   }, [chatting]);
-  console.log('chatCount', chatCount['Room6']);
   return (
     <>
       {confirm && userLend && posts.reservation_status === 1 && (

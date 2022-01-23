@@ -77,7 +77,10 @@ function ProfileDropdown() {
         <Link
           to="/lists/chat"
           css={textDecorationNone}
-          onClick={resetIsShowModal}
+          onClick={() => {
+            resetIsShowModal();
+            resetIsNavOn();
+          }}
         >
           <li
             css={[

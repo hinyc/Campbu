@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, rem, flex, host, config } from '../../common';
+import { color, rem, flex, host } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Button } from '../../components/Button';
 import emptyWriting from '../../assets/pictures/emptyWriting.svg';
@@ -12,6 +12,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { MyPost } from './interface';
+import { jwtToken } from '../../Atom';
 
 const img = css`
   margin-top: ${rem(21)};
@@ -24,10 +25,17 @@ interface Resists {
 function ResistList() {
   const [resistLists, setResistLists] = useState<Resists>({ post: [] });
   const [modalShow, setModalShow] = useState(false);
+  const token = useRecoilValue(jwtToken);
 
   useEffect(() => {
     axios
-      .get(`${host}/userinfo/product/post`, config)
+      .get(`${host}/userinfo/product/post`, {
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      })
       .then((res) => setResistLists(res.data))
       .catch((err) => console.error(err));
   }, []);

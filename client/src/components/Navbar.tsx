@@ -21,7 +21,7 @@ import {
   navbarOn,
   jwtToken,
 } from '../Atom';
-import { color, hover, rem, shadow } from '../common';
+import { color, host, hover, rem, shadow } from '../common';
 
 import { Button } from './Button';
 import LoginModal from './LoginModal';
@@ -61,7 +61,6 @@ function Navbar() {
   const setToken = useSetRecoilState(jwtToken);
   const token = useRecoilValue(jwtToken);
 
-  console.log('token', token);
   const onClick = () => {
     setIsShowModal(!isShowModal);
   };
@@ -101,19 +100,17 @@ function Navbar() {
   }, [setSelectCategory]);
 
   useEffect(() => {
-    const newSocket = io('http://localhost:5050');
+    const newSocket = io(host);
     setSocket(newSocket);
   }, [setIsLogin]);
 
   useEffect(() => {
     if (mesId !== chatRoomId && roomId !== '' && mesId !== undefined) {
-      console.log('roomId', roomId);
       setChatNum((chatNum) => ({
         ...chatNum,
         total: chatNum.total + 1,
         [roomId]: chatNum[roomId] + 1,
       }));
-      console.log('chatNum', chatNum);
     }
   }, [mesDate]);
 

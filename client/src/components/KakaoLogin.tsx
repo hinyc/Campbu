@@ -61,7 +61,6 @@ export default function KakaoLogin() {
       });
   };
   const getUserInfo = async (accessToken: unknown) => {
-    console.log('location');
     if (accessToken !== '') {
       await axios
         .get(`${host}/user/kakao`, {
@@ -69,7 +68,6 @@ export default function KakaoLogin() {
           withCredentials: true,
         })
         .then((res) => {
-          console.log(res);
           if (res.status === 200) {
             setShowLogin(false);
             setIsLogin(true);
@@ -101,6 +99,7 @@ export default function KakaoLogin() {
               .then((res: any) => {
                 const chatIds = res.data.chat.map((chat: any) => {
                   const roomId = 'Room' + String(chat.id);
+
                   if (!(roomId in chatNum)) {
                     setChatNum((chatNum) => ({
                       ...chatNum,
@@ -111,7 +110,7 @@ export default function KakaoLogin() {
                 });
                 const ids = JSON.stringify(chatIds);
                 setChatIds(ids);
-                io('http://localhost:5050', {
+                io(host, {
                   query: { ids },
                 });
               });

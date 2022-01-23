@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { color, config, host, rem, shadow } from '../common';
+import { color, host, rem, shadow } from '../common';
 import FillHeart from '../assets/FillHeart.svg';
 import EmptyHeart from '../assets/EmptyHeart.svg';
 import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { isLogin, showLoginModal } from '../Atom';
+import { isLogin, jwtToken, showLoginModal } from '../Atom';
 import axios from 'axios';
 
 const like = css`
@@ -55,6 +55,7 @@ function LikeSymbol(props: LikeProps) {
   const loginUser = useRecoilValue<boolean>(isLogin);
   const [fillHeart, setFillHeart] = useState<boolean>(isFill);
   const [countHeart, setCountHeart] = useState<number>(count);
+  const token = useRecoilValue(jwtToken);
 
   useEffect(() => {
     setFillHeart(isFill);
@@ -64,7 +65,17 @@ function LikeSymbol(props: LikeProps) {
   const onHeartClick = () => {
     if (loginUser) {
       axios
-        .post(`${host}/user/like`, { post_id: postId }, config)
+        .post(
+          `${host}/user/like`,
+          { post_id: postId },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+          },
+        )
         .then((res) => {
           if (res.status === 201) {
             if (fillHeart) {
