@@ -245,3 +245,7 @@ export const selectCategory = atom<string>({
 
 //? navbarOn/Off
 export const navbarOn = atom<boolean>({ key: 'navbarOn', default: true });
+
+//? accessToken
+
+export const accessToken = atom<string>({ key: 'accessToken', default: '' });
