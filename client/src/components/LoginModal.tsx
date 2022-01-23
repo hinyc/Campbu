@@ -21,7 +21,7 @@ import {
   allChatRoomId,
   showModal,
   navbarOn,
-  accessToken,
+  jwtToken,
 } from '../Atom';
 import { useState } from 'react';
 import axios from 'axios';
@@ -129,7 +129,7 @@ function LoginModal() {
   const setLoginUserInfo = useSetRecoilState(loginUserInfo);
   const [chatNum, setChatNum] = useRecoilState(chatsNum);
   const resetIsNavOn = useResetRecoilState(navbarOn);
-  const [token, setToken] = useRecoilState(accessToken);
+  const setToken = useSetRecoilState(jwtToken);
   const navigate = useNavigate();
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
   const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?scope=openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20&response_type=code&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URI}&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}`;
@@ -199,6 +199,7 @@ function LoginModal() {
           setLoginUserInfo(userinfo);
           const newToken: string = res.data.token;
           setToken(newToken);
+          localStorage.setItem('token', newToken);
 
           localStorage.setItem('isLogin', 'true');
           localStorage.setItem('userInfo', JSON.stringify(userinfo));

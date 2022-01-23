@@ -248,4 +248,4 @@ export const navbarOn = atom<boolean>({ key: 'navbarOn', default: true });
 
 //? accessToken
 
-export const accessToken = atom<string>({ key: 'accessToken', default: '' });
+export const jwtToken = atom<string>({ key: 'jwtToken', default: '' });

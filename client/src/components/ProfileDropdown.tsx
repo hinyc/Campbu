@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useResetRecoilState, useSetRecoilState, useRecoilState } from 'recoil';
 import {
   isLogin,
+  jwtToken,
   likedProducts,
   loginUserInfo,
   navbarOn,
@@ -52,6 +53,7 @@ function ProfileDropdown() {
   const resetIsShowModal = useResetRecoilState(showModal);
   const resetLikedPosts = useResetRecoilState(likedProducts);
   const resetIsNavOn = useResetRecoilState(navbarOn);
+  const resetToken = useResetRecoilState(jwtToken);
 
   const logout = () => {
     setIsLogin(false);
@@ -60,8 +62,10 @@ function ProfileDropdown() {
       .then((res: any) => {
         localStorage.removeItem('isLogin');
         localStorage.removeItem('userInfo');
+        localStorage.removeItem('token');
         resetLoginUserInfo();
         resetLikedPosts();
+        resetToken();
         navigate('/');
       })
       .catch((err) => console.error(err));

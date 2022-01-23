@@ -19,6 +19,7 @@ import {
   selectAddress,
   selectCategory,
   navbarOn,
+  jwtToken,
 } from '../Atom';
 import { color, hover, rem, shadow } from '../common';
 
@@ -57,7 +58,10 @@ function Navbar() {
   const setSelectCategory = useSetRecoilState(selectCategory);
   const showSignup = useRecoilValue(showSignupModal);
   const setNavOn = useSetRecoilState(navbarOn);
+  const setToken = useSetRecoilState(jwtToken);
+  const token = useRecoilValue(jwtToken);
 
+  console.log('token', token);
   const onClick = () => {
     setIsShowModal(!isShowModal);
   };
@@ -112,6 +116,13 @@ function Navbar() {
       console.log('chatNum', chatNum);
     }
   }, [mesDate]);
+
+  useEffect(() => {
+    const isToken = localStorage.getItem('token');
+    if (isToken) {
+      setToken(isToken);
+    }
+  }, [setToken]);
 
   socket?.on('receive-message', (message: any) => {
     const roomId = 'Room' + String(message.id);
