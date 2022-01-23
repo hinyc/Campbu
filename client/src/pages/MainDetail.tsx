@@ -616,10 +616,10 @@ function DetailView() {
                     style={{ color: `#b8b8b8` }}
                   >{`${postInfo.posts.rental_fee.toLocaleString('ko-KR')} × ${
                     totalRentalDates.length - 1
-                  }일`}</span>
+                  }박 ${totalRentalDates.length}일`}</span>
                   <span>{` ${(
-                    postInfo.posts.rental_fee * totalRentalDates.length -
-                    1
+                    postInfo.posts.rental_fee *
+                    (totalRentalDates.length - 1)
                   ).toLocaleString('ko-KR')} 원`}</span>
                 </>
               ) : (
