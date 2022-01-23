@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import Reservation from '../../components/Reservation';
 import { css, keyframes } from '@emotion/react';
-import { color, rem, flex, host, config } from '../../common';
+import { color, rem, flex, host } from '../../common';
 import ListTab from '../../components/ListTab';
 import { Link, useNavigate } from 'react-router-dom';
 import { link, visit } from './tab';
@@ -11,6 +11,7 @@ import { container, section, message } from './tab';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   forceRender,
+  jwtToken,
   showCompleteModal,
   showConfirmModal,
   showReviewModal,
@@ -62,7 +63,7 @@ function BorrowList() {
   const [reservationStatus, setReservationStatus] = useState(0);
   const [userId, setUserId] = useState(0);
   const forceRenderEX = useRecoilValue(forceRender);
-
+  const token = useRecoilValue(jwtToken);
   const printStatusText = (status: number) => button[status - 1];
   const onButtonClick = (id: number, status: number, userId: number) => {
     setReservationId(id);
@@ -85,7 +86,13 @@ function BorrowList() {
   useEffect(() => {
     const load = async () => {
       await axios
-        .get(`${host}/userinfo/product/borrow`, config)
+        .get(`${host}/userinfo/product/borrow`, {
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        })
         .then((res) => {
           const sortedData = res.data['borrow'].sort(
             (a: any, b: any) => b.reservation_id - a.reservation_id,

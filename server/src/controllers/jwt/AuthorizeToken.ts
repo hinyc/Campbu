@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 export async function authorizeToken(req: Request, res: Response) {
-  const JWT: string = req.cookies.jwt;
+  const JWT = req.headers.authorization?.split(' ')[1];
 
   const data = jwt.verify(
     JWT,

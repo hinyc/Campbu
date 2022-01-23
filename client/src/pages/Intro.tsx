@@ -9,7 +9,6 @@ import {
   host,
   addressAPI,
   absolute,
-  config,
   confirm,
   flexVertical,
   flexBetween,
@@ -154,12 +153,6 @@ const limitSize = css`
   min-width: ${rem(950)};
 `;
 const code = new URL(window.location.href).searchParams.get('code');
-
-if (code) {
-  console.log('코드있다');
-  console.log('code', code);
-  console.log('axios요청 보내기 ?');
-}
 
 function Intro() {
   const navigation = useNavigate();

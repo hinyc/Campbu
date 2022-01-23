@@ -21,6 +21,7 @@ import { useState, useEffect } from 'react';
 import {
   forceRender,
   isLogin,
+  jwtToken,
   likedProducts,
   loginUserInfo,
   showCompleteModal,
@@ -156,12 +157,6 @@ export const reqMsgStyle = css`
 `;
 
 const API = `${host}/userinfo/account`;
-const config = {
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true,
-};
 
 function Mypage() {
   //전역상태
@@ -181,6 +176,7 @@ function Mypage() {
   const [reqState, setReqState] = useState<string>('ok');
   const resetLoginUserInfo = useResetRecoilState(loginUserInfo);
   const resetLikedPosts = useResetRecoilState(likedProducts);
+  const token = useRecoilValue(jwtToken);
 
   const setLoginUserInfo = useSetRecoilState(loginUserInfo);
   const [selectImgFile, setSelectImgFile] = useState<any>();
@@ -192,24 +188,31 @@ function Mypage() {
   useEffect(() => {
     const API = `${host}/userinfo/account`;
 
-    axios.get(API, config).then((res) => {
-      const userinfo = res.data;
-      console.log(userinfo.users.users_img);
-      setEarlyImgUrl(userinfo.users.users_img);
-      setUserImg(userinfo.users.users_img);
-      setCurrentNickName(userinfo.users.nickname);
-      setEmail(userinfo.users.email);
-      //받은 review 목록
-      let tempReviews: reviewsType = [...reviews];
+    axios
+      .get(API, {
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      })
+      .then((res) => {
+        const userinfo = res.data;
+        setEarlyImgUrl(userinfo.users.users_img);
+        setUserImg(userinfo.users.users_img);
+        setCurrentNickName(userinfo.users.nickname);
+        setEmail(userinfo.users.email);
+        //받은 review 목록
+        let tempReviews: reviewsType = [...reviews];
 
-      userinfo.reviews.forEach((el: any) => {
-        tempReviews[el.reviews_id - 1] = {
-          ...tempReviews[el.reviews_id - 1],
-          count: el.count,
-        };
+        userinfo.reviews.forEach((el: any) => {
+          tempReviews[el.reviews_id - 1] = {
+            ...tempReviews[el.reviews_id - 1],
+            count: el.count,
+          };
+        });
+        setGetReviews(tempReviews);
       });
-      setGetReviews(tempReviews);
-    });
   }, []);
 
   interface reqMsgType {
@@ -234,14 +237,11 @@ function Mypage() {
         .get(`${host}/user/signup?nickname=${nickname}`)
         .then((res) => {
           if (res.status === 200) {
-            console.log(`API ${host}/user/signup?nickname=${nickname}`);
-            console.log('닉네임 사용가능', setNickDupliacte(true));
             setReqState('ok');
           }
         })
         .catch((err) => {
           setNickDupliacte(false);
-          console.log('닉네임 중복', setNickDupliacte(false));
         });
     }
   };
@@ -291,7 +291,13 @@ function Mypage() {
       };
 
       axios
-        .patch(API, data, config)
+        .patch(API, data, {
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        })
         .then((res: any) => {
           interface loginUserInfoType {
             created_at: string;
@@ -324,23 +330,25 @@ function Mypage() {
   };
 
   const deleteAccount = () => {
-    console.log('삭제요청 axios.delete', API);
-
     setIsLogin(false);
     axios
       .get(`${host}/user/logout`)
       .then((res: any) => {
-        console.log(res.status);
         localStorage.removeItem('isLogin');
         localStorage.removeItem('userInfo');
         resetLoginUserInfo();
         resetLikedPosts();
         axios
-          .delete(API, config)
+          .delete(API, {
+            headers: {
+              'Content-Type': 'application/json',
+              authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+          })
           .then((res) => {
             if (res.status === 200) {
               deleteS3Img(earlyImgUrl);
-              console.log('탈퇴완료');
             }
           })
           .catch((err) => {

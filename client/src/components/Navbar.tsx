@@ -19,8 +19,9 @@ import {
   selectAddress,
   selectCategory,
   navbarOn,
+  jwtToken,
 } from '../Atom';
-import { color, hover, rem, shadow } from '../common';
+import { color, host, hover, rem, shadow } from '../common';
 
 import { Button } from './Button';
 import LoginModal from './LoginModal';
@@ -57,6 +58,8 @@ function Navbar() {
   const setSelectCategory = useSetRecoilState(selectCategory);
   const showSignup = useRecoilValue(showSignupModal);
   const setNavOn = useSetRecoilState(navbarOn);
+  const setToken = useSetRecoilState(jwtToken);
+  const token = useRecoilValue(jwtToken);
 
   const onClick = () => {
     setIsShowModal(!isShowModal);
@@ -89,27 +92,34 @@ function Navbar() {
   }, [setSelectAddress]);
   useEffect(() => {
     const category = localStorage.getItem('category');
-    if (category) {
+    if (!category) {
+      setSelectCategory('All');
+    } else {
       setSelectCategory(category);
     }
   }, [setSelectCategory]);
 
   useEffect(() => {
-    const newSocket = io('http://localhost:5050');
+    const newSocket = io(host);
     setSocket(newSocket);
   }, [setIsLogin]);
 
   useEffect(() => {
     if (mesId !== chatRoomId && roomId !== '' && mesId !== undefined) {
-      console.log('roomId', roomId);
       setChatNum((chatNum) => ({
         ...chatNum,
         total: chatNum.total + 1,
         [roomId]: chatNum[roomId] + 1,
       }));
-      console.log('chatNum', chatNum);
     }
   }, [mesDate]);
+
+  useEffect(() => {
+    const isToken = localStorage.getItem('token');
+    if (isToken) {
+      setToken(isToken);
+    }
+  }, [setToken]);
 
   socket?.on('receive-message', (message: any) => {
     const roomId = 'Room' + String(message.id);

@@ -86,8 +86,14 @@ const reset = css`
 `;
 
 const pointer = css`
+  transition: 0.1s;
+  user-select: none;
   :hover {
     cursor: pointer;
+    user-select: none;
+  }
+  :active {
+    opacity: 0.3;
   }
 `;
 

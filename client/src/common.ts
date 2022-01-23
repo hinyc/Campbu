@@ -123,12 +123,12 @@ export const calCampbuIndicator = (reviews: reviewsType) => {
 };
 
 //axios
-export const config = {
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true,
-};
+// export const config = {
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+//   withCredentials: true,
+// };
 
 //? aws s3
 const region = 'ap-northeast-2';
@@ -155,7 +155,6 @@ export function deleteS3Img(url: string) {
       if (err) {
         throw err;
       }
-      console.log('s3 deleteObject ', data);
     },
   );
 }
@@ -167,7 +166,6 @@ export function deleteS3Imgs(
     Key: string;
   }[],
 ) {
-  console.log('obj', obj);
   const params = {
     Bucket: bucketName,
     Delete: {
@@ -175,7 +173,6 @@ export function deleteS3Imgs(
       Quiet: false,
     },
   };
-  console.log('params', params);
   s3.deleteObjects(params, function (err, data) {
     if (err) console.log(err, err.stack);
     else console.log(data);

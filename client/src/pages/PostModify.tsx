@@ -8,7 +8,6 @@ import {
   rem,
   relative,
   hidden,
-  config,
   host,
   deleteS3Img,
   deleteS3Imgs,
@@ -27,6 +26,7 @@ import {
   imgFile,
   post_id,
   loginUserInfo,
+  jwtToken,
 } from '../Atom';
 import axios from 'axios';
 import SelectAddressList from '../components/SelectAddress';
@@ -152,7 +152,6 @@ const UploadImg = () => {
     });
 
     const imageUrl = url.split('?')[0];
-    console.log(imageUrl);
     setImageUrls([...imageUrls, imageUrl]);
   };
 
@@ -229,16 +228,21 @@ export const PostModify = () => {
   const [reqState, setReqState] = useState<string>('ok');
   const [isComplete, setIsComplete] = useState(false);
   const [postUserId, setPostUserId] = useState<number>(0);
+  const token = useRecoilValue(jwtToken);
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('postId', postId);
-
     if (postId) {
       const API = `${host}/product/post/${postId}`;
 
       axios
-        .get(API, config)
+        .get(API, {
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        })
         .then((res) => {
           interface postInfoType {
             address: string;
@@ -365,7 +369,13 @@ export const PostModify = () => {
     const API = `${host}/post/${postId}`;
     if (postId && userInfo.id === postUserId) {
       axios
-        .patch(API, data, config)
+        .patch(API, data, {
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        })
         .then((res: any) => {
           if (res.status === 200) {
             setIsComplete(true);
@@ -379,9 +389,14 @@ export const PostModify = () => {
     if (postId && userInfo.id === postUserId) {
       const API = `${host}/product/post/${postId}`;
       axios
-        .delete(API, config)
+        .delete(API, {
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        })
         .then((res) => {
-          console.log(res.status);
           setPostId(0);
         })
         .catch((err) => console.log(err));

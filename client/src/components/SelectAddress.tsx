@@ -20,7 +20,8 @@ const addressListStyle = css`
 
 const contentStyle = css`
   font-size: 0.875rem;
-  padding: 0.7rem 0.75rem;
+  line-height: 1rem;
+  padding: 0.3rem 0.75rem;
   transition: 0.1s;
   :hover {
     background-color: #f0f0f0;

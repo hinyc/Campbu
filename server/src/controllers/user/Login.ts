@@ -33,10 +33,7 @@ export default async (req: Request, res: Response) => {
         return el.posts_id;
       });
 
-      return res
-        .status(200)
-        .cookie('jwt', token, { httpOnly: true })
-        .json({ user: userInfo, likes: likesId });
+      return res.status(200).json({ user: userInfo, likes: likesId, token });
     } else {
       return res.status(404).json({ message: 'User not exists' });
     }

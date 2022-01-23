@@ -2,7 +2,6 @@
 import {
   calCampbuIndicator,
   color,
-  config,
   flexBetween,
   flexVertical,
   host,
@@ -29,6 +28,7 @@ import {
   endDate,
   isLogin,
   isSelectStart,
+  jwtToken,
   likedProducts,
   loginUserInfo,
   post_id,
@@ -235,16 +235,22 @@ function DetailView() {
   const [postInfo, setPostInfo] = useState<postInfoType>(dummyData);
   const [selectImgNum, setSelectImgNum] = useState<number>(0);
   const [isLikePost, setIsLikePost] = useState(false);
+  const token = useRecoilValue(jwtToken);
   useEffect(() => {
     if (postId) {
       const API = `${host}/product/post/${postId}`;
 
       axios
-        .get(API, config)
+        .get(API, {
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        })
         .then((res: any) => {
           const postInfo = res.data;
           setPostInfo(postInfo);
-          console.log(res);
           let reservations: string[] = [];
           postInfo.reservations.forEach((el: any) => {
             reservations = [...reservations, ...el.reservation_dates];
@@ -266,7 +272,13 @@ function DetailView() {
           });
 
           axios
-            .get(`${host}/product/address/${postInfo.posts.address}`, config)
+            .get(`${host}/product/address/${postInfo.posts.address}`, {
+              headers: {
+                'Content-Type': 'application/json',
+                authorization: `Bearer ${token}`,
+              },
+              withCredentials: true,
+            })
             .then((res) => {
               if (res.status === 200) {
                 const likes = res.data.likes;
@@ -312,14 +324,17 @@ function DetailView() {
       };
       if (start && end) {
         axios
-          .post(API, data, config)
+          .post(API, data, {
+            headers: {
+              'Content-Type': 'application/json',
+              authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+          })
           .then((res) => {
-            console.log(res.data);
             setCompleteModal(true);
           })
           .catch((err) => console.log(err));
-      } else {
-        console.log('대여일,반납일을 선택하세요');
       }
     } else {
       setShowLoginModal(true);
@@ -616,10 +631,10 @@ function DetailView() {
                     style={{ color: `#b8b8b8` }}
                   >{`${postInfo.posts.rental_fee.toLocaleString('ko-KR')} × ${
                     totalRentalDates.length - 1
-                  }일`}</span>
+                  }박 ${totalRentalDates.length}일`}</span>
                   <span>{` ${(
-                    postInfo.posts.rental_fee * totalRentalDates.length -
-                    1
+                    postInfo.posts.rental_fee *
+                    (totalRentalDates.length - 1)
                   ).toLocaleString('ko-KR')} 원`}</span>
                 </>
               ) : (

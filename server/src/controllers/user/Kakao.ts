@@ -55,10 +55,7 @@ export default {
           const userInfo = await usersRepository.findOne({
             email: email,
           });
-          return res
-            .status(201)
-            .cookie('jwt', accessToken, { httpOnly: true })
-            .json({ user: userInfo });
+          return res.status(201).json({ user: userInfo, token: accessToken });
         } else {
           await usersRepository.update(
             {
@@ -82,8 +79,7 @@ export default {
           });
           return res
             .status(200)
-            .cookie('jwt', accessToken, { httpOnly: true })
-            .json({ user: userInfo, likes: likesId });
+            .json({ user: userInfo, likes: likesId, token: accessToken });
         }
       });
   },
