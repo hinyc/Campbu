@@ -2,11 +2,15 @@
 import { css } from '@emotion/react';
 import axios from 'axios';
 import { useState } from 'react';
-import { useSetRecoilState } from 'recoil';
-import { showCompleteModal, showReviewModal, showSubmitModal } from '../Atom';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import {
+  jwtToken,
+  showCompleteModal,
+  showReviewModal,
+  showSubmitModal,
+} from '../Atom';
 import {
   color,
-  config,
   host,
   modalBackgroundStyle,
   rem,
@@ -54,13 +58,20 @@ interface Props {
 function ReviewModal({ userId }: Props) {
   const setReview = useSetRecoilState(showReviewModal);
   const setSubmit = useSetRecoilState(showSubmitModal);
+  const token = useRecoilValue(jwtToken);
   const [reviewId, setReviewId] = useState<number[]>([]);
   const onReviewSubmitClick = () => {
     axios
       .post(
         `${host}/user/review`,
         { user_id: userId, review_id: reviewId },
-        config,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        },
       )
       .then((res) => console.log(res.data))
       .catch((err) => console.error(err));

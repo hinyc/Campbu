@@ -17,8 +17,11 @@ import Chat from './pages/Lists/Chat';
 import KakaoLogin from './components/KakaoLogin';
 import GoogleLogin from './components/GoogleLogin';
 import PostModify from './pages/PostModify';
+import { navbarOn } from './Atom';
+import { useRecoilValue } from 'recoil';
 
 function App() {
+  const navOn = useRecoilValue(navbarOn);
   return (
     <Router>
       <div
@@ -32,7 +35,11 @@ function App() {
         `}
       >
         <div>
-          <Navbar />
+          {navOn ? (
+            <div>
+              <Navbar />
+            </div>
+          ) : null}
           <Routes>
             <Route path="/" element={<Intro />} />
             <Route path="/main" element={<Main />} />
@@ -49,9 +56,11 @@ function App() {
             <Route path="/oauth/google/callback" element={<GoogleLogin />} />
           </Routes>
         </div>
-        <div>
-          <Footer />
-        </div>
+        {navOn ? (
+          <div>
+            <Footer />
+          </div>
+        ) : null}
       </div>
     </Router>
   );

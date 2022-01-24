@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
-import { isLogin, loginUserInfo, showLoginModal } from '../Atom';
+import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
+import {
+  allChatRoomId,
+  chatsNum,
+  isLogin,
+  jwtToken,
+  loginUserInfo,
+  navbarOn,
+  showLoginModal,
+  showModal,
+} from '../Atom';
+import { io } from 'socket.io-client';
 import { host } from '../common';
 
 export default function KakaoLogin() {
@@ -11,6 +21,12 @@ export default function KakaoLogin() {
   const [accessToken, setAccessToken] = useState('');
   const [refreshToken, setRefreshToken] = useState('');
   const setLoginUserInfo = useSetRecoilState(loginUserInfo);
+  const resetIsNavOn = useResetRecoilState(navbarOn);
+  const setToken = useSetRecoilState(jwtToken);
+  const setChatIds = useSetRecoilState(allChatRoomId);
+  const [chatNum, setChatNum] = useRecoilState(chatsNum);
+  const setIsShowModal = useSetRecoilState(showModal);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,7 +61,6 @@ export default function KakaoLogin() {
       });
   };
   const getUserInfo = async (accessToken: unknown) => {
-    console.log('location');
     if (accessToken !== '') {
       await axios
         .get(`${host}/user/kakao`, {
@@ -53,7 +68,6 @@ export default function KakaoLogin() {
           withCredentials: true,
         })
         .then((res) => {
-          console.log(res);
           if (res.status === 200) {
             setShowLogin(false);
             setIsLogin(true);
@@ -68,10 +82,40 @@ export default function KakaoLogin() {
 
             const userinfo: loginUserInfoType = res.data.user;
             setLoginUserInfo(userinfo);
-
+            const newToken: string = res.data.token;
+            setToken(newToken);
+            localStorage.setItem('token', newToken);
             localStorage.setItem('isLogin', 'true');
             localStorage.setItem('userInfo', JSON.stringify(userinfo));
-            console.log(res);
+
+            axios
+              .get(`${host}/chat/chatRoom`, {
+                headers: {
+                  'Content-Type': 'application/json',
+                  authorization: `Bearer ${newToken}`,
+                },
+                withCredentials: true,
+              })
+              .then((res: any) => {
+                const chatIds = res.data.chat.map((chat: any) => {
+                  const roomId = 'Room' + String(chat.id);
+
+                  if (!(roomId in chatNum)) {
+                    setChatNum((chatNum) => ({
+                      ...chatNum,
+                      [roomId]: 0,
+                    }));
+                  }
+                  return chat.id;
+                });
+                const ids = JSON.stringify(chatIds);
+                setChatIds(ids);
+                io(host, {
+                  query: { ids },
+                });
+              });
+            setIsShowModal(false);
+            resetIsNavOn();
             navigate('/main');
           }
         })

@@ -1,8 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { searchAddress, selectAddress, showAddressList } from '../Atom';
+import { useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
+import {
+  navbarOn,
+  searchAddress,
+  selectAddress,
+  showAddressList,
+} from '../Atom';
 import { color, rem, shadow } from '../common';
 
 const addressListStyle = css`
@@ -15,7 +20,8 @@ const addressListStyle = css`
 
 const contentStyle = css`
   font-size: 0.875rem;
-  padding: 0.7rem 0.75rem;
+  line-height: 1rem;
+  padding: 0.3rem 0.75rem;
   transition: 0.1s;
   :hover {
     background-color: #f0f0f0;
@@ -39,6 +45,7 @@ export default function SelectAddressList({
   const setSelectAddress = useSetRecoilState(selectAddress);
   const setSearchAddress = useSetRecoilState(searchAddress);
   const setShowAddress = useSetRecoilState(showAddressList);
+  const resetIsNavOn = useResetRecoilState(navbarOn);
 
   const navigate = useNavigate();
 
@@ -54,6 +61,7 @@ export default function SelectAddressList({
     localStorage.setItem('address', e.target.textContent);
     setSearchAddress([]);
     setShowAddress(false);
+    resetIsNavOn();
     navigate(`/main`);
     // setSelectAddress('');
   };

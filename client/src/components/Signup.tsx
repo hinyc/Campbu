@@ -182,7 +182,6 @@ function Signup() {
         })
         .catch((err) => {
           setNickDupliacte(false);
-          console.log('닉네임 중복', setNickDupliacte(false));
         });
     }
   };
@@ -193,11 +192,9 @@ function Signup() {
 
       axios.get(`${host}/user/signup?email=${email}`).then((res) => {
         if (res.status === 200) {
-          console.log(`API ${host}/user/signup?email=${email}`);
-          console.log('이메일 사용가능', setEmailDupliacte(true));
+          setEmailDupliacte(true);
         } else {
           setEmailDupliacte(false);
-          console.log('이메일 중복', setEmailDupliacte(false));
         }
       });
     }
@@ -217,7 +214,6 @@ function Signup() {
       password === confirmPassword &&
       acceptTerms
     ) {
-      console.log('회원가입 api 요청 gogo');
       const signUpData: {
         email: string;
         nickname: string;
@@ -228,8 +224,6 @@ function Signup() {
         password: password,
       };
 
-      console.log('API', `${host}/user/signup`);
-      console.log('body', signUpData);
       axios
         .post(`${host}/user/signup`, signUpData, {
           headers: {
@@ -237,12 +231,9 @@ function Signup() {
           },
         })
         .then((res) => {
-          console.log('signup ok');
           setSignupModal(false);
         })
         .catch((err) => console.log(err));
-    } else {
-      console.log('모든 정보를 입력하세요 api 요청 거절');
     }
   };
 

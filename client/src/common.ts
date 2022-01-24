@@ -93,8 +93,9 @@ export const reviews: { id: number; review: string }[] = [
   { id: 12, review: '욕설 등의 비매너' },
 ];
 
-export const host = 'http://localhost:5050';
-// 'http://ec2-3-35-49-186.ap-northeast-2.compute.amazonaws.com';
+
+export const host = 'https://campbuserver.cf';
+
 //주소요청 API
 export const addressAPI = `U01TX0FVVEgyMDIyMDExMDIxMjMzNTExMjExNzA=`;
 
@@ -124,12 +125,12 @@ export const calCampbuIndicator = (reviews: reviewsType) => {
 };
 
 //axios
-export const config = {
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true,
-};
+// export const config = {
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+//   withCredentials: true,
+// };
 
 //? aws s3
 const region = 'ap-northeast-2';
@@ -156,7 +157,6 @@ export function deleteS3Img(url: string) {
       if (err) {
         throw err;
       }
-      console.log('s3 deleteObject ', data);
     },
   );
 }
@@ -168,7 +168,6 @@ export function deleteS3Imgs(
     Key: string;
   }[],
 ) {
-  console.log('obj', obj);
   const params = {
     Bucket: bucketName,
     Delete: {
@@ -176,7 +175,6 @@ export function deleteS3Imgs(
       Quiet: false,
     },
   };
-  console.log('params', params);
   s3.deleteObjects(params, function (err, data) {
     if (err) console.log(err, err.stack);
     else console.log(data);

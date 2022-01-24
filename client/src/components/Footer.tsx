@@ -144,7 +144,7 @@ function Footer() {
       <div css={[divStyle, underStyle]}>
         <div css={lineStyle} />
         <p css={[textStyle, copyright]}>
-          © 2021 Copyright CampBu Inc. All rights reserved.
+          © 2022 Copyright CampBu Inc. All rights reserved.
         </p>
       </div>
     </footer>

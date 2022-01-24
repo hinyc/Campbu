@@ -1,18 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import {
-  color,
-  config,
-  host,
-  modalBackgroundStyle,
-  rem,
-  shadow,
-} from '../common';
+import { color, host, modalBackgroundStyle, rem, shadow } from '../common';
 import { Button } from './Button';
 import Input from './Input';
 import kakaoimg from '../assets/kakao.png';
 import googleimg from '../assets/google.png';
-import { useSetRecoilState, useRecoilState } from 'recoil';
+import { useSetRecoilState, useRecoilState, useResetRecoilState } from 'recoil';
 import {
   isLogin,
   loginUserInfo,
@@ -20,6 +13,8 @@ import {
   showSignupModal,
   allChatRoomId,
   showModal,
+  navbarOn,
+  jwtToken,
 } from '../Atom';
 import { useState } from 'react';
 import axios from 'axios';
@@ -126,6 +121,9 @@ function LoginModal() {
   const [reqMsgState, setReqMsgState] = useState('ok');
   const setLoginUserInfo = useSetRecoilState(loginUserInfo);
   const [chatNum, setChatNum] = useRecoilState(chatsNum);
+  const resetIsNavOn = useResetRecoilState(navbarOn);
+  const setToken = useSetRecoilState(jwtToken);
+  const navigate = useNavigate();
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
   const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?scope=openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20&response_type=code&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URI}&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}`;
   const setChatIds = useSetRecoilState(allChatRoomId);
@@ -169,11 +167,14 @@ function LoginModal() {
     }
 
     axios
-      .post(`${host}/user/login`, loginInfo, config)
+      .post(`${host}/user/login`, loginInfo, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      })
       .then((res) => {
-        console.log(res);
         if (res.status === 200) {
-          console.log('로그인성공');
           setShowLogin(false);
           setIsLogin(true);
           interface loginUserInfoType {
@@ -187,6 +188,9 @@ function LoginModal() {
 
           const userinfo: loginUserInfoType = res.data.user;
           setLoginUserInfo(userinfo);
+          const newToken: string = res.data.token;
+          setToken(newToken);
+          localStorage.setItem('token', newToken);
 
           localStorage.setItem('isLogin', 'true');
           localStorage.setItem('userInfo', JSON.stringify(userinfo));
@@ -195,6 +199,7 @@ function LoginModal() {
             .get(`${host}/chat/chatRoom`, {
               headers: {
                 'Content-Type': 'application/json',
+                authorization: `Bearer ${newToken}`,
               },
               withCredentials: true,
             })
@@ -211,15 +216,16 @@ function LoginModal() {
               });
               const ids = JSON.stringify(chatIds);
               setChatIds(ids);
-              io(`${host}`, {
+              io(host, {
                 query: { ids },
               });
             });
           setIsShowModal(false);
+          resetIsNavOn();
+          navigate('/main');
         }
       })
       .catch((res) => {
-        console.log(res);
         setReqMsgState('conflict');
       });
   };

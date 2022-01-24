@@ -8,7 +8,6 @@ import {
   rem,
   relative,
   hidden,
-  config,
   host,
   deleteS3Img,
 } from '../common';
@@ -24,6 +23,7 @@ import {
   showAddressList,
   preView,
   imgFile,
+  jwtToken,
 } from '../Atom';
 import axios from 'axios';
 import SelectAddressList from '../components/SelectAddress';
@@ -148,7 +148,6 @@ const UploadImg = () => {
     });
 
     const imageUrl = url.split('?')[0];
-    console.log(imageUrl);
     setImageUrls([...imageUrls, imageUrl]);
   };
 
@@ -221,6 +220,7 @@ export const Writing = () => {
   const [reqState, setReqState] = useState<string>('ok');
   const [isComplete, setIsComplete] = useState(false);
   const setImageUrls = useSetRecoilState(preView);
+  const token = useRecoilValue(jwtToken);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -328,7 +328,13 @@ export const Writing = () => {
     const API = `${host}/post/newpost`;
     console.log('포스트 등록요청');
     axios
-      .post(API, data, config)
+      .post(API, data, {
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      })
       .then((res: any) => {
         if (res.status === 200) {
           setIsComplete(true);
