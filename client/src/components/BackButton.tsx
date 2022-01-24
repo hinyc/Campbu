@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import { rem, color } from '../common';
 import Back from '../assets/Back.svg';
+import { useNavigate } from 'react-router-dom';
 
 const backButton = css`
   border: none;
@@ -18,8 +19,9 @@ const text = css`
 `;
 
 function BackButton() {
+  const navigation = useNavigate();
   return (
-    <button css={backButton}>
+    <button css={backButton} onClick={() => navigation('/main')}>
       <img src={Back} alt="뒤로가기" />
       <span css={text}>목록으로 돌아가기</span>
     </button>

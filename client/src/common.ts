@@ -1,3 +1,4 @@
+import aws from 'aws-sdk';
 import { css } from '@emotion/react';
 
 const rootPixel: number = 16;
@@ -72,26 +73,31 @@ export const inactive = css`
   :focus {
     outline: none;
   }
+  :hover {
+    cursor: not-allowed;
+  }
 `;
 
 export const reviews: { id: number; review: string }[] = [
-  { id: 1, review: '가까운 거래장소' },
-  { id: 2, review: '상세한 물품 설명' },
-  { id: 3, review: '합리적인 대여비' },
-  { id: 4, review: '질 좋은 물건' },
+  { id: 1, review: '질 좋은 물건' },
+  { id: 2, review: '합리적인 대여비' },
+  { id: 3, review: '깨끗한 반납' },
+  { id: 4, review: '상세한 물품 설명' },
   { id: 5, review: '정확한 시간 약속' },
   { id: 6, review: '빠른 답장' },
-  { id: 7, review: '욕설 등의 비매너' },
-  { id: 8, review: '실제와 다른 상품 설명' },
-  { id: 9, review: '비싼 대여비' },
-  { id: 10, review: '질 낮은 물건' },
-  { id: 11, review: '약속 시간에 지각' },
-  { id: 12, review: '느린 답장' },
+  { id: 7, review: '질 낮은 물건' },
+  { id: 8, review: '비싼 대여비' },
+  { id: 9, review: '반납 시 손상/훼손' },
+  { id: 10, review: '실제와 다른 상품 설명' },
+  { id: 11, review: '느린 답장 및 지각' },
+  { id: 12, review: '욕설 등의 비매너' },
 ];
 
-export const host = 'http://localhost:5050';
+
+export const host = 'https://campbuserver.cf';
+
 //주소요청 API
-export const adressAPI = `U01TX0FVVEgyMDIyMDExMDIxMjMzNTExMjExNzA=`;
+export const addressAPI = `U01TX0FVVEgyMDIyMDExMDIxMjMzNTExMjExNzA=`;
 
 export type reviewsType = {
   id: number;
@@ -117,3 +123,60 @@ export const calCampbuIndicator = (reviews: reviewsType) => {
       : positive - negative;
   return (100 + cal) / 100;
 };
+
+//axios
+// export const config = {
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+//   withCredentials: true,
+// };
+
+//? aws s3
+const region = 'ap-northeast-2';
+const bucketName = 'image-upload-storage-test';
+const accessKeyId = process.env.REACT_APP_AWS_ACCESS_KEY_ID;
+const secretAccessKey = process.env.REACT_APP_AWS_SECRET_ACCESS_KEY;
+
+const s3 = new aws.S3({
+  region,
+  accessKeyId,
+  secretAccessKey,
+  signatureVersion: 'v4',
+});
+// 단일 오브젝트 삭제
+export function deleteS3Img(url: string) {
+  const divUrl = url.split('/');
+  const key = divUrl[divUrl.length - 1];
+  s3.deleteObject(
+    {
+      Bucket: bucketName, // 사용자 버켓 이름
+      Key: key, // 버켓 내 경로
+    },
+    (err, data) => {
+      if (err) {
+        throw err;
+      }
+    },
+  );
+}
+
+// 여러 오브젝트 삭제
+
+export function deleteS3Imgs(
+  obj: {
+    Key: string;
+  }[],
+) {
+  const params = {
+    Bucket: bucketName,
+    Delete: {
+      Objects: obj,
+      Quiet: false,
+    },
+  };
+  s3.deleteObjects(params, function (err, data) {
+    if (err) console.log(err, err.stack);
+    else console.log(data);
+  });
+}

@@ -9,8 +9,8 @@ import categoryFire from '../assets/categoryFire.svg';
 import categoryPot from '../assets/categoryPot.svg';
 import categoryPack from '../assets/categoryPack.svg';
 import categoryTent from '../assets/categoryTent.svg';
-import { useSetRecoilState, useRecoilValue } from 'recoil';
-import { originalPosts, posts } from '../Atom';
+import { useSetRecoilState, useRecoilValue, useRecoilState } from 'recoil';
+import { originalPosts, posts, selectCategory } from '../Atom';
 import { Posts } from '../pages/Main';
 
 const ulStyle = css`
@@ -30,111 +30,123 @@ const categoryStyle = css`
   text-align: center;
   border-radius: ${rem(10)};
   box-shadow: ${shadow};
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   cursor: pointer;
+  transition: 0.1s;
   :hover {
     box-shadow: ${hover};
     border: 2px solid ${color.deep};
     background-color: white;
+    transition: 0.1s;
   }
+  :active {
+    opacity: 0.65;
+  }
+`;
+const selectStyle = css`
+  box-shadow: ${hover};
+  border: 2px solid ${color.deep};
+  background-color: white;
 `;
 
 const img = css`
   display: inline-block;
-  margin: 0 auto;
-  margin-top: ${rem(26)};
-  margin-bottom: ${rem(4)};
+  margin: 1.3rem auto 0 auto;
+  height: ${rem(63)};
 `;
 
 const text = css`
-  margin-top: ${rem(7)};
+  height: ${rem(20)};
+  margin-bottom: ${rem(7)};
 `;
 
 function Category() {
   const setFilteredPosts = useSetRecoilState<Posts>(posts);
   const introSearch = useRecoilValue<Posts>(originalPosts);
-  const onAllClick = () => {
-    setFilteredPosts(introSearch);
+  const [select, setSelect] = useRecoilState(selectCategory);
+
+  const selectCategoryHandler = (title: string) => {
+    if (title === '전체') {
+      setFilteredPosts(introSearch);
+    } else {
+      const filtered = introSearch.posts.filter(
+        (obj) => obj.category === title,
+      );
+      setFilteredPosts({ posts: filtered });
+    }
+    setSelect(title);
+    localStorage.setItem('category', title);
   };
 
-  const onPackageClick = () => {
-    const filtered = introSearch.posts.filter(
-      (obj) => obj.category === 'Package',
-    );
-    setFilteredPosts({ posts: filtered });
-  };
-
-  const onTentClick = () => {
-    const filtered = introSearch.posts.filter((obj) => obj.category === 'Tent');
-    setFilteredPosts({ posts: filtered });
-  };
-
-  const onGrillClick = () => {
-    const filtered = introSearch.posts.filter(
-      (obj) => obj.category === 'Grill',
-    );
-    setFilteredPosts({ posts: filtered });
-  };
-  const onChairClick = () => {
-    const filtered = introSearch.posts.filter(
-      (obj) => obj.category === 'Chair',
-    );
-    setFilteredPosts({ posts: filtered });
-  };
-  const onBagClick = () => {
-    const filtered = introSearch.posts.filter((obj) => obj.category === 'Bag');
-    setFilteredPosts({ posts: filtered });
-  };
-  const onPotClick = () => {
-    const filtered = introSearch.posts.filter((obj) => obj.category === 'Pot');
-    setFilteredPosts({ posts: filtered });
-  };
-  const onEtcClick = () => {
-    const filtered = introSearch.posts.filter((obj) => obj.category === 'Etc');
-    setFilteredPosts({ posts: filtered });
-  };
+  const catergorys = [
+    {
+      key: 'all',
+      title: '전체',
+      img: categoryAll,
+      alt: 'all products',
+    },
+    {
+      key: 'Package',
+      title: '패키지',
+      img: categoryPack,
+      alt: 'all products',
+    },
+    {
+      key: 'Tent',
+      title: '텐트/침낭',
+      img: categoryTent,
+      alt: 'tent',
+    },
+    {
+      key: 'Grill',
+      title: '그릴/버너',
+      img: categoryFire,
+      alt: 'grill/burner',
+    },
+    {
+      key: 'Chair',
+      title: '의자/테이블',
+      img: categoryChair,
+      alt: 'camping chair/table',
+    },
+    {
+      key: 'Bag',
+      title: '배낭/아이스박스',
+      img: categoryBag,
+      alt: 'bag/ice-box/portable-fridge',
+    },
+    {
+      key: 'Pot',
+      title: '취식용품',
+      img: categoryPot,
+      alt: 'pot/kettle/...',
+    },
+    {
+      key: 'Etc',
+      title: '기타',
+      img: categoryETC,
+      alt: 'etc...',
+    },
+  ];
 
   return (
     <ul css={ulStyle}>
-      <li key="all" css={categoryStyle} onClick={onAllClick}>
-        <img
-          src={categoryAll}
-          alt="all products"
-          css={[img, `margin-top: ${rem(28)}`]}
-        />
-        <div css={[text, `margin-top: ${rem(2)}`]}>전체</div>
-      </li>
-      <li key="Package" css={categoryStyle} onClick={onPackageClick}>
-        <img src={categoryPack} alt="all products" css={img} />
-        <div css={[text, `margin-top: ${rem(1)}`]}>패키지</div>
-      </li>
-      <li key="Tent" css={categoryStyle} onClick={onTentClick}>
-        <img src={categoryTent} alt="tent" css={img} />
-        <div>텐트/침낭</div>
-      </li>
-      <li key="Grill" css={categoryStyle} onClick={onGrillClick}>
-        <img
-          src={categoryFire}
-          alt="grill/burner"
-          css={[img, `margin-top: ${rem(28)}`]}
-        />
-        <div css={text}>그릴/버너</div>
-      </li>
-      <li key="Chair" css={categoryStyle} onClick={onChairClick}>
-        <img src={categoryChair} alt="camping chair/table" css={img} />
-        <div css={[text, `margin-top: ${rem(1)}`]}>의자/테이블</div>
-      </li>
-      <li key="Bag" css={categoryStyle} onClick={onBagClick}>
-        <img src={categoryBag} alt="bag/ice-box/portable-fridge" css={img} />
-        <div css={text}>배낭/아이스박스</div>
-      </li>
-      <li key="Pot" css={categoryStyle} onClick={onPotClick}>
-        <img src={categoryPot} alt="pot/kettle/..." css={img} />
-        <div css={[text, `margin-top: ${rem(4)}`]}>취식용품</div>
-      </li>
-      <li key="Etc" css={categoryStyle} onClick={onEtcClick}>
-        <img src={categoryETC} alt="etc..." css={img} />
-        <div css={[text, `margin-top: ${rem(5)}`]}>기타</div>
-      </li>
+      {catergorys.map((el) => {
+        return (
+          <li
+            key={el.key}
+            css={[categoryStyle, el.title === select ? selectStyle : null]}
+            onClick={() => {
+              selectCategoryHandler(el.title);
+            }}
+          >
+            <img draggable="false" src={el.img} alt={el.alt} css={[img]} />
+            <div css={[text]}>{el.title}</div>
+          </li>
+        );
+      })}
     </ul>
   );
 }

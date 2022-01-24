@@ -9,25 +9,41 @@ import { link, visit } from './tab';
 import { container, section, message } from './tab';
 import Product from '../../components/Product';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { likes, UserPost } from '../../Atom';
 import { useState } from 'react';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { host } from '../../common';
+import { LikePost } from './interface';
+import { jwtToken } from '../../Atom';
 
 const img = css`
   margin-top: ${rem(51)};
 `;
 
 interface Likes {
-  posts: UserPost[];
-  likes: {
-    id: number;
-    users_id: number;
-    posts_id: number;
-  }[];
+  like: LikePost[];
 }
 
 function LikeList() {
-  const likeLists = useRecoilValue<Likes>(likes);
+  const [likeLists, setLikeLists] = useState<Likes>({ like: [] });
   const [modalShow, setModalShow] = useState(false);
+  const token = useRecoilValue(jwtToken);
+
+  useEffect(() => {
+    axios
+      .get(`${host}/userinfo/product/like`, {
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      })
+      .then((res) => {
+        setLikeLists(res.data);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
   return (
     <>
       <ListTab />
@@ -46,33 +62,40 @@ function LikeList() {
         </Link>
       </nav>
       <div css={container}>
-        {likeLists['posts'].length === 0 ? (
-          <>
+        {likeLists['like'].length === 0 ? (
+          <div
+            style={{
+              padding: `${rem(50)} 0 ${rem(150)} 0`,
+            }}
+          >
             <img src={emptyHeart} alt="broken heart" css={img} />
             <p css={message}>
               찜한 목록이 없어요! <br />
               마음에 드는 캠핑용품을 찜하고 캠핑을 떠나보세요!
             </p>
-            <Button
-              text="캠핑 용품 보러 가기"
-              width={`${rem(180)}`}
-              height={`${rem(43)}`}
-              background="white"
-              color={`${color.mid}`}
-              border={`1px solid ${color.mid}`}
-              size={`${rem(14)}`}
-              cursor={'pointer'}
-              hover="80%"
-            />
-          </>
+            <Link to={'/main'}>
+              <Button
+                text="캠핑 용품 보러 가기"
+                width={`${rem(180)}`}
+                height={`${rem(43)}`}
+                background="white"
+                color={`${color.mid}`}
+                border={`1px solid ${color.mid}`}
+                size={`${rem(14)}`}
+                cursor={'pointer'}
+                hover="80%"
+              />
+            </Link>
+          </div>
         ) : (
           <section css={section}>
-            {likeLists['posts'].map((likeList: UserPost) => (
+            {likeLists['like'].map((likeList: LikePost, index: number) => (
               <Product
+                key={index}
                 count={likeList.likes_count}
                 isFill={true}
                 postId={likeList.id}
-                img_urls={likeList.img_urls}
+                img_urls={likeList.img_urls[0]}
                 address={likeList.address}
                 title={likeList.title}
                 deposit={likeList.deposit}

@@ -20,13 +20,13 @@ interface Props {
   cursor: string;
   hover?: string;
   postId: number;
-  img_urls: string;
+  img_urls: string[];
   address: string;
   title: string;
   deposit: number;
   rental_fee: number;
   reservation_dates: string[];
-  onButtonClick: any;
+  onButtonClick: () => void;
 }
 
 function Reservation(props: Props) {
@@ -46,11 +46,13 @@ function Reservation(props: Props) {
     reservation_dates,
     onButtonClick,
   } = props;
+
   const length = reservation_dates.length;
+
   return (
     <div css={post}>
-      <Link to={`${postId}`} css={textDecorationNone}>
-        <img src={img_urls} alt="product" css={img} />
+      <Link to={`/main/${postId}`} css={textDecorationNone}>
+        <img src={img_urls[0]} alt="product" css={img} />
         <div css={textContainer}>
           <span css={[span, moneyTitle, addressStyle]}>
             <img src={Here} alt="위치" style={{ marginRight: '4px' }} />

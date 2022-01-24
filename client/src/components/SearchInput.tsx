@@ -12,7 +12,9 @@ interface Props {
   placeholder: string;
   padding: string;
   margin: string;
-  onChange: any;
+  onChange: (e: any) => void;
+  value: string;
+  onKeyPress: (e: any) => void;
 }
 function SearchInput(props: Props) {
   const {
@@ -26,6 +28,8 @@ function SearchInput(props: Props) {
     padding,
     margin,
     onChange,
+    value,
+    onKeyPress,
   } = props;
   return (
     <input
@@ -55,6 +59,8 @@ function SearchInput(props: Props) {
       `}
       placeholder={text}
       onChange={onChange}
+      value={value}
+      onKeyPress={onKeyPress}
     />
   );
 }

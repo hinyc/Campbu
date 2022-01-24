@@ -10,9 +10,10 @@ import { likes } from './likes';
 import { posts } from './posts';
 import { reservation } from './reservation';
 import { users_reviews } from './users_reviews';
+import { chats } from './chats';
 
 @Entity()
-export class users {
+export default class users {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -22,7 +23,7 @@ export class users {
   @Column()
   nickname: string;
 
-  @Column({ select: false })
+  @Column({ select: false, nullable: true })
   password: string;
 
   @Column({ nullable: true })
@@ -52,4 +53,7 @@ export class users {
 
   @OneToMany((type) => reservation, (reservation) => reservation.users_id)
   reservation: reservation[];
+
+  @OneToMany((type) => chats, (chats) => chats.users_id)
+  chats: chats[];
 }

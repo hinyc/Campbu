@@ -6,9 +6,11 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
-import { users } from './users';
+import users from './users';
 import { posts } from './posts';
+import { chats } from './chats';
 
 @Entity()
 export class reservation {
@@ -44,4 +46,7 @@ export class reservation {
     referencedColumnName: 'id',
   })
   posts_id: posts;
+
+  @OneToMany((type) => chats, (chats) => chats.reservation_id)
+  chats: chats[];
 }

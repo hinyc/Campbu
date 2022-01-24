@@ -2,15 +2,17 @@
 import { css } from '@emotion/react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
-import { borrows, isLogin, lends, likes, resists } from '../Atom';
-import { host, rem, shadow, textDecorationNone } from '../common';
+import { useResetRecoilState, useSetRecoilState, useRecoilState } from 'recoil';
 import {
-  onResistClick,
-  onLikeClick,
-  onLendClick,
-  onBorrowClick,
-} from '../pages/Lists/axios';
+  isLogin,
+  jwtToken,
+  likedProducts,
+  loginUserInfo,
+  navbarOn,
+  showModal,
+} from '../Atom';
+import { host, rem, shadow, textDecorationNone } from '../common';
+import { chatsNum } from '../Atom';
 
 const box = css`
   width: ${rem(205)};
@@ -34,6 +36,7 @@ const li = css`
   padding: ${rem(11)} 0 ${rem(11)} ${rem(19)};
   :hover {
     background-color: #f0f0f0;
+    transition: 0.3s;
   }
 `;
 
@@ -43,80 +46,141 @@ const line = css`
 `;
 
 function ProfileDropdown() {
-  const setBorrowList = useSetRecoilState(borrows);
-  const setLendList = useSetRecoilState(lends);
-  const setLikeList = useSetRecoilState(likes);
-  const setResistList = useSetRecoilState(resists);
   const setIsLogin = useSetRecoilState(isLogin);
   const navigate = useNavigate();
+  const resetLoginUserInfo = useResetRecoilState(loginUserInfo);
+  const [chatNum, setChatNum] = useRecoilState(chatsNum);
+  const resetIsShowModal = useResetRecoilState(showModal);
+  const resetLikedPosts = useResetRecoilState(likedProducts);
+  const resetIsNavOn = useResetRecoilState(navbarOn);
+  const resetToken = useResetRecoilState(jwtToken);
 
   const logout = () => {
     setIsLogin(false);
-    axios.get(`${host}/user/logout`).then((res: any) => {
-      console.log(res.status);
-      navigate('/');
-    });
+    axios
+      .get(`${host}/user/logout`, { withCredentials: true })
+      .then((res: any) => {
+        localStorage.removeItem('isLogin');
+        localStorage.removeItem('userInfo');
+        localStorage.removeItem('token');
+        resetLoginUserInfo();
+        resetLikedPosts();
+        resetToken();
+        navigate('/');
+      })
+      .catch((err) => console.error(err));
   };
 
   return (
     <div css={box}>
       <ul css={ulStyle}>
-        <Link to="/lists/borrowlist" css={textDecorationNone}>
+        <Link
+          to="/lists/chat"
+          css={textDecorationNone}
+          onClick={() => {
+            resetIsShowModal();
+            resetIsNavOn();
+          }}
+        >
           <li
-            css={li}
-            onClick={() => {
-              // const result = onBorrowClick();
-              // console.log('result', result)
-              // setResistList(result);
-            }}
+            css={[
+              li,
+              css`
+                display: flex;
+              `,
+            ]}
           >
-            빌린 목록
+            메시지
+            {chatNum.total !== 0 ? (
+              <div
+                css={[
+                  css`
+                    width: ${rem(25)};
+                    height: ${rem(25)};
+                    border-radius: 50%;
+                    border: ${rem(2)} solid #ed662c;
+                    text-align: center;
+                    margin-left: ${rem(10)};
+                    font-size: ${rem(15)};
+                    line-height: ${rem(20)};
+                  `,
+                ]}
+              >
+                {chatNum.total}
+              </div>
+            ) : (
+              <div></div>
+            )}
           </li>
         </Link>
-        <Link to="/lists/lendlist" css={textDecorationNone}>
-          <li
-            css={li}
-            onClick={() => {
-              // const result = onLendClick();
-              // console.log('result', result)
-              // setResistList(result);
-            }}
-          >
-            빌려준 목록
-          </li>
+        <Link
+          to="/lists/borrowlist"
+          css={textDecorationNone}
+          onClick={() => {
+            resetIsShowModal();
+            resetIsNavOn();
+          }}
+        >
+          <li css={li}>빌린 목록</li>
         </Link>
-        <Link to="/lists/likelist" css={textDecorationNone}>
-          <li
-            css={li}
-            onClick={() => {
-              // const result = onLikeClick();
-              // console.log('result', result)
-              // setResistList(result);
-            }}
-          >
-            찜한 목록
-          </li>
+        <Link
+          to="/lists/lendlist"
+          css={textDecorationNone}
+          onClick={() => {
+            resetIsShowModal();
+            resetIsNavOn();
+          }}
+        >
+          <li css={li}>빌려준 목록</li>
         </Link>
-        <Link to="/lists/resistlist" css={textDecorationNone}>
-          <li
-            css={li}
-            onClick={() => {
-              // const result = onResistClick();
-              // console.log('result', result)
-              // setResistList(result);
-            }}
-          >
-            내가 쓴 글
-          </li>
+        <Link
+          to="/lists/likelist"
+          css={textDecorationNone}
+          onClick={() => {
+            resetIsShowModal();
+            resetIsNavOn();
+          }}
+        >
+          <li css={li}>찜한 목록</li>
+        </Link>
+        <Link
+          to="/lists/resistlist"
+          css={textDecorationNone}
+          onClick={() => {
+            resetIsShowModal();
+            resetIsNavOn();
+          }}
+        >
+          <li css={li}>내가 쓴 글</li>
         </Link>
         <div css={line} />
-        <Link to="mypage" css={textDecorationNone}>
+        <Link
+          to="mypage"
+          css={textDecorationNone}
+          onClick={() => {
+            resetIsShowModal();
+            resetIsNavOn();
+          }}
+        >
           <li css={li}>계정</li>
         </Link>
+
         <li css={li} onClick={logout}>
           로그아웃
         </li>
       </ul>
+      <div
+        css={css`
+          width: 100vw;
+          height: 100vh;
+          background-color: rgba(0, 0, 0, 0);
+          position: fixed;
+          top: 0;
+          left: 0;
+          z-index: -1;
+        `}
+        onClick={resetIsShowModal}
+      ></div>
     </div>
   );
 }

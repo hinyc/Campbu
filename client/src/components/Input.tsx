@@ -19,6 +19,7 @@ interface InputProps {
   borderRadius?: number;
   placeholder?: string;
   onChange?: any;
+  onKeyPress?: any;
   value?: string;
 }
 export default function Input(props: InputProps) {
@@ -31,6 +32,7 @@ export default function Input(props: InputProps) {
     borderRadius,
     placeholder,
     onChange,
+    onKeyPress,
     value,
   } = props;
   return (
@@ -43,12 +45,14 @@ export default function Input(props: InputProps) {
           font-size: ${fontSize ? rem(fontSize) : `1rem`};
           border-radius: ${borderRadius ? rem(borderRadius) : rem(5)};
           border-style: ${borderStyle ? borderStyle : null};
+          outline: none;
           ::placeholder {
             color: ${color.placeholder};
           }
         `,
       ]}
       onChange={onChange}
+      onKeyPress={onKeyPress}
       value={value}
       type={type ? type : 'text'}
       placeholder={placeholder ? placeholder : undefined}

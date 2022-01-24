@@ -17,11 +17,11 @@ import {
   addressStyle,
   moneyTitle,
 } from './post';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { isLogin, showLoginModal, showSignupModal } from '../Atom';
-import { useState } from 'react';
+import { isLogin, post_id, showLoginModal, showSignupModal } from '../Atom';
+import { useEffect, useState } from 'react';
 
 interface Props {
   isFill: boolean;
@@ -33,7 +33,6 @@ interface Props {
   rental_fee: number;
   count: number;
   postId: number;
-  // setModalShow: any;
 }
 
 function Product(props: Props) {
@@ -48,42 +47,13 @@ function Product(props: Props) {
     count,
     postId,
   } = props;
-  const [login, setLogin] = useRecoilState(showLoginModal);
-  const loginUser = useRecoilValue<boolean>(isLogin);
-  const [countHeart, setCountHeart] = useState<number>(count);
-  const [fillHeart, setFillHeart] = useState<boolean>(isFill);
-  const HeartClickPOST = () => {
-    console.log('postId', postId);
-    // axios
-    //   .post(
-    //     `${host}/user/like`,
-    //     { post_id: postId },
-    //     {
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //     },
-    //   )
-    //   .then((res) => {
-    //     if (res.status === 201) {
-    if (loginUser) {
-      if (fillHeart) {
-        console.log('cancel post [liked]!');
-        setCountHeart(countHeart - 1);
-        setFillHeart(!fillHeart);
-      } else {
-        console.log('add post [liked]!');
-        setCountHeart(countHeart + 1);
-        setFillHeart(!fillHeart);
-      }
-    } else {
-      setLogin(true);
-    }
 
-    // } else if (res.status === 401) {
-    // console.log('Unauthorized User');
-    //   }
-    // });
+  const setGetPostId = useSetRecoilState(post_id);
+  const navigation = useNavigate();
+  const onPostClick = () => {
+    setGetPostId(postId);
+    localStorage.setItem('postId', `${postId}`);
+    navigation(`/main/${postId}`);
   };
 
   return (
@@ -97,21 +67,18 @@ function Product(props: Props) {
           `,
         ]}
       >
-        <div onClick={HeartClickPOST}>
-          <LikeSymbol
-            fillHeart={fillHeart}
-            countHeart={countHeart}
-            isFill={isFill}
-            fontSize={13}
-            count={count}
-            width={46}
-            height={24}
-            display={display}
-          />
-        </div>
+        <LikeSymbol
+          postId={postId}
+          isFill={isFill}
+          fontSize={13}
+          count={count}
+          width={46}
+          height={24}
+          display={display}
+        />
       </div>
-      <Link to={`${postId}`} css={textDecorationNone}>
-        <img src={img_urls} alt="product" css={img} />
+      <div css={textDecorationNone} onClick={onPostClick}>
+        <img src={img_urls} alt="product" css={img} draggable="false" />
         <div css={textContainer}>
           <span css={[span, moneyTitle, addressStyle]}>
             <img src={Here} alt="위치" style={{ marginRight: '4px' }} />
@@ -129,7 +96,7 @@ function Product(props: Props) {
             </span>
           </div>
         </div>
-      </Link>
+      </div>
     </div>
   );
 }

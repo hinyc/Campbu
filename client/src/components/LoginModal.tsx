@@ -3,38 +3,48 @@ import { css } from '@emotion/react';
 import { color, host, modalBackgroundStyle, rem, shadow } from '../common';
 import { Button } from './Button';
 import Input from './Input';
-import naverimg from '../assets/naver.png';
 import kakaoimg from '../assets/kakao.png';
-import { useSetRecoilState } from 'recoil';
-import { isLogin, showLoginModal, showSignupModal } from '../Atom';
+import googleimg from '../assets/google.png';
+import { useSetRecoilState, useRecoilState, useResetRecoilState } from 'recoil';
+import {
+  isLogin,
+  loginUserInfo,
+  showLoginModal,
+  showSignupModal,
+  allChatRoomId,
+  showModal,
+  navbarOn,
+  jwtToken,
+} from '../Atom';
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import KakaoLogin from './KakaoLogin';
+import io from 'socket.io-client';
+import { chatsNum } from '../Atom';
 
 const backgroundStyle = css`
   background-color: white;
-  width: ${rem(334)};
-  height: ${rem(413)};
+  width: ${rem(380)};
+  height: ${rem(485)};
   border-radius: ${rem(15)};
   box-shadow: ${shadow};
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: ${rem(12)};
   position: relative;
 `;
 
 const x = css`
-  font-size: ${rem(14)};
+  font-size: ${rem(20)};
   width: ${rem(18)};
   height: ${rem(18)};
   line-height: ${rem(18)};
   text-align: center;
   color: ${color.placeholder};
   top: ${rem(14)};
-  right: ${rem(12)};
+  right: ${rem(18)};
   position: absolute;
   :hover {
     font-size: ${rem(18)};
@@ -46,9 +56,9 @@ const oauth = css`
   border: 1px solid ${color.border};
   border-radius: ${rem(5)};
   background-color: ${color.white};
-  width: ${rem(205)};
-  height: ${rem(40)};
-  font-size: ${rem(12)};
+  width: ${rem(240)};
+  height: ${rem(48)};
+  font-size: ${rem(14)};
   position: relative;
   transition: 0.1s;
   :hover {
@@ -59,11 +69,11 @@ const oauth = css`
   }
 `;
 const oauthIcon = css`
-  width: ${rem(19)};
-  height: ${rem(19)};
+  width: ${rem(22)};
+  height: ${rem(22)};
   position: absolute;
   left: ${rem(15)};
-  top: ${rem(9.5)};
+  top: ${rem(11)};
 `;
 
 const marginTop6 = css`
@@ -71,7 +81,7 @@ const marginTop6 = css`
 `;
 
 const topLine = css`
-  width: ${rem(205)};
+  width: ${rem(240)};
   border: 1px solid ${color.border};
   border-style: solid none none none;
   margin-top: ${rem(20)};
@@ -79,7 +89,7 @@ const topLine = css`
   position: relative;
 `;
 const floatingTextBox = css`
-  width: ${rem(205)};
+  width: ${rem(240)};
   display: flex;
   justify-content: center;
 `;
@@ -88,30 +98,36 @@ const floatingText = css`
   position: absolute;
   background-color: ${color.white};
   color: ${color.placeholder};
-  font-size: ${rem(10)};
+  font-size: ${rem(11)};
   line-height: ${rem(10)};
   top: ${rem(-5)};
 `;
 
-const reqMsg = css`
+const reqMsgStyle = css`
   height: ${rem(18)};
   line-height: ${rem(18)};
-  font-size: ${rem(10)};
+  font-size: ${rem(12)};
   color: ${color.point};
   margin-left: ${rem(12)};
+  margin-top: ${rem(5)};
 `;
 
 function LoginModal() {
   const setShowLogin = useSetRecoilState(showLoginModal);
   const setIsLogin = useSetRecoilState(isLogin);
-
   const setShowSignup = useSetRecoilState(showSignupModal);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [emailReqMsg, setEmailReqMsg] = useState(false);
-  const [passwordReqMsg, setPasswordReqMsg] = useState(false);
-
+  const [reqMsgState, setReqMsgState] = useState('ok');
+  const setLoginUserInfo = useSetRecoilState(loginUserInfo);
+  const [chatNum, setChatNum] = useRecoilState(chatsNum);
+  const resetIsNavOn = useResetRecoilState(navbarOn);
+  const setToken = useSetRecoilState(jwtToken);
   const navigate = useNavigate();
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
+  const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?scope=openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20&response_type=code&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URI}&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}`;
+  const setChatIds = useSetRecoilState(allChatRoomId);
+  const setIsShowModal = useSetRecoilState(showModal);
 
   const emailHandler = (e: any) => {
     setEmail(e.target.value);
@@ -119,6 +135,17 @@ function LoginModal() {
 
   const passwordHandler = (e: any) => {
     setPassword(e.target.value);
+  };
+
+  interface reqMsgType {
+    [key: string]: string;
+  }
+
+  const reqMsg: reqMsgType = {
+    ok: '',
+    email: '* 이메일을 입력해주세요.',
+    password: '* 비밀번호를 입력해주세요.',
+    conflict: '* 아이디와 비밀번호를 확인해주세요',
   };
 
   const loginHandler = () => {
@@ -132,11 +159,11 @@ function LoginModal() {
       password,
     };
 
-    if (!email) return setEmailReqMsg(true);
+    if (!email) return setReqMsgState('email');
     if (!password) {
-      setEmailReqMsg(false);
-      setPasswordReqMsg(true);
-      return;
+      return setReqMsgState('password');
+    } else {
+      setReqMsgState('ok');
     }
 
     axios
@@ -147,36 +174,67 @@ function LoginModal() {
         withCredentials: true,
       })
       .then((res) => {
-        console.log(res);
         if (res.status === 200) {
-          console.log('로그인성공');
           setShowLogin(false);
           setIsLogin(true);
-          navigate('/');
-          return;
+          interface loginUserInfoType {
+            created_at: string;
+            email: string;
+            id: number;
+            nickname: string;
+            updated_at: string;
+            users_img: string;
+          }
+
+          const userinfo: loginUserInfoType = res.data.user;
+          setLoginUserInfo(userinfo);
+          const newToken: string = res.data.token;
+          setToken(newToken);
+          localStorage.setItem('token', newToken);
+
+          localStorage.setItem('isLogin', 'true');
+          localStorage.setItem('userInfo', JSON.stringify(userinfo));
+
+          axios
+            .get(`${host}/chat/chatRoom`, {
+              headers: {
+                'Content-Type': 'application/json',
+                authorization: `Bearer ${newToken}`,
+              },
+              withCredentials: true,
+            })
+            .then((res: any) => {
+              const chatIds = res.data.chat.map((chat: any) => {
+                const roomId = 'Room' + String(chat.id);
+                if (!(roomId in chatNum)) {
+                  setChatNum((chatNum) => ({
+                    ...chatNum,
+                    [roomId]: 0,
+                  }));
+                }
+                return chat.id;
+              });
+              const ids = JSON.stringify(chatIds);
+              setChatIds(ids);
+              io(host, {
+                query: { ids },
+              });
+            });
+          setIsShowModal(false);
+          resetIsNavOn();
+          navigate('/main');
         }
       })
       .catch((res) => {
-        console.log(res);
-        setPasswordReqMsg(false);
-        console.log(passwordReqMsg);
+        setReqMsgState('conflict');
       });
   };
 
-  const kakaoLogin = () => {
-    console.log('카카오 로그인요청');
-    //   window.Kakao.Auth.login({
-    //     success: ,
-    //     scope:
-    // //   })
+  const onLoginPress = (e: any) => {
+    if (e.key === 'Enter') {
+      loginHandler();
+    }
   };
-  const naverLogin = () => {
-    console.log('네이버로그인요청');
-  };
-
-  const REST_API_KEY = '743967a98f800a0d61397559fbf5ad5f';
-  const REDIRECT_URI = 'http://localhost:3000/oauth/kakao/callback';
-  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
   return (
     <div css={modalBackgroundStyle}>
@@ -187,41 +245,41 @@ function LoginModal() {
         <div className="login">
           <div>
             <Input
-              width={205}
-              height={40}
+              width={240}
+              height={48}
               borderRadius={5}
               placeholder="이메일을 입력해주세요."
-              fontSize={12}
+              fontSize={14}
               onChange={emailHandler}
               value={email}
             />
           </div>
           <div css={marginTop6}>
             <Input
-              width={205}
-              height={40}
+              width={240}
+              height={48}
               borderRadius={5}
               placeholder="비밀번호를 입력해주세요."
-              fontSize={12}
+              fontSize={14}
               onChange={passwordHandler}
               value={password}
               type="password"
+              onKeyPress={onLoginPress}
             />
           </div>
-          <div css={reqMsg}>
-            {emailReqMsg ? <div>* 이메일을 입력해주세요.</div> : null}
-            {passwordReqMsg ? <div>* 비밀번호를 입력해주세요.</div> : null}
+          <div css={reqMsgStyle}>
+            <div>{reqMsg[reqMsgState]}</div>
           </div>
 
           <div>
             <Button
               text="로그인"
-              width={rem(205)}
-              height={rem(40)}
+              width={rem(240)}
+              height={rem(48)}
               background={color.point}
               color={color.white}
               border="none"
-              size={rem(12)}
+              size={rem(14)}
               hover=".85"
               onClick={loginHandler}
             />
@@ -240,13 +298,25 @@ function LoginModal() {
               또는
             </div>
           </div>
-          <button css={[oauth]} onClick={naverLogin}>
-            <img css={oauthIcon} src={naverimg} alt="naver login" />
-            <div>네이버로 로그인하기</div>
-          </button>
-          <a href={KAKAO_AUTH_URL}>
-            <button css={[oauth, marginTop6]} onClick={kakaoLogin}>
-              <img css={oauthIcon} src={kakaoimg} alt="naver login" />
+          <a href={GOOGLE_AUTH_URL} draggable="false">
+            <button css={oauth}>
+              <img
+                css={[oauthIcon, `width: ${rem(24)}`, `height: ${rem(24)}`]}
+                src={googleimg}
+                alt="google login"
+                draggable="false"
+              />
+              <div>구글로 로그인하기</div>
+            </button>
+          </a>
+          <a href={KAKAO_AUTH_URL} draggable="false">
+            <button css={[oauth, marginTop6]}>
+              <img
+                css={oauthIcon}
+                src={kakaoimg}
+                alt="kakao login"
+                draggable="false"
+              />
               <div>카카오로 로그인하기</div>
             </button>
           </a>
@@ -266,12 +336,12 @@ function LoginModal() {
           </div>
           <Button
             text="회원가입"
-            width={rem(205)}
-            height={rem(40)}
+            width={rem(240)}
+            height={rem(48)}
             background={color.white}
             color={color.point}
             border={`1px solid ${color.point}`}
-            size={rem(12)}
+            size={rem(14)}
             fontWeight={700}
             hover=".7"
             onClick={() => {

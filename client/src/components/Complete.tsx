@@ -4,6 +4,8 @@ import { rem, color, hover } from '../common';
 import Check from '../assets/Check.svg';
 import { Button } from './Button';
 import { useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { forceRender } from '../Atom';
 
 const box = css`
   position: fixed;
@@ -12,8 +14,12 @@ const box = css`
   border-radius: ${rem(15)};
   box-shadow: ${hover};
   z-index: 999;
+  top: 50%;
   left: 50%;
-  transform: translate(-50%, 0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -50%);
 `;
 
 const img = css`
@@ -28,10 +34,11 @@ const message = css`
 
 interface Props {
   text: string;
-  onClick: any;
+  onClick: () => void;
 }
 
 function Complete({ text, onClick }: Props) {
+  const [forceRenderEX, setForceRenderEX] = useRecoilState(forceRender);
   return (
     <div css={box}>
       <img src={Check} alt="checked!" css={img} />
@@ -47,7 +54,10 @@ function Complete({ text, onClick }: Props) {
         margin={`${rem(20)} 0`}
         hover="80%"
         cursor="pointer"
-        onClick={onClick}
+        onClick={() => {
+          onClick();
+          setForceRenderEX(!forceRenderEX);
+        }}
       />
     </div>
   );

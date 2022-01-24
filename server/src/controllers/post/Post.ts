@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import { posts } from '../../entity/posts';
-import { users } from '../../entity/users';
+import users from '../../entity/users';
 import { users_reviews } from '../../entity/users_reviews';
 import { authorizeToken } from '../jwt/AuthorizeToken';
 import axios from 'axios';
@@ -19,7 +19,7 @@ export default {
     } else {
       const postRepository = getRepository(posts);
       const post = await postRepository.findOne({ id: id });
-      res.status(200).json({ posts: post });
+      res.status(200).json({ posts: post, user });
     }
   },
   patch: async (req: Request, res: Response) => {

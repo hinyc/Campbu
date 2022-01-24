@@ -10,6 +10,7 @@ export const post = css`
   position: relative;
   :hover {
     box-shadow: ${hover};
+    cursor: pointer;
   }
 `;
 

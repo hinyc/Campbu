@@ -4,6 +4,8 @@ import { rem, color, hover } from '../common';
 import Alert from '../assets/Alert.svg';
 import { Button } from './Button';
 import { useState } from 'react';
+import { useSetRecoilState } from 'recoil';
+import { showAlertModal } from '../Atom';
 
 const box = css`
   position: fixed;
@@ -31,32 +33,28 @@ interface Props {
 }
 
 function AlertModal({ text }: Props) {
-  const [show, setShow] = useState<boolean>(true);
+  const setShowModal = useSetRecoilState(showAlertModal);
   const onClick = () => {
-    setShow(!show);
+    setShowModal(false);
   };
   return (
-    <>
-      {show ? (
-        <div css={box}>
-          <img src={Alert} alt="alert!" css={img} />
-          <p css={message}>{text}</p>
-          <Button
-            text="확인"
-            width={`${rem(180)}`}
-            height={`${rem(43)}`}
-            background={`${color.point}`}
-            color={`white`}
-            border="none"
-            size={`${rem(14)}`}
-            margin={`${rem(20)} 0`}
-            hover="80%"
-            cursor="pointer"
-            onClick={onClick}
-          />
-        </div>
-      ) : null}
-    </>
+    <div css={box}>
+      <img src={Alert} alt="alert!" css={img} />
+      <p css={message}>{text}</p>
+      <Button
+        text="확인"
+        width={`${rem(180)}`}
+        height={`${rem(43)}`}
+        background={`${color.point}`}
+        color={`white`}
+        border="none"
+        size={`${rem(14)}`}
+        margin={`${rem(20)} 0`}
+        hover="80%"
+        cursor="pointer"
+        onClick={onClick}
+      />
+    </div>
   );
 }
 

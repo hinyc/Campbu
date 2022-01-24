@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
-import { users } from '../../entity/users';
+import users from '../../entity/users';
 import { users_reviews } from '../../entity/users_reviews';
 import { reviews } from '../../entity/reviews';
 import { authorizeToken } from '../jwt/AuthorizeToken';
 
 export default async (req: Request, res: Response) => {
+  const user_id = req.body.user_id;
   const review_id: number[] = req.body.review_id;
   const decoded = await authorizeToken(req, res);
   const usersRepository = getRepository(users);
@@ -30,6 +31,7 @@ export default async (req: Request, res: Response) => {
     } else {
       reviewInfo.map(async (data) => {
         const reviewExist = await userReviewsRepository.findOne({
+          users_id: user_id,
           reviews_id: data,
         });
         if (reviewExist) {
@@ -40,7 +42,7 @@ export default async (req: Request, res: Response) => {
           );
         } else {
           await userReviewsRepository.insert({
-            users_id: userInfo,
+            users_id: user_id,
             reviews_id: data,
             count: 1,
           });

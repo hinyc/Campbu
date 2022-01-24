@@ -1,25 +1,40 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import { css, keyframes } from '@emotion/react';
 import Product from '../components/Product';
 import WritingButton from '../components/WritingButton';
-import { rem, relative, host } from '../common';
+import { rem, relative, host, addressAPI } from '../common';
 import SearchGreen from '../assets/SearchGreen.svg';
 import SearchInput from '../components/SearchInput';
 import Category from '../components/Category';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { posts, originalPosts, showLoginModal } from '../Atom';
-import { useState } from 'react';
+import {
+  posts,
+  originalPosts,
+  showLoginModal,
+  showAlertModal,
+  selectAddress,
+  showAddressList,
+  searchAddress,
+  isLoading,
+  isLogin,
+  likedProducts,
+  selectCategory,
+  jwtToken,
+} from '../Atom';
+import { useEffect, useState } from 'react';
 import AlertModal from '../components/AlertModal';
 import axios from 'axios';
-import Loading from '../assets/Loading.svg';
+import Load from '../assets/Load.svg';
 import emptySearchResult from '../assets/pictures/emptySearchResult.svg';
+import Geolocation from '../assets/pictures/Geolocation.svg';
 import { message } from './Lists/tab';
+import SelectAddressList from '../components/SelectAddress';
 
 const container = css`
   width: ${rem(1280)};
   margin: 0 auto;
   margin-top: ${rem(36)};
-  margin-bottom: ${rem(16)};
+  margin-bottom: ${rem(100)};
   text-align: center;
 `;
 
@@ -37,10 +52,29 @@ const section = css`
   grid-template-columns: repeat(auto-fill, minmax(20%, auto));
   row-gap: ${rem(26)};
   text-align: left;
+  margin-top: ${rem(26)};
+`;
+
+const addressListStyle = css`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 990;
+`;
+
+const loading = keyframes`
+  100% { transform: rotate(360deg); }
+`;
+
+const load = css`
+  margin: ${rem(100)} auto ${rem(200)} auto;
+  animation: ${loading} 6s linear infinite;
+  transform-origin: 50% 50%;
 `;
 
 export interface Posts {
   posts: Post[];
+  likes?: { posts_id: number }[];
 }
 
 export interface Post {
@@ -54,131 +88,120 @@ export interface Post {
   longitude: number;
   latitude: number;
   address: string;
-  img_urls: string;
+  img_urls: string[];
   users_id: number;
-  reservation_dates: string[];
+  created_at?: string;
+  updated_at?: string;
   likes_count: number;
 }
 
 function Main() {
-  const [products, searchAddress] = useRecoilState<Posts>(posts);
-  const [searchValue, setSearchValue] = useState<string>('');
-  const [showSearchModal, setShowSearchModal] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [products, setProducts] = useRecoilState<Posts>(posts);
+  const [mainSearch, setMainSearch] = useRecoilState<Posts>(originalPosts);
+  const [loading, setIsLoading] = useRecoilState(isLoading);
+  const [showModal, setShowModal] = useRecoilState(showAlertModal);
+  const [searchValue, setSearchValue] = useRecoilState(selectAddress);
+  const [addressList, setSearchAddress] = useRecoilState(searchAddress);
+  const [showAddress, setShowAddress] = useRecoilState(showAddressList);
+  const login = useRecoilValue(isLogin);
+  const [selected, setSelected] = useState<boolean>(false);
+  const [likedPosts, setLikedPosts] = useRecoilState<number[]>(likedProducts);
+  const category = useRecoilValue(selectCategory);
+  const token = useRecoilValue(jwtToken);
 
-  const setMainSearch = useSetRecoilState<Posts>(originalPosts);
+  const [address, setAddress] = useState('');
+
+  useEffect(() => {
+    if (searchValue) {
+      setIsLoading(true);
+      axios
+        .get(`${host}/product/address/${searchValue}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            setMainSearch(res.data);
+            if (login && res.data.likes) {
+              const likes = res.data.likes.map(
+                (obj: { posts_id: number }) => obj.posts_id,
+              );
+              setLikedPosts(likes);
+            }
+          }
+          if (category === '전체') {
+            const filtered = res.data.posts.filter(
+              (obj: any) => obj.category !== 'dummy',
+            );
+            setProducts({ posts: filtered });
+          } else {
+            const filtered = res.data.posts.filter(
+              (obj: any) => obj.category === category,
+            );
+            setProducts({ posts: filtered });
+          }
+        })
+        .catch((err) => {
+          console.error('검색결과가 없습니다.', err);
+          setIsLoading(false);
+        });
+      setIsLoading(false);
+    }
+    if (searchValue) {
+      setAddress(searchValue);
+    }
+  }, [
+    login,
+    setProducts,
+    searchValue,
+    setIsLoading,
+    setLikedPosts,
+    setMainSearch,
+    category,
+  ]);
 
   const onChange = (e: any) => {
-    setSearchValue(e.target.value);
+    setAddress(e.target.value);
   };
 
-  const onSearchClick = () => {
-    if (searchValue.length !== 0) {
-      // TODO: 로딩 컴포넌트 띄우기
-      // setLoading(true);
-      // console.log('1st', loading);
-      // axios
-      //   .get(`${host}/product/address/${searchValue}`)
-      //   .then((res) => {
-      //     if (res.status === 200) {
-      setMainSearch({
-        // TODO: 검색 결과를 여기에 추가
-        // posts: [],
-        posts: [
-          {
-            id: 1,
-            category: 'Etc',
-            deposit: 30000,
-            rental_fee: 25000,
-            unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
-            title: '검색했을 때 새로 나오는거',
-            content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
-            longitude: 126.99597295767953,
-            latitude: 35.97664845766847,
-            address: '서울특별시 동작구 신대방동',
-            img_urls:
-              'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
-            users_id: 1,
-            reservation_dates: ['2021-12-29', '2021-12-30', '2021-12-31'],
-            likes_count: 15,
-          },
-          {
-            id: 1,
-            category: 'Pot',
-            deposit: 30000,
-            rental_fee: 25000,
-            unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
-            title: '메인페이지 검색',
-            content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
-            longitude: 126.99597295767953,
-            latitude: 35.97664845766847,
-            address: '서울특별시 동작구 신대방동',
-            img_urls:
-              'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
-            users_id: 1,
-            reservation_dates: ['2021-12-29', '2021-12-30', '2021-12-31'],
-            likes_count: 15,
-          },
-        ],
+  const onSearchClick = async () => {
+    await axios
+      .get(
+        `https://www.juso.go.kr/addrlink/addrLinkApi.do?currentPage=1&countPerPage=50&keyword=${address}&confmKey=${addressAPI}&resultType=json`,
+        { headers: { 'Content-Type': 'application/json' } },
+      )
+      .then((res) => {
+        const address = res.data.results.juso;
+        const addressList: string[] = [];
+        if (address) {
+          const allSearchAddress = address.map((el: any) => {
+            return `${el.siNm} ${el.sggNm} ${el.emdNm}`;
+          });
+          allSearchAddress.forEach((el: string, idx: number) => {
+            if (allSearchAddress.indexOf(el) === idx) {
+              addressList.push(el);
+            }
+          });
+        }
+        setSearchAddress(addressList);
+        setShowAddress(true);
+        setSearchValue('');
       });
-      searchAddress({
-        // TODO: 검색 결과를 여기에 추가
-        // posts: [],
-        posts: [
-          {
-            id: 1,
-            category: 'Tent',
-            deposit: 30000,
-            rental_fee: 25000,
-            unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
-            title: '검색했을 때 새로 나오는거',
-            content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
-            longitude: 126.99597295767953,
-            latitude: 35.97664845766847,
-            address: '서울특별시 동작구 신대방동',
-            img_urls:
-              'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
-            users_id: 1,
-            reservation_dates: ['2021-12-29', '2021-12-30', '2021-12-31'],
-            likes_count: 15,
-          },
-          {
-            id: 1,
-            category: 'Tent',
-            deposit: 30000,
-            rental_fee: 25000,
-            unavailable_dates: ['2021-12-20', '2021-12-21', '2021-12-22'],
-            title: '메인페이지 검색',
-            content: '쉽게 설치할 수 있는 3~4인용 텐트입니다.',
-            longitude: 126.99597295767953,
-            latitude: 35.97664845766847,
-            address: '서울특별시 동작구 신대방동',
-            img_urls:
-              'https://paperbarkcamp.com.au/wp-content/uploads/2019/07/paperbark_flash-camp_news_1218x650.jpg',
-            users_id: 1,
-            reservation_dates: ['2021-12-29', '2021-12-30', '2021-12-31'],
-            likes_count: 15,
-          },
-        ],
-      });
-      //   }
-      // })
-      // .catch((err) => console.error(err));
-      // TODO: 로딩 컴포넌트
-      setSearchValue('');
-      // setLoading(false);
-      // console.log('2nd', loading);
-    } else {
-      console.log('input text please');
-      // TODO: false로 초기화 시키기
-      setShowSearchModal(!showSearchModal);
+  };
+
+  const onSearchPress = (e: any) => {
+    if (e.key === 'Enter') {
+      onSearchClick();
     }
   };
 
   return (
     <div css={container}>
       <Category />
-      {showSearchModal ? <AlertModal text="검색어를 입력해주세요!" /> : null}
+      {showModal && <AlertModal text="검색어를 입력해주세요!" />}
       <span css={relative}>
         <SearchInput
           text="지역을 검색해보세요!"
@@ -189,33 +212,31 @@ function Main() {
           shadow={`0px 2px 10px rgba(0, 0, 0, 0.1)`}
           placeholder={`#afc89b`}
           padding={`${rem(18)}`}
-          margin={`${rem(26)} 0`}
+          margin={`${rem(26)} 0 0 0`}
           onChange={onChange}
+          value={address}
+          onKeyPress={onSearchPress}
         />
         <button css={button} onClick={onSearchClick}>
-          <img src={SearchGreen} alt="search" />
+          <img src={SearchGreen} alt="search" draggable="false" />
         </button>
       </span>
-      {/* // TODO: 로딩 컴포넌트 추가 */}
+      <div css={addressListStyle}>
+        {showAddress && <SelectAddressList width={450} />}
+      </div>
       {loading ? (
-        <img src={Loading} alt="loading..." />
-      ) : products['posts'].length === 0 ? (
-        <div style={{ marginTop: `${rem(26)}` }}>
-          <img src={emptySearchResult} alt="camping" />
-          <p css={[message, `font-weight: 700`]}>
-            검색 결과가 없어요! 다시 검색해주세요.
-          </p>
+        <div css={load}>
+          <img src={Load} alt="loading..." />
         </div>
-      ) : (
+      ) : products['posts'].length ? (
         <section css={section}>
           {products['posts'].map((product: Post, index) => (
             <Product
               key={index}
               count={product.likes_count}
-              // TODO: 좋아요 눌렀는지 안눌렀는지 상태 변경
-              isFill={false}
+              isFill={likedPosts.includes(product.id)}
               postId={product.id}
-              img_urls={product.img_urls}
+              img_urls={product.img_urls[0]}
               address={product.address}
               title={product.title}
               deposit={product.deposit}
@@ -223,6 +244,20 @@ function Main() {
             />
           ))}
         </section>
+      ) : searchValue ? (
+        <div style={{ margin: `${rem(80)} 0 ${rem(150)} 0` }}>
+          <img src={emptySearchResult} alt="camping" />
+          <p css={[message, `font-weight: 700`]}>
+            검색 결과가 없어요! 다시 검색해주세요.
+          </p>
+        </div>
+      ) : (
+        <div style={{ margin: `${rem(80)} 0 ${rem(150)} 0` }}>
+          <img src={Geolocation} alt="please search" />
+          <p css={[message, `font-weight: 700`]}>
+            검색된 게 없어요, 지역을 검색해주세요!
+          </p>
+        </div>
       )}
       <WritingButton />
     </div>

@@ -2,12 +2,12 @@ import { Request, Response } from 'express';
 import { getManager, getRepository } from 'typeorm';
 import axios from 'axios';
 import { posts } from '../../entity/posts';
-import { users } from '../../entity/users';
+import users from '../../entity/users';
 import { likes } from '../../entity/likes';
 import { authorizeToken } from '../jwt/AuthorizeToken';
 const jwt = require('jsonwebtoken');
 
-export = async (req: Request, res: Response) => {
+export default async (req: Request, res: Response) => {
   const address = req.params.addressId;
 
   const coordinates = await axios
@@ -48,8 +48,8 @@ export = async (req: Request, res: Response) => {
         return JSON.stringify(res);
       });
 
-    if (!nearbyProduct) {
-      res.status(500).json({ message: 'Server Error' });
+    if (JSON.parse(nearbyProduct).length === 0) {
+      res.status(200).json({ posts: [] });
     } else {
       const nearbyProductId = JSON.parse(nearbyProduct).map(
         (product: object) => {

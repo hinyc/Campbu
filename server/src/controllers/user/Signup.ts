@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
-import { users } from '../../entity/users';
+import users from '../../entity/users';
 
 interface info {
   email: string;
@@ -30,19 +30,6 @@ export default {
       } else {
         return res.status(200).json({ message: 'Avaliable Nickname' });
       }
-    }
-  },
-  nickname: async (req: Request, res: Response) => {
-    console.log(req.query);
-    const nickname: string = req.params.nickname;
-    const usersRepository = getRepository(users);
-
-    const userInfo = await usersRepository.findOne({ nickname: nickname });
-
-    if (userInfo) {
-      return res.status(409).json({ message: 'Nickname already exists' });
-    } else {
-      return res.status(200).json({ message: 'Avaliable Nickname' });
     }
   },
   post: async (req: Request, res: Response) => {

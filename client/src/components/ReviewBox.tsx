@@ -35,7 +35,10 @@ interface ReviewContent {
   isBad: boolean;
   isCenterText?: string;
   margin?: string;
-  onClick?: Boolean;
+  fontColor: string;
+  borderColor: string;
+  onClick?: any;
+  notClickable?: any;
 }
 
 function ReviewBox(props: ReviewContent) {
@@ -49,17 +52,22 @@ function ReviewBox(props: ReviewContent) {
     isBad,
     isCenterText,
     margin,
+    fontColor,
+    borderColor,
     onClick,
+    notClickable,
   } = props;
 
-  function clickHandler() {
-    setClick(!click);
-    console.log(click);
-  }
+  const clickHandler = () => {
+    if (!notClickable) {
+      setClick(!click);
+      onClick();
+    }
+  };
 
   return (
     <div
-      onClick={onClick ? clickHandler : undefined}
+      onClick={clickHandler}
       css={[
         reviewStyle,
         css`
@@ -67,21 +75,15 @@ function ReviewBox(props: ReviewContent) {
           width: ${width ? rem(width) : null};
           height: ${height ? rem(height) : null};
           line-height: ${height ? rem(height) : null};
-          color: ${count
-            ? click
-              ? color.white
-              : isBad
-              ? color.deep
-              : null
-            : color.border};
-          border-color: ${count ? (isBad ? color.deep : null) : color.border};
+          color: ${click ? color.white : count ? fontColor : color.placeholder};
+          border-color: ${count ? borderColor : color.border};
           margin: ${margin ? margin : null};
           background-color: ${click ? (isBad ? color.deep : color.mid) : null};
           :hover {
-            cursor: ${onClick ? 'pointer' : null};
+            cursor: ${notClickable ? null : 'pointer'};
           }
           :active {
-            opacity: ${onClick ? '80%' : null};
+            opacity: ${notClickable ? null : '0.8'};
           }
         `,
       ]}
@@ -121,10 +123,11 @@ function ReviewBox(props: ReviewContent) {
             countStyle,
             css`
               margin-right: ${width ? rem(width * 0.075) : null};
+              font-size: ${rem(20)};
             `,
           ]}
         >
-          -
+          {/* ✔ */}✓
         </div>
       )}
     </div>

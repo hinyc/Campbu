@@ -1,20 +1,20 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import { css, keyframes } from '@emotion/react';
 import Input from '../components/Input';
 import {
   color,
-  confirm,
   flexVertical,
   flexBetween,
   rem,
-  adressAPI,
   relative,
   hidden,
+  host,
+  deleteS3Img,
 } from '../common';
 import { Button } from '../components/Button';
 import BackButton from '../components/BackButton';
-import Calendar from '../components/Calendar';
-import { useState } from 'react';
+import Calendar from '../components/CalendarForWrightingpage';
+import { useState, useEffect } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   selectDate,
@@ -22,11 +22,14 @@ import {
   selectAddress,
   showAddressList,
   preView,
-  formData,
   imgFile,
+  jwtToken,
 } from '../Atom';
 import axios from 'axios';
-import SelectAdressList from '../components/SelectAdress';
+import SelectAddressList from '../components/SelectAddress';
+import { useNavigate } from 'react-router-dom';
+import Complete from '../components/Complete';
+import { noticeNo, reqMsgStyle } from './Mypage';
 
 const fixAddressList = css`
   position: absolute;
@@ -62,9 +65,9 @@ const marginTop = css`
 
 const onLoadImgStyle = css`
   border-radius: 0.35rem;
-  margin-right: 0.625rem;
+  margin-left: 0.688rem;
   text-align: center;
-  background-color: ${color.border};
+  border: 1px solid ${color.border};
   width: 7rem;
   height: 7rem;
   transition: 0.1s;
@@ -75,10 +78,7 @@ const onLoadImgStyle = css`
 `;
 
 const imgStyle = css`
-  border: 1px solid ${color.placeholder};
-
   border-radius: 0.3125rem;
-  margin-right: 0.625rem;
   text-align: center;
   object-fit: cover;
   width: 100%;
@@ -87,14 +87,6 @@ const imgStyle = css`
   :hover {
     opacity: 0.4;
   }
-`;
-const inputFileStyle = css`
-  border: 1px solid ${color.border};
-  border-radius: 0.3125rem;
-
-  text-align: center;
-  width: 7rem;
-  height: 7rem;
 `;
 
 const inputFileCenter = css`
@@ -130,83 +122,113 @@ const uploadImgStyle = css`
   align-items: center;
 `;
 
+const subTitleStyle = css`
+  margin-left: 0.75rem;
+  color: ${color.point};
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+`;
+
 const UploadImg = () => {
-  const [imgfiles, setFiles] = useRecoilState(imgFile);
-  const [preViews, setPreViews] = useRecoilState(preView);
-  const insertImgHandler = (e: any) => {
-    const target = e.target.files[0];
+  const [imgFiles, setFiles] = useRecoilState(imgFile);
+  const [imageUrls, setImageUrls] = useRecoilState(preView);
 
-    let reader = new FileReader();
+  const insertImgHandler = async (e: any) => {
+    const file = e.target.files[0];
+    // 파일이 이미지파일이아니면 등록못하게
+    const geturlAPI = `${host}/newurl`;
+    const { url } = await fetch(geturlAPI).then((res) => res.json());
 
-    if (target) {
-      reader.readAsDataURL(target);
-      setFiles([...imgfiles, target]);
-    }
+    await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      body: file,
+    });
 
-    reader.onloadend = () => {
-      const preViewUrl = reader.result;
-      if (preViewUrl) {
-        setPreViews([...preViews, preViewUrl]);
-      }
-    };
+    const imageUrl = url.split('?')[0];
+    setImageUrls([...imageUrls, imageUrl]);
   };
 
-  const deleteImg = (target: number) => {
-    setFiles(imgfiles.filter((el, idx) => idx !== target));
-    setPreViews(preViews.filter((el, idx) => idx !== target));
+  const deleteImg = (el: string, target: number) => {
+    setImageUrls(imageUrls.filter((el, idx) => idx !== target));
+    deleteS3Img(el);
   };
 
-  console.log(imgfiles);
-  console.log(preViews);
   return (
-    <div css={[uploadImgStyle, confirm]}>
-      {imgfiles.map((el, idx) => {
+    <div css={[uploadImgStyle]}>
+      {imageUrls.map((el, idx) => {
         return (
-          <div key={idx} css={[onLoadImgStyle, relative]}>
-            <img
-              css={imgStyle}
-              draggable="false"
-              src={preViews[idx]}
-              alt={el.name}
-            />
-            <div css={xStyle} onClick={() => deleteImg(idx)}>
+          <div
+            key={idx}
+            css={[
+              onLoadImgStyle,
+              relative,
+              css`
+                margin-left: ${idx ? null : rem(0)};
+              `,
+            ]}
+          >
+            <img css={imgStyle} draggable="false" src={el} alt={el} />
+            <div css={xStyle} onClick={() => deleteImg(el, idx)}>
               ×
             </div>
           </div>
         );
       })}
-      <form
-        css={[inputFileStyle, inputFileCenter]}
-        encType="multiparty/form-data"
-      >
-        <label htmlFor="file" css={labelStyle}>
-          +
-        </label>
-        <input
-          css={hidden}
-          type="file"
-          id="file"
-          accept="image/*"
-          onChange={insertImgHandler}
-        />
-      </form>
+      {imageUrls.length > 6 ? null : (
+        <form
+          css={[
+            onLoadImgStyle,
+            inputFileCenter,
+            css`
+              margin-left: ${imageUrls.length ? null : rem(0)};
+            `,
+          ]}
+          encType="multiparty/form-data"
+        >
+          <label htmlFor="file" css={labelStyle}>
+            +
+          </label>
+          <input
+            css={hidden}
+            type="file"
+            id="file"
+            accept="image/*"
+            onChange={insertImgHandler}
+          />
+        </form>
+      )}
     </div>
   );
 };
 
 export const Writing = () => {
-  const [setCategory, setSetCategory] = useState<string>('');
-  const [deposit, setDeposit] = useState<string>('');
-  const [rentalFee, setRentalFee] = useState<string>('');
+  //전역상태
   const unavailableDates = useRecoilValue(selectDate);
-  const [title, setTitle] = useState<string>('');
-  const [content, setContent] = useState<string>('');
   const [address, setAddress] = useRecoilState(selectAddress);
   const setSerchAdress = useSetRecoilState(searchAddress);
   const [showAdress, setShowAdress] = useRecoilState(showAddressList);
-  const [imgUrls, setImgUrls] = useState<string>('');
-  const imgfiles = useRecoilValue(imgFile);
-  const [formDatas, setFormDatas] = useRecoilState(formData);
+  const imgUrls = useRecoilValue(preView);
+  //지역상태
+  const [setCategory, setSetCategory] = useState<string>('');
+  const [deposit, setDeposit] = useState<string>('');
+  const [rentalFee, setRentalFee] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
+  const [content, setContent] = useState<string>('');
+  const [reqState, setReqState] = useState<string>('ok');
+  const [isComplete, setIsComplete] = useState(false);
+  const setImageUrls = useSetRecoilState(preView);
+  const token = useRecoilValue(jwtToken);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setAddress('');
+    setSerchAdress([]);
+    setShowAdress(false);
+    setImageUrls([]);
+  }, []);
 
   const category: string[] = [
     '카테고리를 입력하세요',
@@ -218,6 +240,21 @@ export const Writing = () => {
     '취식용품',
     '기타',
   ];
+
+  interface reqMsgType {
+    [key: string]: string;
+  }
+  const reqMsg: reqMsgType = {
+    ok: '',
+    title: '* 제목을 입력해주세요',
+    category: '* 카테고리를 선택해주세요',
+    address: '* 주소를 선택해주세요',
+    deposit: '* 보증금을 입력해주세요',
+    rentalFee: '* 대여비를 입력해주세요',
+    content: '* 물품에 대한 설명을 작성해주세요',
+    imgUrls: '* 최소 1장의 사진을 등록해주세요',
+  };
+
   const titleHandler = (e: any) => setTitle(e.target.value);
   const depositHandler = (e: any) => setDeposit(e.target.value);
   const rentalFeeHandler = (e: any) => setRentalFee(e.target.value);
@@ -229,7 +266,7 @@ export const Writing = () => {
     if (address.length > 0) {
       axios
         .get(
-          `https://www.juso.go.kr/addrlink/addrLinkApi.do?currentPage=1&countPerPage=50&keyword=${address}&confmKey=${adressAPI}&resultType=json`,
+          `https://www.juso.go.kr/addrlink/addrLinkApi.do?currentPage=1&countPerPage=50&keyword=${address}&confmKey=${process.env.REACT_APP_ADDRESS_API}&resultType=json`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -258,42 +295,53 @@ export const Writing = () => {
   };
 
   const wrightHandler = () => {
-    interface wrightType {
+    interface postType {
       category: string;
       deposit: number;
       rental_fee: number;
-      unavailable_dates: string[];
+      unavailable_dates?: string[];
       title: string;
       content: string;
-      Address?: string;
-      img_urls?: string;
+      address: string;
+      img_urls: string[];
     }
-    const wrigthDate: wrightType = {
+
+    const data: postType = {
       category: setCategory,
       deposit: Number(deposit),
       rental_fee: Number(rentalFee),
       unavailable_dates: unavailableDates,
       title: title,
       content: content,
-      Address: address,
+      address: address,
       img_urls: imgUrls,
     };
-    console.log(wrigthDate);
 
-    /// 사진전송
-    const fd = new FormData();
-    console.log('!!', imgfiles);
-    Object.values(imgfiles).forEach((file) => fd.append('file', file));
+    if (!title) return setReqState('title');
+    if (!setCategory) return setReqState('category');
+    if (!address) return setReqState('address');
+    if (!deposit) return setReqState('deposit');
+    if (!rentalFee) return setReqState('rentalFee');
+    if (!content) return setReqState('content');
+    if (!imgUrls.length) return setReqState('imgUrls');
 
-    const config = {
-      headers: {
-        'content-type': 'multipart/form-data',
-      },
-
-      // axios.post(API, fd, config)
-    };
-
-    console.log('??', fd);
+    const API = `${host}/post/newpost`;
+    console.log('포스트 등록요청');
+    axios
+      .post(API, data, {
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      })
+      .then((res: any) => {
+        if (res.status === 200) {
+          setIsComplete(true);
+        }
+      })
+      .catch((err) => console.log(err));
+    localStorage.removeItem('address');
   };
 
   return (
@@ -311,9 +359,10 @@ export const Writing = () => {
             width={850}
             height={55}
             borderStyle="none none solid none"
-            borderRadius={0}
+            borderRadius={1}
             placeholder="제목을 입력해주세요"
             onChange={titleHandler}
+            value={title}
           />
         </div>
         <div css={flexBetween}>
@@ -349,10 +398,12 @@ export const Writing = () => {
                 size={rem(16)}
                 border={`1px solid ${color.point}`}
                 onClick={getAdress}
+                cursor="pointer"
+                hover="0.7"
               />
             </div>
             <div css={fixAddressList}>
-              {showAdress ? <SelectAdressList /> : null}
+              {showAdress ? <SelectAddressList /> : null}
             </div>
             <div
               css={[
@@ -369,9 +420,9 @@ export const Writing = () => {
                 height={50}
                 borderRadius={5}
                 placeholder="보증금"
-                onChange={rentalFeeHandler}
+                onChange={depositHandler}
                 type="number"
-                value={String(rentalFee)}
+                value={String(deposit)}
               />
               <div
                 css={css`
@@ -404,9 +455,9 @@ export const Writing = () => {
                 height={50}
                 borderRadius={5}
                 placeholder="대여비"
-                onChange={depositHandler}
+                onChange={rentalFeeHandler}
                 type="number"
-                value={String(deposit)}
+                value={String(rentalFee)}
               />
               <div
                 css={css`
@@ -439,7 +490,7 @@ export const Writing = () => {
                 margin-top: ${rem(32)};
               `}
             >
-              대여 불가능한 날짜 선택하기
+              <div css={subTitleStyle}>대여 불가능한 날짜 선택하기</div>
               <div>
                 <Calendar />
               </div>
@@ -448,16 +499,35 @@ export const Writing = () => {
         </div>
       </div>
       <div
+        css={css`
+          width: ${rem(850)};
+          margin-top: 1rem;
+        `}
+      >
+        <span css={subTitleStyle}>사진 등록하기</span>
+        <span
+          css={css`
+            color: ${color.placeholder};
+            font-size: ${rem(14)};
+            margin-left: 1rem;
+          `}
+        >
+          {' '}
+          * 최대 7장까지 등록가능 합니다.
+        </span>
+      </div>
+      <div
         css={[
           flexBetween,
           css`
             justify-content: flex-start;
-            margin-top: ${rem(22)};
+            margin-top: 0.6rem;
           `,
         ]}
       >
         <UploadImg />
       </div>
+      <div css={[noticeNo, reqMsgStyle]}>{reqMsg[reqState]}</div>
       <div>
         <Button
           text="등록"
@@ -467,10 +537,19 @@ export const Writing = () => {
           color={color.white}
           border="none"
           size={rem(14)}
-          margin={`${rem(30)} 0`}
           onClick={wrightHandler}
+          cursor="pointer"
+          hover="0.85"
         />
       </div>
+      {isComplete ? (
+        <Complete
+          text="물품이 등록되었습니다."
+          onClick={() => {
+            navigate('/lists/resistlist');
+          }}
+        />
+      ) : null}
     </div>
   );
 };
